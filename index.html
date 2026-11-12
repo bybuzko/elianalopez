@@ -61,29 +61,29 @@
 
     <style>
         body {
-            background-color: #FAF7FF;
+            background-color: #d6b6f2;
             color: #271066;
             font-family: 'Montserrat', sans-serif;
             overflow-x: hidden;
         }
 
         .gold-gradient-text {
-            background: linear-gradient(135deg, #F57F17 0%, #FFD54F 30%, #9B51E0 65%, #FBC02D 100%);
+            background: linear-gradient(135deg, #F57F17 0%, #FFD54F 30%, #7B32C2 65%, #FBC02D 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .bg-magic-card {
-            background: linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(243, 235, 255, 0.88));
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(243, 235, 255, 0.90));
             backdrop-filter: blur(8px);
         }
 
         .box-shadow-magic {
-            box-shadow: 0 10px 30px -5px rgba(155, 81, 224, 0.22);
+            box-shadow: 0 10px 30px -5px rgba(61, 30, 142, 0.22);
         }
 
         .box-shadow-subtle {
-            box-shadow: 0 4px 20px rgba(61, 30, 142, 0.06);
+            box-shadow: 0 4px 20px rgba(61, 30, 142, 0.08);
         }
 
         #sparkleCanvas {
@@ -110,10 +110,10 @@
             width: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #FAF7FF;
+            background: #d6b6f2;
         }
         ::-webkit-scrollbar-thumb {
-            background: #B57EEB;
+            background: #9B51E0;
             border-radius: 3px;
         }
 
@@ -128,7 +128,7 @@
 </head>
 <body class="relative text-lavender-900">
 
-    <!-- Canvas para Partículas de Destellos Mágicos -->
+    <!-- Canvas para Partículas y Destellos tipo Estrella -->
     <canvas id="sparkleCanvas"></canvas>
 
     <!-- Floating Audio Control Button -->
@@ -140,10 +140,10 @@
     <!-- ==========================================
          SECCIÓN 1: HERO / PORTADA PRINCIPAL
          ========================================== -->
-    <section class="relative min-h-screen flex flex-col justify-between items-center text-center px-4 py-12 z-10 overflow-hidden bg-gradient-to-b from-lavender-100/70 via-lavender-50 to-blush-100/30">
+    <section class="relative min-h-screen flex flex-col justify-between items-center text-center px-4 py-12 z-10 overflow-hidden bg-transparent">
         
-        <!-- Marco Decorativo Lila & Dorado -->
-        <div class="absolute inset-4 sm:inset-8 border border-lavender-400/50 rounded-3xl pointer-events-none flex flex-col justify-between p-2">
+        <!-- Marco Decorativo Blanco & Dorado -->
+        <div class="absolute inset-4 sm:inset-8 border border-white/60 rounded-3xl pointer-events-none flex flex-col justify-between p-2">
             <div class="flex justify-between">
                 <div class="w-8 h-8 border-t-2 border-l-2 border-gold-500 rounded-tl-xl"></div>
                 <div class="w-8 h-8 border-t-2 border-r-2 border-gold-500 rounded-tr-xl"></div>
@@ -155,30 +155,35 @@
         </div>
 
         <!-- Encabezado sutil -->
-        <div class="pt-8 animate-fade-in">
-            <p class="font-serif tracking-[0.3em] uppercase text-xs sm:text-sm text-lavender-600 font-semibold mb-2">
+        <div class="pt-8 animate-fade-in relative z-10">
+            <p class="font-serif tracking-[0.3em] uppercase text-xs sm:text-sm text-lavender-900 font-semibold mb-2">
                 Te invito a celebrar
             </p>
-            <div class="w-16 h-[1px] bg-gradient-to-r from-transparent via-gold-500 to-transparent mx-auto"></div>
+            <div class="w-16 h-[1px] bg-gradient-to-r from-transparent via-gold-600 to-transparent mx-auto"></div>
         </div>
 
-        <!-- Título Principal -->
-        <div class="my-auto py-6">
-            <span class="font-script text-5xl sm:text-7xl text-lavender-500 block mb-2 leading-tight drop-shadow-sm">
-                Mis 15 Años
-            </span>
-            <h1 class="font-title text-6xl sm:text-8xl tracking-wider uppercase font-bold gold-gradient-text my-2">
-                ELIANA
-            </h1>
-            <p class="font-serif italic text-lg sm:text-2xl text-lavender-800 max-w-md mx-auto mt-4 px-4 font-light leading-relaxed">
-                "Hay momentos inolvidables que se atesoran en el corazón para siempre. Quiero compartir con vos la noche más especial de mi vida."
-            </p>
+        <!-- Título Principal con Halo de Destello Dorado Giratorio -->
+        <div class="relative my-auto py-12 sm:py-16 flex flex-col items-center justify-center w-full max-w-2xl">
+            <!-- Canvas del anillo mágico detrás del título -->
+            <canvas id="heroRingCanvas" class="absolute inset-0 m-auto pointer-events-none z-0"></canvas>
+
+            <div class="relative z-10 px-4">
+                <span class="font-serif italic text-3xl sm:text-5xl text-white block mb-1 leading-tight drop-shadow">
+                    Mis 15 Años
+                </span>
+                <h1 class="font-script text-7xl sm:text-9xl font-normal gold-gradient-text py-2 px-4 leading-none drop-shadow-sm">
+                    Eliana
+                </h1>
+                <p class="font-serif italic text-lg sm:text-2xl text-lavender-900 max-w-md mx-auto mt-4 font-medium leading-relaxed">
+                    "Hay momentos inolvidables que se atesoran en el corazón para siempre. Quiero compartir con vos la noche más especial de mi vida."
+                </p>
+            </div>
         </div>
 
         <!-- Indicador de Scroll -->
-        <div class="pb-6 flex flex-col items-center">
-            <p class="font-sans text-xs tracking-widest text-lavender-600 uppercase mb-3 font-medium">Deslizá hacia abajo</p>
-            <a href="#cuenta-regresiva" class="w-10 h-10 rounded-full border border-lavender-400/70 flex items-center justify-center text-lavender-600 animate-bounce bg-white/70 backdrop-blur-sm shadow-sm">
+        <div class="pb-6 flex flex-col items-center relative z-10">
+            <p class="font-sans text-xs tracking-widest text-lavender-900 uppercase mb-3 font-semibold">Deslizá hacia abajo</p>
+            <a href="#cuenta-regresiva" class="w-10 h-10 rounded-full border border-white/80 flex items-center justify-center text-lavender-800 animate-bounce bg-white/75 backdrop-blur-sm shadow-sm">
                 <i class="fas fa-chevron-down text-sm"></i>
             </a>
         </div>
@@ -187,7 +192,7 @@
     <!-- ==========================================
          SECCIÓN 2: FECHA Y CUENTA REGRESIVA
          ========================================== -->
-    <section id="cuenta-regresiva" class="py-20 px-4 relative z-10 bg-lavender-100/60 border-y border-lavender-300/40">
+    <section id="cuenta-regresiva" class="py-20 px-4 relative z-10 bg-white/15 backdrop-blur-[2px] border-y border-white/40">
         <div class="max-w-3xl mx-auto text-center reveal">
             
             <div class="inline-block px-4 py-1 rounded-full bg-gold-100 border border-gold-400 text-gold-700 text-xs tracking-widest uppercase font-semibold mb-4 shadow-sm">
@@ -195,30 +200,30 @@
             </div>
 
             <h2 class="font-title text-3xl sm:text-4xl text-lavender-900 mb-2">Sábado 12 de Diciembre</h2>
-            <p class="font-serif text-xl sm:text-2xl text-lavender-600 italic font-semibold mb-8">2026 — 21:30 HS</p>
+            <p class="font-serif text-xl sm:text-2xl text-lavender-800 italic font-semibold mb-8">2026 — 21:30 HS</p>
 
             <!-- Contador Regresivo Grid -->
             <div class="grid grid-cols-4 gap-2 sm:gap-4 max-w-lg mx-auto mb-10">
-                <div class="bg-magic-card p-3 sm:p-4 rounded-2xl border border-lavender-300/60 box-shadow-subtle">
+                <div class="bg-magic-card p-3 sm:p-4 rounded-2xl border border-white/80 box-shadow-subtle">
                     <span id="days" class="font-title text-2xl sm:text-4xl text-lavender-600 font-bold block">00</span>
                     <span class="text-[10px] sm:text-xs tracking-widest uppercase text-lavender-800 font-medium">Días</span>
                 </div>
-                <div class="bg-magic-card p-3 sm:p-4 rounded-2xl border border-lavender-300/60 box-shadow-subtle">
+                <div class="bg-magic-card p-3 sm:p-4 rounded-2xl border border-white/80 box-shadow-subtle">
                     <span id="hours" class="font-title text-2xl sm:text-4xl text-lavender-600 font-bold block">00</span>
                     <span class="text-[10px] sm:text-xs tracking-widest uppercase text-lavender-800 font-medium">Hs</span>
                 </div>
-                <div class="bg-magic-card p-3 sm:p-4 rounded-2xl border border-lavender-300/60 box-shadow-subtle">
+                <div class="bg-magic-card p-3 sm:p-4 rounded-2xl border border-white/80 box-shadow-subtle">
                     <span id="minutes" class="font-title text-2xl sm:text-4xl text-lavender-600 font-bold block">00</span>
                     <span class="text-[10px] sm:text-xs tracking-widest uppercase text-lavender-800 font-medium">Min</span>
                 </div>
-                <div class="bg-magic-card p-3 sm:p-4 rounded-2xl border border-lavender-300/60 box-shadow-subtle">
+                <div class="bg-magic-card p-3 sm:p-4 rounded-2xl border border-white/80 box-shadow-subtle">
                     <span id="seconds" class="font-title text-2xl sm:text-4xl text-lavender-600 font-bold block">00</span>
                     <span class="text-[10px] sm:text-xs tracking-widest uppercase text-lavender-800 font-medium">Seg</span>
                 </div>
             </div>
 
             <!-- Botón Agregar al Calendario -->
-            <a id="addToCalendarBtn" href="#" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white border border-lavender-400 text-lavender-800 font-medium text-sm shadow-sm hover:bg-lavender-100 transition-all active:scale-95">
+            <a id="addToCalendarBtn" href="#" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/95 border border-lavender-400 text-lavender-800 font-medium text-sm shadow-sm hover:bg-white transition-all active:scale-95">
                 <i class="far fa-calendar-plus text-gold-600"></i> Agendar en Google Calendar
             </a>
 
@@ -228,18 +233,18 @@
     <!-- ==========================================
          SECCIÓN 3: UBICACIÓN Y CÓMO LLEGAR
          ========================================== -->
-    <section class="py-20 px-4 relative z-10">
+    <section class="py-20 px-4 relative z-10 bg-transparent">
         <div class="max-w-3xl mx-auto text-center reveal">
             
-            <div class="w-14 h-14 rounded-full bg-lavender-100 border border-lavender-400 text-lavender-600 flex items-center justify-center mx-auto mb-6 text-xl shadow-sm">
+            <div class="w-14 h-14 rounded-full bg-white/90 border border-lavender-400 text-lavender-600 flex items-center justify-center mx-auto mb-6 text-xl shadow-sm">
                 <i class="fas fa-map-marker-alt"></i>
             </div>
 
             <h2 class="font-title text-3xl sm:text-4xl text-lavender-900 mb-2">Ubicación de la Fiesta</h2>
-            <p class="font-serif text-lg text-lavender-600 italic mb-6">¡Te espero para celebrar juntos!</p>
+            <p class="font-serif text-lg text-lavender-900 italic font-medium mb-6">¡Te espero para celebrar juntos!</p>
 
             <!-- Card de Información del Salón -->
-            <div class="bg-magic-card rounded-3xl p-6 sm:p-8 border border-lavender-300/70 box-shadow-magic max-w-xl mx-auto mb-8 relative overflow-hidden">
+            <div class="bg-magic-card rounded-3xl p-6 sm:p-8 border border-white/80 box-shadow-magic max-w-xl mx-auto mb-8 relative overflow-hidden">
                 <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-gold-300/30 rounded-full blur-2xl"></div>
                 <div class="absolute -left-10 -top-10 w-32 h-32 bg-blush-400/20 rounded-full blur-2xl"></div>
                 
@@ -257,7 +262,7 @@
             </div>
 
             <!-- Mapa Embebido Funcional -->
-            <div class="rounded-3xl overflow-hidden border border-lavender-300/70 box-shadow-subtle max-w-xl mx-auto h-64 bg-slate-100 relative">
+            <div class="rounded-3xl overflow-hidden border border-white/80 box-shadow-subtle max-w-xl mx-auto h-64 bg-slate-100 relative">
                 <iframe id="gmapsIframe" class="w-full h-full border-0" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Circulo%20de%20Oficiales%20de%20la%20Policia%20Garupa%20Misiones&t=&z=16&ie=UTF8&iwloc=&output=embed">
                 </iframe>
             </div>
@@ -268,11 +273,11 @@
     <!-- ==========================================
          SECCIÓN EXTRA: DRESS CODE & CRONOGRAMA
          ========================================== -->
-    <section class="py-16 px-4 bg-lavender-100/50 border-y border-lavender-300/40 relative z-10">
+    <section class="py-16 px-4 bg-white/15 backdrop-blur-[2px] border-y border-white/40 relative z-10">
         <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 reveal">
             
             <!-- Dress Code Card -->
-            <div class="bg-magic-card p-6 sm:p-8 rounded-3xl border border-lavender-300/70 text-center flex flex-col items-center justify-center">
+            <div class="bg-magic-card p-6 sm:p-8 rounded-3xl border border-white/80 box-shadow-subtle text-center flex flex-col items-center justify-center">
                 <div class="w-12 h-12 rounded-full bg-blush-100 text-blush-500 flex items-center justify-center text-xl mb-4 border border-blush-400">
                     <i class="fas fa-user-tie"></i>
                 </div>
@@ -284,7 +289,7 @@
             </div>
 
             <!-- Cronograma Express -->
-            <div class="bg-magic-card p-6 sm:p-8 rounded-3xl border border-lavender-300/70">
+            <div class="bg-magic-card p-6 sm:p-8 rounded-3xl border border-white/80 box-shadow-subtle">
                 <h3 class="font-title text-2xl text-lavender-900 font-bold mb-6 text-center">Itinerario de la Noche</h3>
                 <ul class="space-y-4 text-sm text-lavender-900">
                     <li class="flex items-center gap-4">
@@ -316,7 +321,7 @@
     <!-- ==========================================
          SECCIÓN 4: SECCIÓN DE REGALOS (MERCADO PAGO)
          ========================================== -->
-    <section class="py-20 px-4 relative z-10">
+    <section class="py-20 px-4 relative z-10 bg-transparent">
         <div class="max-w-2xl mx-auto text-center reveal">
             
             <div class="w-14 h-14 rounded-full bg-gold-100 border border-gold-400 text-gold-600 flex items-center justify-center mx-auto mb-6 text-xl shadow-sm">
@@ -324,12 +329,12 @@
             </div>
 
             <h2 class="font-title text-3xl sm:text-4xl text-lavender-900 mb-4">Muestra de Cariño</h2>
-            <p class="font-serif italic text-lg text-lavender-800 leading-relaxed mb-8 px-4">
+            <p class="font-serif italic text-lg text-lavender-900 font-medium leading-relaxed mb-8 px-4">
                 "Tu presencia es mi mejor regalo y el recuerdo más bonito. Si deseás hacerme un obsequio para ayudar a cumplir mis sueños, podés hacerlo a través de transferencia bancaria."
             </p>
 
             <!-- Card Datos Mercado Pago / Cuenta -->
-            <div class="bg-magic-card rounded-3xl p-6 sm:p-8 border border-lavender-300/80 box-shadow-magic relative text-left">
+            <div class="bg-magic-card rounded-3xl p-6 sm:p-8 border border-white/80 box-shadow-magic relative text-left">
                 
                 <div class="flex items-center justify-between mb-6 pb-4 border-b border-lavender-200">
                     <div class="flex items-center gap-3">
@@ -344,7 +349,7 @@
                 </div>
 
                 <!-- Fila Alias -->
-                <div class="mb-5 bg-white/85 p-4 rounded-2xl border border-lavender-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="mb-5 bg-white/90 p-4 rounded-2xl border border-lavender-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                         <span class="text-xs uppercase font-semibold tracking-wider text-lavender-600 block mb-1">Alias MP</span>
                         <span id="aliasText" class="font-mono text-base font-bold text-lavender-900 select-all">unamas.juank.mp</span>
@@ -355,7 +360,7 @@
                 </div>
 
                 <!-- Fila CVU -->
-                <div class="mb-6 bg-white/85 p-4 rounded-2xl border border-lavender-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="mb-6 bg-white/90 p-4 rounded-2xl border border-lavender-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                         <span class="text-xs uppercase font-semibold tracking-wider text-lavender-600 block mb-1">CVU</span>
                         <span id="cvuText" class="font-mono text-sm font-bold text-lavender-900 break-all select-all">0000003100084395160978</span>
@@ -378,7 +383,7 @@
     <!-- ==========================================
          SECCIÓN 5: RSVP / CONFIRMACIÓN DE ASISTENCIA
          ========================================== -->
-    <section id="rsvp" class="py-20 px-4 bg-lavender-100/60 border-t border-lavender-300/40 relative z-10">
+    <section id="rsvp" class="py-20 px-4 bg-white/15 backdrop-blur-[2px] border-t border-white/40 relative z-10">
         <div class="max-w-2xl mx-auto text-center reveal">
             
             <div class="w-14 h-14 rounded-full bg-blush-100 border border-blush-400 text-blush-500 flex items-center justify-center mx-auto mb-6 text-xl shadow-sm">
@@ -386,10 +391,10 @@
             </div>
 
             <h2 class="font-title text-3xl sm:text-4xl text-lavender-900 mb-2">Confirmación de Asistencia</h2>
-            <p class="font-serif italic text-lg text-lavender-600 mb-8">Por favor confirmá tu presencia antes del 25 de Noviembre</p>
+            <p class="font-serif italic text-lg text-lavender-900 font-medium mb-8">Por favor confirmá tu presencia antes del 25 de Noviembre</p>
 
             <!-- Formulario RSVP Mobile-Friendly -->
-            <form id="rsvpForm" class="bg-magic-card p-6 sm:p-10 rounded-3xl border border-lavender-300/80 box-shadow-magic text-left space-y-5">
+            <form id="rsvpForm" class="bg-magic-card p-6 sm:p-10 rounded-3xl border border-white/80 box-shadow-magic text-left space-y-5">
                 
                 <!-- Nombre y Apellido -->
                 <div>
@@ -467,7 +472,7 @@
             </form>
 
             <!-- Mensaje de Éxito / Feedback -->
-            <div id="rsvpSuccess" class="hidden mt-6 p-6 rounded-3xl bg-lavender-100 border border-lavender-400 text-lavender-900">
+            <div id="rsvpSuccess" class="hidden mt-6 p-6 rounded-3xl bg-white/90 border border-lavender-400 text-lavender-900">
                 <i class="fas fa-check-circle text-4xl text-gold-600 mb-2 block"></i>
                 <h3 class="font-title text-2xl font-bold">¡Muchas gracias por confirmar!</h3>
                 <p class="text-sm mt-1">Tu respuesta quedó registrada con éxito en nuestra lista. ¡Nos vemos muy pronto para celebrar!</p>
@@ -507,54 +512,247 @@
             venueAddress: "Colectora Ruta 12 y Caraguatay, Garupá, Misiones"
         };
 
-        // Partículas mágicas
+        // ==========================================
+        // A. ANILLO DORADO GIRATORIO EN EL TÍTULO PRINCIPAL
+        // ==========================================
+        const heroCanvas = document.getElementById('heroRingCanvas');
+        const heroCtx = heroCanvas.getContext('2d');
+        let heroW, heroH, ringRadius;
+        let dustParticles = [];
+
+        function resizeHeroRing() {
+            const container = heroCanvas.parentElement;
+            const size = Math.min(container.offsetWidth, 560);
+            heroW = heroCanvas.width = size;
+            heroH = heroCanvas.height = size;
+            ringRadius = size * 0.41;
+        }
+        window.addEventListener('resize', resizeHeroRing);
+        resizeHeroRing();
+
+        class MagicDust {
+            constructor(x, y) {
+                const spread = (Math.random() - 0.5) * 24;
+                const angle = Math.random() * Math.PI * 2;
+                this.x = x + Math.cos(angle) * spread;
+                this.y = y + Math.sin(angle) * spread;
+                this.vx = (Math.random() - 0.5) * 0.35;
+                this.vy = (Math.random() - 0.5) * 0.35 - 0.12;
+                this.size = Math.random() * 1.9 + 0.6;
+                this.alpha = Math.random() * 0.6 + 0.4;
+                this.decay = Math.random() * 0.011 + 0.006;
+                this.isBright = Math.random() > 0.72;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.alpha -= this.decay;
+            }
+            draw() {
+                if (this.alpha <= 0) return;
+                heroCtx.save();
+                heroCtx.globalAlpha = Math.max(0, this.alpha);
+                heroCtx.fillStyle = this.isBright ? '#FFFDF0' : '#FFD54F';
+                if (this.isBright) {
+                    heroCtx.shadowBlur = 5;
+                    heroCtx.shadowColor = '#FBC02D';
+                }
+                heroCtx.beginPath();
+                heroCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                heroCtx.fill();
+                heroCtx.restore();
+            }
+        }
+
+        let loopProgress = 0;
+
+        function animateHeroRing() {
+            heroCtx.clearRect(0, 0, heroW, heroH);
+            const cx = heroW / 2;
+            const cy = heroH / 2;
+
+            loopProgress += 0.0042;
+            if (loopProgress >= 1) {
+                loopProgress = 0;
+            }
+
+            const drawPhaseEnd = 0.68;
+
+            if (loopProgress <= drawPhaseEnd) {
+                const t = loopProgress / drawPhaseEnd;
+                const eased = -(Math.cos(Math.PI * t) - 1) / 2;
+                const currentAngle = -Math.PI / 2 + eased * Math.PI * 2;
+
+                let headAlpha = 1;
+                if (t < 0.1) headAlpha = t / 0.1;
+                else if (t > 0.85) headAlpha = (1 - t) / 0.15;
+
+                const tailLength = 0.75;
+                const segments = 24;
+                for (let i = 0; i < segments; i++) {
+                    const segStart = currentAngle - (tailLength * (i + 1)) / segments;
+                    const segEnd = currentAngle - (tailLength * i) / segments;
+                    const segOpacity = (1 - i / segments) * 0.85 * headAlpha;
+
+                    heroCtx.save();
+                    heroCtx.beginPath();
+                    heroCtx.arc(cx, cy, ringRadius, segStart, segEnd);
+                    heroCtx.strokeStyle = `rgba(255, 224, 130, ${segOpacity})`;
+                    heroCtx.lineWidth = (1 - i / segments) * 3.5 + 0.5;
+                    heroCtx.lineCap = 'round';
+                    heroCtx.shadowBlur = 10;
+                    heroCtx.shadowColor = '#FBC02D';
+                    heroCtx.stroke();
+                    heroCtx.restore();
+                }
+
+                const headX = cx + Math.cos(currentAngle) * ringRadius;
+                const headY = cy + Math.sin(currentAngle) * ringRadius;
+
+                if (headAlpha > 0.2) {
+                    for (let i = 0; i < 4; i++) {
+                        dustParticles.push(new MagicDust(headX, headY));
+                    }
+
+                    heroCtx.save();
+                    heroCtx.globalAlpha = headAlpha;
+                    heroCtx.fillStyle = '#FFFDF0';
+                    heroCtx.shadowBlur = 16;
+                    heroCtx.shadowColor = '#FFD54F';
+                    heroCtx.beginPath();
+                    heroCtx.arc(headX, headY, 3, 0, Math.PI * 2);
+                    heroCtx.fill();
+                    heroCtx.restore();
+                }
+            }
+
+            for (let i = dustParticles.length - 1; i >= 0; i--) {
+                dustParticles[i].update();
+                dustParticles[i].draw();
+                if (dustParticles[i].alpha <= 0) {
+                    dustParticles.splice(i, 1);
+                }
+            }
+
+            requestAnimationFrame(animateHeroRing);
+        }
+        animateHeroRing();
+
+        // ==========================================
+        // B. PARTÍCULAS Y DESTELLOS DE FONDO
+        // ==========================================
         const canvas = document.getElementById('sparkleCanvas');
         const ctx = canvas.getContext('2d');
+        let width, height;
+        let dots = [];
         let sparkles = [];
-        const sparkleColors = ["#FFD54F", "#FBC02D", "#B57EEB", "#F48FB1"];
 
         function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
         }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        class Sparkle {
-            constructor() { this.reset(); }
-            reset() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2.8 + 0.8;
-                this.alpha = Math.random();
-                this.speed = Math.random() * 0.012 + 0.005;
-                this.dir = Math.random() > 0.5 ? 1 : -1;
-                this.color = sparkleColors[Math.floor(Math.random() * sparkleColors.length)];
+        class Dot {
+            constructor() {
+                this.reset(true);
+            }
+            reset(initial = false) {
+                this.x = Math.random() * width;
+                this.y = initial ? Math.random() * height : height + 10;
+                this.radius = Math.random() * 4.5 + 1.5;
+                this.speedY = -(Math.random() * 0.45 + 0.15);
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.alpha = Math.random() * 0.5 + 0.45;
             }
             update() {
-                this.alpha += this.speed * this.dir;
-                if (this.alpha >= 1 || this.alpha <= 0) this.dir *= -1;
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.y < -10 || this.x < -10 || this.x > width + 10) {
+                    this.reset(false);
+                }
             }
             draw() {
                 ctx.save();
-                ctx.globalAlpha = Math.max(0, this.alpha);
-                ctx.fillStyle = this.color;
-                ctx.shadowBlur = 6;
-                ctx.shadowColor = this.color;
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
                 ctx.fill();
                 ctx.restore();
             }
         }
 
-        for (let i = 0; i < 55; i++) sparkles.push(new Sparkle());
+        class StarSparkle {
+            constructor() {
+                this.reset(true);
+            }
+            reset(initial = false) {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.maxSize = Math.random() * 11 + 6;
+                this.progress = initial ? Math.random() : 0;
+                this.speed = Math.random() * 0.008 + 0.005;
+                this.twinkleFreq = Math.random() * 14 + 10;
+            }
+            update() {
+                this.progress += this.speed;
+                if (this.progress >= 1) {
+                    this.reset(false);
+                }
+            }
+            draw() {
+                const envelope = Math.sin(this.progress * Math.PI);
+                const flicker = 0.72 + 0.28 * Math.sin(this.progress * Math.PI * this.twinkleFreq);
+                const currentSize = this.maxSize * envelope * flicker;
+                const alpha = envelope * flicker;
+
+                if (currentSize <= 0.2) return;
+
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = 'rgba(255, 255, 255, 0.9)';
+                ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+
+                const outer = currentSize;
+                const inner = currentSize * 0.16;
+
+                ctx.beginPath();
+                ctx.moveTo(0, -outer);
+                ctx.quadraticCurveTo(inner, -inner, outer, 0);
+                ctx.quadraticCurveTo(inner, inner, 0, outer);
+                ctx.quadraticCurveTo(-inner, inner, -outer, 0);
+                ctx.quadraticCurveTo(-inner, -inner, 0, -outer);
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function initParticles() {
+            const area = width * height;
+            const dotCount = Math.floor(area / 45000);
+            const sparkleCount = Math.floor(area / 65000);
+
+            dots = Array.from({ length: Math.max(15, dotCount) }, () => new Dot());
+            sparkles = Array.from({ length: Math.max(12, sparkleCount) }, () => new StarSparkle());
+        }
 
         function animateSparkles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            sparkles.forEach(s => { s.update(); s.draw(); });
+            ctx.clearRect(0, 0, width, height);
+            for (const dot of dots) {
+                dot.update();
+                dot.draw();
+            }
+            for (const sparkle of sparkles) {
+                sparkle.update();
+                sparkle.draw();
+            }
             requestAnimationFrame(animateSparkles);
         }
+
+        initParticles();
         animateSparkles();
 
         // Cuenta regresiva
