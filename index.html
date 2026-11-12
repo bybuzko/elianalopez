@@ -252,21 +252,21 @@
                 <div class="absolute -left-10 -top-10 w-32 h-32 bg-blush-400/20 rounded-full blur-2xl"></div>
                 
                 <h3 id="venueName" class="font-title text-2xl text-lavender-900 font-bold mb-2">
-                    Salón de Eventos "Palacio Real"
+                    Círculo de Oficiales de la Policía
                 </h3>
                 <p id="venueAddress" class="text-lavender-800 text-sm sm:text-base mb-6 leading-relaxed">
-                    Av. de los Ilustres 1450, Ciudad Autónoma de Buenos Aires
+                    Colectora Ruta 12 y Caraguatay, Garupá, Misiones
                 </p>
 
                 <!-- Botón Principal Google Maps -->
-                <a id="gmapsLink" href="https://www.google.com/maps/search/?api=1&query=Av.+de+los+Ilustres+1450,+Buenos+Aires" target="_blank" rel="noopener" class="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-lavender-600 to-lavender-800 text-white font-semibold text-sm shadow-md hover:from-lavender-500 hover:to-lavender-800 transition-all duration-300 transform active:scale-95 gap-3">
+                <a id="gmapsLink" href="https://maps.app.goo.gl/RJdTcPxEkVnHheLt9" target="_blank" rel="noopener" class="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-lavender-600 to-lavender-800 text-white font-semibold text-sm shadow-md hover:from-lavender-500 hover:to-lavender-800 transition-all duration-300 transform active:scale-95 gap-3">
                     <i class="fas fa-directions text-gold-300 text-lg"></i> Abrir en Google Maps / GPS
                 </a>
             </div>
 
-            <!-- Mapa Embebido / Tarjeta Visual -->
+            <!-- Mapa Embebido Funcional -->
             <div class="rounded-3xl overflow-hidden border border-lavender-300/70 box-shadow-subtle max-w-xl mx-auto h-64 bg-slate-100 relative">
-                <iframe id="gmapsIframe" class="w-full h-full border-0" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3284.016887889547!2d-58.381592!3d-34.603722!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzTCsDM2JzEzLjQiUyA1OMKwMjInNTMuNyJX!5e0!3m2!1ses!2sar!4v1620000000000!5m2!1ses!2sar">
+                <iframe id="gmapsIframe" class="w-full h-full border-0" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Circulo%20de%20Oficiales%20de%20la%20Policia%20Garupa%20Misiones&t=&z=16&ie=UTF8&iwloc=&output=embed">
                 </iframe>
             </div>
 
@@ -373,9 +373,9 @@
                     </button>
                 </div>
 
-                <!-- Botón Mercado Pago Directo -->
-                <a href="https://www.mercadopago.com.ar/" target="_blank" class="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-semibold text-sm transition-all shadow-sm active:scale-95">
-                    <i class="fas fa-external-link-alt"></i> Abrir Aplicación Mercado Pago
+                <!-- Botón Mercado Pago Directo (Link de Pago) -->
+                <a href="https://link.mercadopago.com.ar/amarillacomunicacion" target="_blank" rel="noopener" class="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-semibold text-sm transition-all shadow-sm active:scale-95">
+                    <i class="fas fa-gift"></i> Enviar Regalo por Mercado Pago
                 </a>
 
             </div>
@@ -628,9 +628,9 @@
            ========================================== */
         const EVENT_CONFIG = {
             targetDate: new Date('2026-12-12T21:30:00'),
-            venueName: "Salón de Eventos Palacio Real",
-            venueAddress: "Av. de los Ilustres 1450, Buenos Aires",
-            googleMapsQuery: "Av. de los Ilustres 1450, Buenos Aires",
+            venueName: "Círculo de Oficiales de la Policía",
+            venueAddress: "Colectora Ruta 12 y Caraguatay, Garupá, Misiones",
+            googleMapsQuery: "Circulo de Oficiales de la Policia Garupa Misiones",
             adminPin: "1515",
             googleSheetsWebhookUrl: "" 
         };
