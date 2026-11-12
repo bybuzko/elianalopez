@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Invitados | 15 Años Eliana</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: { 300: '#FFE082', 400: '#FFD54F', 500: '#FBC02D', 600: '#F57F17' },
+                        lavender: { 50: '#FAF7FF', 100: '#F3EBFF', 200: '#E5D4FA', 500: '#9B51E0', 600: '#7B32C2', 900: '#271066' }
+                    },
+                    fontFamily: {
+                        title: ['Playfair Display', 'serif'],
+                        sans: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-lavender-50 text-lavender-900 font-sans min-h-screen">
+
+    <!-- Pantalla de Login con PIN -->
+    <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-3xl shadow-xl border border-lavender-200 max-w-sm w-full text-center space-y-5">
+            <div class="w-16 h-16 rounded-full bg-lavender-100 text-lavender-600 flex items-center justify-center mx-auto text-2xl">
+                <i class="fas fa-lock"></i>
+            </div>
+            <div>
+                <h1 class="font-title text-2xl font-bold text-lavender-900">Lista de Invitados</h1>
+                <p class="text-xs text-slate-500 mt-1">15 Años de Eliana — Acceso Organizadores</p>
+            </div>
+            <form id="pinForm" class="space-y-3">
+                <input type="password" id="pinInput" inputmode="numeric" placeholder="Ingresá el PIN" required class="w-full px-4 py-3 rounded-xl border border-lavender-300 text-center font-mono text-xl tracking-widest focus:ring-2 focus:ring-lavender-500 outline-none">
+                <button type="submit" class="w-full py-3 rounded-xl bg-lavender-600 hover:bg-lavender-500 text-white font-bold text-sm transition-all shadow-md">
+                    Ingresar al Panel
+                </button>
+            </form>
+            <p id="pinError" class="text-xs text-rose-600 font-semibold hidden">Clave incorrecta. Intentá nuevamente.</p>
+        </div>
+    </div>
+
+    <!-- Panel Principal -->
+    <div id="adminDashboard" class="hidden max-w-5xl mx-auto p-4 sm:p-8 space-y-6">
+        
+        <!-- Encabezado -->
+        <div class="bg-lavender-900 text-white p-6 rounded-3xl shadow-lg flex flex-col sm:flex-row justify-between items-center gap-4 border-b-4 border-gold-400">
+            <div class="flex items-center gap-3 text-center sm:text-left">
+                <div class="w-12 h-12 rounded-2xl bg-gold-400 text-lavender-900 flex items-center justify-center font-bold text-xl shrink-0">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <div>
+                    <h1 class="font-title text-2xl font-bold text-gold-300">Confirmados — 15 de Eliana</h1>
+                    <p class="text-xs text-lavender-200 flex items-center justify-center sm:justify-start gap-1.5 mt-0.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Sincronizado en tiempo real
+                    </p>
+                </div>
+            </div>
+            <button id="exportExcelBtn" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all active:scale-95">
+                <i class="fas fa-file-excel text-base"></i> Descargar Excel (.CSV)
+            </button>
+        </div>
+
+        <!-- Tarjetas de Resumen -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+            <div class="bg-white p-4 rounded-2xl border border-lavender-200 shadow-sm">
+                <span class="text-[11px] uppercase font-bold text-slate-500 block">Total Personas</span>
+                <span id="statTotalGuests" class="text-3xl font-bold text-lavender-600 mt-1 block">0</span>
+                <span class="text-[10px] text-slate-400">Lugares confirmados</span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-lavender-200 shadow-sm">
+                <span class="text-[11px] uppercase font-bold text-slate-500 block">Confirmaciones</span>
+                <span id="statConfirmed" class="text-3xl font-bold text-emerald-600 mt-1 block">0</span>
+                <span class="text-[10px] text-slate-400">Grupos / Invitados</span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-lavender-200 shadow-sm">
+                <span class="text-[11px] uppercase font-bold text-slate-500 block">No Asisten</span>
+                <span id="statDeclined" class="text-3xl font-bold text-rose-500 mt-1 block">0</span>
+                <span class="text-[10px] text-slate-400">Avisaron ausencia</span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-lavender-200 shadow-sm">
+                <span class="text-[11px] uppercase font-bold text-slate-500 block">Menú Especial</span>
+                <span id="statSpecialMenu" class="text-3xl font-bold text-sky-600 mt-1 block">0</span>
+                <span class="text-[10px] text-slate-400">TACC / Vegano / Otros</span>
+            </div>
+        </div>
+
+        <!-- Buscador -->
+        <div class="bg-white p-4 rounded-2xl border border-lavender-200 shadow-sm">
+            <div class="relative">
+                <i class="fas fa-search absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
+                <input type="text" id="searchInput" placeholder="Buscar invitado por nombre, menú o canción..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-lavender-500 outline-none">
+            </div>
+        </div>
+
+        <!-- Tabla de Invitados -->
+        <div class="bg-white rounded-3xl border border-lavender-200 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs sm:text-sm">
+                    <thead class="bg-lavender-100 text-lavender-900 uppercase text-[11px] font-bold border-b border-lavender-200">
+                        <tr>
+                            <th class="p-4">Invitado / Familia</th>
+                            <th class="p-4">Estado</th>
+                            <th class="p-4 text-center">Personas</th>
+                            <th class="p-4">Menú</th>
+                            <th class="p-4">Canción y Mensaje</th>
+                            <th class="p-4">Fecha</th>
+                            <th class="p-4 text-center">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="guestTableBody" class="divide-y divide-slate-100">
+                        <tr>
+                            <td colspan="7" class="p-8 text-center text-slate-400">Cargando lista desde la nube...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, query, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const ADMIN_PIN = "1515";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDVWAbr-x2LscQINp6NeNmZzsbW9jqsU9I",
+            authDomain: "mis-15-eliana-lopez.firebaseapp.com",
+            projectId: "mis-15-eliana-lopez",
+            storageBucket: "mis-15-eliana-lopez.firebasestorage.app",
+            messagingSenderId: "446826221919",
+            appId: "1:446826221919:web:347c723a9c5522496726ea"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        let allGuests = [];
+
+        // Control de PIN
+        document.getElementById('pinForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const val = document.getElementById('pinInput').value.trim();
+            if (val === ADMIN_PIN) {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('adminDashboard').classList.remove('hidden');
+                listenToGuests();
+            } else {
+                document.getElementById('pinError').classList.remove('hidden');
+            }
+        });
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+
+        // Escuchar base de datos en tiempo real
+        function listenToGuests() {
+            const q = query(collection(db, "invitados"), orderBy("createdAt", "desc"));
+            onSnapshot(q, (snapshot) => {
+                allGuests = [];
+                snapshot.forEach((docSnap) => {
+                    allGuests.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                renderTable(allGuests);
+            });
+        }
+
+        function renderTable(guestsList) {
+            const tbody = document.getElementById('guestTableBody');
+            tbody.innerHTML = '';
+
+            let confirmedGroups = 0;
+            let totalPeople = 0;
+            let declinedGroups = 0;
+            let specialMenus = 0;
+
+            allGuests.forEach(g => {
+                if (g.attendance === "Confirmado") {
+                    confirmedGroups++;
+                    totalPeople += Number(g.count || 1);
+                    if (g.menu && g.menu !== "Ninguno") specialMenus++;
+                } else {
+                    declinedGroups++;
+                }
+            });
+
+            document.getElementById('statTotalGuests').innerText = totalPeople;
+            document.getElementById('statConfirmed').innerText = confirmedGroups;
+            document.getElementById('statDeclined').innerText = declinedGroups;
+            document.getElementById('statSpecialMenu').innerText = specialMenus;
+
+            if (guestsList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-400">Todavía no hay confirmaciones registradas.</td></tr>`;
+                return;
+            }
+
+            guestsList.forEach(g => {
+                const isConf = g.attendance === "Confirmado";
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-lavender-50/50 transition-colors";
+                tr.innerHTML = `
+                    <td class="p-4 font-bold text-lavender-900">${escapeHtml(g.name)}</td>
+                    <td class="p-4">
+                        <span class="px-2.5 py-1 rounded-full text-[11px] font-bold ${isConf ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                            ${escapeHtml(g.attendance)}
+                        </span>
+                    </td>
+                    <td class="p-4 text-center font-bold text-base">${isConf ? g.count : 0}</td>
+                    <td class="p-4 text-slate-600">${escapeHtml(g.menu || 'Ninguno')}</td>
+                    <td class="p-4 max-w-xs">
+                        ${g.song && g.song !== '-' ? `<span class="block text-xs text-lavender-700 font-medium">🎵 ${escapeHtml(g.song)}</span>` : ''}
+                        ${g.message && g.message !== '-' ? `<span class="block text-xs italic text-slate-500 mt-0.5">💬 "${escapeHtml(g.message)}"</span>` : ''}
+                        ${(!g.song || g.song === '-') && (!g.message || g.message === '-') ? '<span class="text-slate-300">-</span>' : ''}
+                    </td>
+                    <td class="p-4 text-slate-400 text-xs whitespace-nowrap">${escapeHtml(g.date || '')}</td>
+                    <td class="p-4 text-center">
+                        <button data-id="${g.id}" data-name="${escapeHtml(g.name)}" class="delete-btn text-slate-400 hover:text-rose-600 p-2 transition-colors" title="Eliminar registro">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Eventos para eliminar registros (útil para borrar pruebas)
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const id = btn.getAttribute('data-id');
+                    const name = btn.getAttribute('data-name');
+                    if (confirm(`¿Eliminar el registro de "${name}"?`)) {
+                        await deleteDoc(doc(db, "invitados", id));
+                    }
+                });
+            });
+        }
+
+        // Filtro de búsqueda
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = allGuests.filter(g => 
+                (g.name || '').toLowerCase().includes(term) ||
+                (g.menu || '').toLowerCase().includes(term) ||
+                (g.song || '').toLowerCase().includes(term) ||
+                (g.message || '').toLowerCase().includes(term)
+            );
+            renderTable(filtered);
+        });
+
+        // Exportar a Excel (.CSV)
+        document.getElementById('exportExcelBtn').addEventListener('click', () => {
+            if (allGuests.length === 0) {
+                alert("No hay datos para descargar todavía.");
+                return;
+            }
+
+            let csv = "\uFEFFNombre;Asistencia;Cantidad Personas;Menu Especial;Cancion Sugerida;Mensaje;Fecha Registro\n";
+            allGuests.forEach(g => {
+                const row = [
+                    `"${(g.name || '').replace(/"/g, '""')}"`,
+                    `"${g.attendance || ''}"`,
+                    g.attendance === "Confirmado" ? (g.count || 1) : 0,
+                    `"${g.menu || 'Ninguno'}"`,
+                    `"${(g.song || '-').replace(/"/g, '""')}"`,
+                    `"${(g.message || '-').replace(/"/g, '""')}"`,
+                    `"${g.date || ''}"`
+                ];
+                csv += row.join(";") + "\n";
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `Invitados_15_Eliana_${new Date().toISOString().slice(0,10)}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    </script>
+</body>
+</html>
