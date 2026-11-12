@@ -17,7 +17,6 @@
             theme: {
                 extend: {
                     colors: {
-                        // Dorado mágico del cabello de Rapunzel y la flor
                         gold: {
                             100: '#FFFDF0',
                             300: '#FFE082',
@@ -26,7 +25,6 @@
                             600: '#F57F17',
                             700: '#C66900',
                         },
-                        // Lavandas, Lilas y Violetas de su vestido y fondo
                         lavender: {
                             50: '#FAF7FF',
                             100: '#F3EBFF',
@@ -38,7 +36,6 @@
                             800: '#3D1E8E',
                             900: '#271066'
                         },
-                        // Rosa pastel de las mangas y detalles del vestido
                         blush: {
                             100: '#FCE4EC',
                             400: '#F48FB1',
@@ -63,7 +60,6 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
-        /* Custom Styles & Rapunzel Magic Shimmers */
         body {
             background-color: #FAF7FF;
             color: #271066;
@@ -90,7 +86,6 @@
             box-shadow: 0 4px 20px rgba(61, 30, 142, 0.06);
         }
 
-        /* Ambient Sparkles Background Canvas */
         #sparkleCanvas {
             position: fixed;
             top: 0;
@@ -101,7 +96,6 @@
             z-index: 1;
         }
 
-        /* Scroll reveal class */
         .reveal {
             opacity: 0;
             transform: translateY(30px);
@@ -112,7 +106,6 @@
             transform: translateY(0);
         }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -124,7 +117,6 @@
             border-radius: 3px;
         }
 
-        /* Glowing pulsation */
         @keyframes subtlePulse {
             0%, 100% { transform: scale(1); opacity: 0.9; }
             50% { transform: scale(1.05); opacity: 1; }
@@ -414,11 +406,11 @@
                     </label>
                     <div class="grid grid-cols-2 gap-3">
                         <label class="border border-lavender-300 bg-white p-3.5 rounded-xl flex items-center justify-center gap-2 cursor-pointer hover:border-lavender-500 transition-all">
-                            <input type="radio" name="attendance" value="Confirmado" checked class="accent-lavender-600">
+                            <input type="radio" name="attendance" value="Confirmado" checked onchange="toggleCompanionsVisibility()" class="accent-lavender-600">
                             <span class="text-sm font-medium text-lavender-900">¡Sí, ahí estaré! ✨</span>
                         </label>
                         <label class="border border-lavender-300 bg-white p-3.5 rounded-xl flex items-center justify-center gap-2 cursor-pointer hover:border-lavender-500 transition-all">
-                            <input type="radio" name="attendance" value="No Asiste" class="accent-lavender-600">
+                            <input type="radio" name="attendance" value="No Asiste" onchange="toggleCompanionsVisibility()" class="accent-lavender-600">
                             <span class="text-sm font-medium text-lavender-900">No podré asistir 😔</span>
                         </label>
                     </div>
@@ -439,7 +431,7 @@
                 </div>
 
                 <!-- Menú Especial / Preferencias -->
-                <div>
+                <div id="menuGroup">
                     <label class="block text-xs uppercase font-semibold text-lavender-900 tracking-wider mb-2">
                         Restricción Alimentaria / Menú Especial
                     </label>
@@ -469,7 +461,7 @@
                 </div>
 
                 <!-- Botón de Envío -->
-                <button type="submit" class="w-full py-4 rounded-2xl bg-gradient-to-r from-lavender-600 via-lavender-500 to-blush-500 text-white font-bold text-base shadow-lg hover:opacity-95 transition-all duration-300 active:scale-95">
+                <button type="submit" id="submitBtn" class="w-full py-4 rounded-2xl bg-gradient-to-r from-lavender-600 via-lavender-500 to-blush-500 text-white font-bold text-base shadow-lg hover:opacity-95 transition-all duration-300 active:scale-95">
                     <i class="fas fa-paper-plane mr-2 text-gold-300"></i> Confirmar Asistencia
                 </button>
             </form>
@@ -478,9 +470,9 @@
             <div id="rsvpSuccess" class="hidden mt-6 p-6 rounded-3xl bg-lavender-100 border border-lavender-400 text-lavender-900">
                 <i class="fas fa-check-circle text-4xl text-gold-600 mb-2 block"></i>
                 <h3 class="font-title text-2xl font-bold">¡Muchas gracias por confirmar!</h3>
-                <p class="text-sm mt-1">Tu respuesta quedó registrada con éxito. ¡Nos vemos muy pronto para celebrar!</p>
+                <p class="text-sm mt-1">Tu respuesta quedó registrada con éxito en nuestra lista. ¡Nos vemos muy pronto para celebrar!</p>
                 <button onclick="resetRsvpForm()" class="mt-4 px-4 py-2 text-xs bg-lavender-200 hover:bg-lavender-300 rounded-lg text-lavender-900 font-semibold transition-all">
-                    Modificar mi respuesta
+                    Enviar otra confirmación
                 </button>
             </div>
 
@@ -488,130 +480,16 @@
     </section>
 
     <!-- ==========================================
-         FOOTER & ACCESO AL PANEL DE CONTROL EXCEL
+         FOOTER LIMPIO (SIN ACCESO A PANEL)
          ========================================== -->
     <footer class="py-12 px-4 text-center bg-lavender-900 text-lavender-200 relative z-10">
         <div class="max-w-xl mx-auto space-y-4">
             <h3 class="font-script text-5xl text-gold-400">Eliana</h3>
             <p class="font-serif italic text-sm text-lavender-300">Mis 15 Años — 2026</p>
             <div class="w-12 h-[1px] bg-gold-400/50 mx-auto my-4"></div>
-            
             <p class="text-xs text-lavender-300">Diseñado con amor para una noche inolvidable.</p>
-
-            <!-- Botón discreto para Organizador (Control de Invitados) -->
-            <div class="pt-6">
-                <button onclick="openAdminModal()" class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gold-400/40 text-gold-300 hover:bg-gold-400/10 text-xs tracking-wider uppercase font-medium transition-all">
-                    <i class="fas fa-user-shield"></i> Panel de Organización / Excel
-                </button>
-            </div>
         </div>
     </footer>
-
-    <!-- ==========================================
-         MODAL ORGANIZADOR / CONTROL DE INVITADOS
-         ========================================== -->
-    <div id="adminModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
-            
-            <!-- Header Modal -->
-            <div class="p-6 bg-lavender-900 text-white flex justify-between items-center border-b border-gold-400/30">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-gold-400 text-lavender-900 flex items-center justify-center font-bold">
-                        <i class="fas fa-list-check text-lg"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-title text-xl font-bold text-gold-300">Control de Asistencia</h3>
-                        <p class="text-xs text-lavender-200">Panel exclusivo de la Quinceañera y Organizadores</p>
-                    </div>
-                </div>
-                <button onclick="closeAdminModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-sm transition-all">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-
-            <!-- Login PIN (si no está autenticado) -->
-            <div id="adminAuthSection" class="p-8 text-center space-y-4">
-                <i class="fas fa-lock text-4xl text-lavender-500 mb-2"></i>
-                <h4 class="font-title text-xl font-bold text-lavender-900">Ingrese Clave de Acceso</h4>
-                <p class="text-xs text-slate-500 max-w-xs mx-auto">La clave predeterminada es <code class="bg-slate-100 px-1 py-0.5 rounded font-mono text-lavender-700">1515</code></p>
-                <div class="max-w-xs mx-auto flex gap-2">
-                    <input type="password" id="adminPinInput" placeholder="PIN de 4 dígitos" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-center font-mono text-lg focus:ring-2 focus:ring-lavender-500 outline-none">
-                    <button onclick="verifyAdminPin()" class="px-6 py-2.5 rounded-xl bg-lavender-600 text-white font-bold text-sm hover:bg-lavender-700 transition-all">Entrar</button>
-                </div>
-                <p id="pinError" class="text-xs text-red-500 hidden">Clave incorrecta. Intentá con 1515.</p>
-            </div>
-
-            <!-- Contenido Principal del Panel (Se revela al ingresar PIN) -->
-            <div id="adminContentSection" class="hidden flex-1 overflow-y-auto p-6 space-y-6">
-                
-                <!-- Métricas Rápidas -->
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <div class="bg-lavender-50 p-4 rounded-2xl border border-lavender-200">
-                        <span class="text-xs uppercase font-semibold text-lavender-700 block mb-1">Confirmados</span>
-                        <span id="statConfirmed" class="text-2xl font-bold text-emerald-600">0</span>
-                    </div>
-                    <div class="bg-lavender-50 p-4 rounded-2xl border border-lavender-200">
-                        <span class="text-xs uppercase font-semibold text-lavender-700 block mb-1">Total Personas</span>
-                        <span id="statTotalGuests" class="text-2xl font-bold text-lavender-700">0</span>
-                    </div>
-                    <div class="bg-lavender-50 p-4 rounded-2xl border border-lavender-200">
-                        <span class="text-xs uppercase font-semibold text-lavender-700 block mb-1">No Asisten</span>
-                        <span id="statDeclined" class="text-2xl font-bold text-rose-500">0</span>
-                    </div>
-                    <div class="bg-lavender-50 p-4 rounded-2xl border border-lavender-200">
-                        <span class="text-xs uppercase font-semibold text-lavender-700 block mb-1">Menú Especial</span>
-                        <span id="statSpecialMenu" class="text-2xl font-bold text-sky-600">0</span>
-                    </div>
-                </div>
-
-                <!-- Toolbar & Exportación -->
-                <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
-                    <div class="relative flex-1">
-                        <i class="fas fa-search absolute left-3 top-3 text-slate-400 text-xs"></i>
-                        <input type="text" id="adminSearchInput" onkeyup="filterAdminTable()" placeholder="Buscar por nombre..." class="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-lavender-500 outline-none">
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="exportToExcel()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition-all">
-                            <i class="fas fa-file-excel text-sm"></i> Descargar Excel (.CSV)
-                        </button>
-                        <button onclick="clearAllGuests()" class="px-3 py-2 rounded-xl border border-rose-300 text-rose-600 hover:bg-rose-50 font-semibold text-xs transition-all" title="Borrar lista">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Tabla de Invitados -->
-                <div class="border border-slate-200 rounded-2xl overflow-x-auto shadow-sm">
-                    <table class="w-full text-left text-xs">
-                        <thead class="bg-slate-100 text-slate-700 uppercase font-bold border-b border-slate-200">
-                            <tr>
-                                <th class="p-3">Nombre</th>
-                                <th class="p-3">Estado</th>
-                                <th class="p-3">Personas</th>
-                                <th class="p-3">Menú</th>
-                                <th class="p-3">Música / Mensaje</th>
-                                <th class="p-3">Fecha</th>
-                            </tr>
-                        </thead>
-                        <tbody id="guestTableBody" class="divide-y divide-slate-100">
-                            <!-- Inyectado por JS -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Pestaña Informativa para Vincular Google Sheets (Apps Script Webhook) -->
-                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs space-y-2">
-                    <h5 class="font-bold text-slate-800 flex items-center gap-2">
-                        <i class="fab fa-google text-emerald-600"></i> ¿Querés sincronizar directamente con Google Sheets en tiempo real?
-                    </h5>
-                    <p class="text-slate-600">
-                        En el archivo HTML podés configurar tu URL de Google Apps Script Webhook en la variable <code class="bg-white px-1 border rounded text-lavender-700 font-mono">GOOGLE_SHEETS_WEBHOOK_URL</code> para que cada confirmación se guarde automáticamente en tu planilla en la nube.
-                    </p>
-                </div>
-
-            </div>
-        </div>
-    </div>
 
     <!-- Custom Toast Alert Notification -->
     <div id="toast" class="fixed bottom-6 right-6 z-50 bg-lavender-900 text-gold-300 px-6 py-3 rounded-2xl shadow-2xl border border-gold-400 text-xs font-semibold transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-3">
@@ -620,28 +498,20 @@
     </div>
 
     <!-- ==========================================
-         JAVASCRIPT LOGIC
+         JAVASCRIPT UI & ANIMACIONES
          ========================================== -->
     <script>
-        /* ==========================================
-           1. CONFIGURACIÓN EDITABLE DEL EVENTO
-           ========================================== */
         const EVENT_CONFIG = {
             targetDate: new Date('2026-12-12T21:30:00'),
             venueName: "Círculo de Oficiales de la Policía",
-            venueAddress: "Colectora Ruta 12 y Caraguatay, Garupá, Misiones",
-            googleMapsQuery: "Circulo de Oficiales de la Policia Garupa Misiones",
-            adminPin: "1515",
-            googleSheetsWebhookUrl: "" 
+            venueAddress: "Colectora Ruta 12 y Caraguatay, Garupá, Misiones"
         };
 
-        /* ==========================================
-           2. PARTÍCULAS / DESTELLOS MÁGICOS DE RAPUNZEL
-           ========================================== */
+        // Partículas mágicas
         const canvas = document.getElementById('sparkleCanvas');
         const ctx = canvas.getContext('2d');
         let sparkles = [];
-        const sparkleColors = ["#FFD54F", "#FBC02D", "#B57EEB", "#F48FB1"]; // Dorado, lila y rosa
+        const sparkleColors = ["#FFD54F", "#FBC02D", "#B57EEB", "#F48FB1"];
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -651,9 +521,7 @@
         resizeCanvas();
 
         class Sparkle {
-            constructor() {
-                this.reset();
-            }
+            constructor() { this.reset(); }
             reset() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
@@ -665,9 +533,7 @@
             }
             update() {
                 this.alpha += this.speed * this.dir;
-                if (this.alpha >= 1 || this.alpha <= 0) {
-                    this.dir *= -1;
-                }
+                if (this.alpha >= 1 || this.alpha <= 0) this.dir *= -1;
             }
             draw() {
                 ctx.save();
@@ -682,23 +548,16 @@
             }
         }
 
-        for (let i = 0; i < 55; i++) {
-            sparkles.push(new Sparkle());
-        }
+        for (let i = 0; i < 55; i++) sparkles.push(new Sparkle());
 
         function animateSparkles() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            sparkles.forEach(s => {
-                s.update();
-                s.draw();
-            });
+            sparkles.forEach(s => { s.update(); s.draw(); });
             requestAnimationFrame(animateSparkles);
         }
         animateSparkles();
 
-        /* ==========================================
-           3. CUENTA REGRESIVA DINÁMICA
-           ========================================== */
+        // Cuenta regresiva
         function updateCountdown() {
             const now = new Date().getTime();
             const distance = EVENT_CONFIG.targetDate.getTime() - now;
@@ -721,26 +580,21 @@
             document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
             document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
         }
-
         setInterval(updateCountdown, 1000);
         updateCountdown();
 
-        // Generador de link para agendar en Google Calendar
+        // Google Calendar
         function setupCalendarLink() {
             const title = encodeURIComponent("Mis 15 Años - Eliana");
             const details = encodeURIComponent("¡Te espero para festejar mis 15 años!");
             const location = encodeURIComponent(`${EVENT_CONFIG.venueName}, ${EVENT_CONFIG.venueAddress}`);
             const startTime = EVENT_CONFIG.targetDate.toISOString().replace(/-|:|\.\d\d\d/g, "");
             const endTime = new Date(EVENT_CONFIG.targetDate.getTime() + (6 * 60 * 60 * 1000)).toISOString().replace(/-|:|\.\d\d\d/g, "");
-            
-            const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startTime}/${endTime}&details=${details}&location=${location}`;
-            document.getElementById('addToCalendarBtn').href = calendarUrl;
+            document.getElementById('addToCalendarBtn').href = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startTime}/${endTime}&details=${details}&location=${location}`;
         }
         setupCalendarLink();
 
-        /* ==========================================
-           4. MÚSICA DE FONDO
-           ========================================== */
+        // Música
         const bgMusic = document.getElementById('bgMusic');
         const musicIcon = document.getElementById('musicIcon');
         let isPlaying = false;
@@ -759,16 +613,10 @@
             isPlaying = !isPlaying;
         }
 
-        /* ==========================================
-           5. COPIAR ALIAS / CVU CON FEEDBACK
-           ========================================== */
+        // Copiar Alias / CVU
         function copyToClipboard(text, btnId) {
             if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text).then(() => {
-                    triggerCopySuccess(btnId);
-                }).catch(() => {
-                    fallbackCopy(text, btnId);
-                });
+                navigator.clipboard.writeText(text).then(() => triggerCopySuccess(btnId)).catch(() => fallbackCopy(text, btnId));
             } else {
                 fallbackCopy(text, btnId);
             }
@@ -794,263 +642,120 @@
             btn.innerHTML = `<i class="fas fa-check text-emerald-600"></i> <span class="text-emerald-700">¡Copiado!</span>`;
             btn.classList.add("bg-emerald-100", "border-emerald-300");
             showToast("Copiado al portapapeles correctamente");
-
             setTimeout(() => {
                 btn.innerHTML = originalHTML;
                 btn.classList.remove("bg-emerald-100", "border-emerald-300");
             }, 2500);
         }
 
-        /* ==========================================
-           6. FORMULARIO RSVP & GESTIÓN DE INVITADOS
-           ========================================== */
-        const rsvpForm = document.getElementById('rsvpForm');
-        const LOCAL_STORAGE_KEY = 'eliana_15_rsvp_list';
-
-        function getStoredGuests() {
-            const data = localStorage.getItem(LOCAL_STORAGE_KEY);
-            return data ? JSON.parse(data) : getInitialMockData();
-        }
-
-        function saveGuests(guests) {
-            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(guests));
-        }
-
-        function getInitialMockData() {
-            return [
-                { name: "Familia Gómez", attendance: "Confirmado", count: "3", menu: "Ninguno", song: "La Morocha", message: "¡Felicidades Eli!", date: "2026-10-15 14:20" },
-                { name: "Lucas Benítez", attendance: "Confirmado", count: "1", menu: "Vegetariano", song: "Duki - BZRP", message: "¡A romperla!", date: "2026-10-18 19:45" },
-                { name: "Tía Rosana", attendance: "No Asiste", count: "0", menu: "Ninguno", song: "-", message: "Un abrazo enorme desde lejos", date: "2026-10-20 11:10" }
-            ];
-        }
-
-        rsvpForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const name = document.getElementById('guestName').value.trim();
+        // Mostrar/Ocultar acompañantes según asistencia
+        function toggleCompanionsVisibility() {
             const attendance = document.querySelector('input[name="attendance"]:checked').value;
-            const count = attendance === "Confirmado" ? document.getElementById('guestCount').value : "0";
-            const menu = document.getElementById('menuPreference').value;
-            const song = document.getElementById('songSuggestion').value.trim() || "-";
-            const message = document.getElementById('guestMessage').value.trim() || "-";
-            const timestamp = new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' });
-
-            const newGuest = { name, attendance, count, menu, song, message, date: timestamp };
-
-            const guests = getStoredGuests();
-            const existingIndex = guests.findIndex(g => g.name.toLowerCase() === name.toLowerCase());
-            if (existingIndex >= 0) {
-                guests[existingIndex] = newGuest;
+            const companionsGroup = document.getElementById('companionsGroup');
+            const menuGroup = document.getElementById('menuGroup');
+            if (attendance === "Confirmado") {
+                companionsGroup.classList.remove('hidden');
+                menuGroup.classList.remove('hidden');
             } else {
-                guests.push(newGuest);
+                companionsGroup.classList.add('hidden');
+                menuGroup.classList.add('hidden');
             }
-            saveGuests(guests);
-
-            sendToGoogleSheetsWebhook(newGuest);
-
-            // Efecto Confeti colores Rapunzel (Dorado, Lila, Rosa)
-            if (attendance === "Confirmado" && typeof confetti === 'function') {
-                confetti({
-                    particleCount: 100,
-                    spread: 70,
-                    origin: { y: 0.6 },
-                    colors: ['#FFD54F', '#9B51E0', '#F48FB1', '#3D1E8E']
-                });
-            }
-
-            rsvpForm.classList.add('hidden');
-            document.getElementById('rsvpSuccess').classList.remove('hidden');
-
-            renderAdminGuests();
-        });
+        }
 
         function resetRsvpForm() {
-            rsvpForm.classList.remove('hidden');
+            document.getElementById('rsvpForm').reset();
+            toggleCompanionsVisibility();
+            document.getElementById('rsvpForm').classList.remove('hidden');
             document.getElementById('rsvpSuccess').classList.add('hidden');
         }
 
-        async function sendToGoogleSheetsWebhook(rsvpData) {
-            if (!EVENT_CONFIG.googleSheetsWebhookUrl) return;
-            try {
-                await fetch(EVENT_CONFIG.googleSheetsWebhookUrl, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(rsvpData)
-                });
-            } catch(e) {
-                console.warn("Google Sheets Webhook error:", e);
-            }
-        }
-
-        /* ==========================================
-           7. PANEL DE ADMINISTRADOR & EXPORTACIÓN EXCEL
-           ========================================== */
-        const adminModal = document.getElementById('adminModal');
-        let isAdminAuthenticated = false;
-
-        function openAdminModal() {
-            adminModal.classList.remove('hidden');
-            adminModal.classList.add('flex');
-            if (isAdminAuthenticated) {
-                showAdminContent();
-            } else {
-                document.getElementById('adminAuthSection').classList.remove('hidden');
-                document.getElementById('adminContentSection').classList.add('hidden');
-            }
-        }
-
-        function closeAdminModal() {
-            adminModal.classList.add('hidden');
-            adminModal.classList.remove('flex');
-        }
-
-        function verifyAdminPin() {
-            const pin = document.getElementById('adminPinInput').value;
-            if (pin === EVENT_CONFIG.adminPin) {
-                isAdminAuthenticated = true;
-                showAdminContent();
-            } else {
-                document.getElementById('pinError').classList.remove('hidden');
-            }
-        }
-
-        function showAdminContent() {
-            document.getElementById('adminAuthSection').classList.add('hidden');
-            document.getElementById('adminContentSection').classList.remove('hidden');
-            renderAdminGuests();
-        }
-
-        function renderAdminGuests() {
-            const guests = getStoredGuests();
-            const tbody = document.getElementById('guestTableBody');
-            tbody.innerHTML = '';
-
-            let confirmedCount = 0;
-            let totalGuestsCount = 0;
-            let declinedCount = 0;
-            let specialMenuCount = 0;
-
-            guests.forEach(g => {
-                if (g.attendance === "Confirmado") {
-                    confirmedCount++;
-                    totalGuestsCount += parseInt(g.count || 1);
-                    if (g.menu !== "Ninguno") specialMenuCount++;
-                } else {
-                    declinedCount++;
-                }
-
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50";
-                
-                const isConf = g.attendance === "Confirmado";
-
-                tr.innerHTML = `
-                    <td class="p-3 font-semibold text-slate-800">${escapeHtml(g.name)}</td>
-                    <td class="p-3">
-                        <span class="px-2 py-1 rounded-full text-[10px] font-bold ${isConf ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
-                            ${g.attendance}
-                        </span>
-                    </td>
-                    <td class="p-3 text-center font-bold">${g.count}</td>
-                    <td class="p-3 text-slate-600">${escapeHtml(g.menu)}</td>
-                    <td class="p-3 text-slate-500 max-w-xs truncate">
-                        <span class="block text-[11px]">🎵 ${escapeHtml(g.song)}</span>
-                        <span class="block text-[10px] italic text-slate-400">💬 ${escapeHtml(g.message)}</span>
-                    </td>
-                    <td class="p-3 text-slate-400 text-[10px]">${g.date}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            document.getElementById('statConfirmed').innerText = confirmedCount;
-            document.getElementById('statTotalGuests').innerText = totalGuestsCount;
-            document.getElementById('statDeclined').innerText = declinedCount;
-            document.getElementById('statSpecialMenu').innerText = specialMenuCount;
-        }
-
-        function filterAdminTable() {
-            const query = document.getElementById('adminSearchInput').value.toLowerCase();
-            const rows = document.querySelectorAll('#guestTableBody tr');
-            rows.forEach(row => {
-                const text = row.innerText.toLowerCase();
-                row.style.display = text.includes(query) ? '' : 'none';
-            });
-        }
-
-        function exportToExcel() {
-            const guests = getStoredGuests();
-            if (guests.length === 0) {
-                showToast("No hay invitados para exportar.");
-                return;
-            }
-
-            let csvContent = "\uFEFF";
-            csvContent += "Nombre;Asistencia;Cantidad Personas;Menú Especial;Canción Sugerida;Mensaje;Fecha Confirmación\n";
-
-            guests.forEach(g => {
-                const row = [
-                    `"${g.name.replace(/"/g, '""')}"`,
-                    `"${g.attendance}"`,
-                    `"${g.count}"`,
-                    `"${g.menu}"`,
-                    `"${g.song.replace(/"/g, '""')}"`,
-                    `"${g.message.replace(/"/g, '""')}"`,
-                    `"${g.date}"`
-                ];
-                csvContent += row.join(";") + "\n";
-            });
-
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.setAttribute("href", url);
-            link.setAttribute("download", `Invitados_15_Eliana_${new Date().toISOString().slice(0,10)}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            showToast("¡Archivo Excel descargado con éxito!");
-        }
-
-        function clearAllGuests() {
-            if (confirm("¿Estás seguro de reiniciar la lista de invitados local?")) {
-                localStorage.removeItem(LOCAL_STORAGE_KEY);
-                renderAdminGuests();
-                showToast("Lista reiniciada.");
-            }
-        }
-
-        /* ==========================================
-           8. UTILIDADES & INTERACTION REVEAL
-           ========================================== */
         function showToast(msg) {
             const toast = document.getElementById('toast');
             document.getElementById('toastMsg').innerText = msg;
             toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
-
-        function escapeHtml(text) {
-            if (!text) return '';
-            return text
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
+            setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
         }
 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
+                if (entry.isIntersecting) entry.target.classList.add('active');
             });
         }, { threshold: 0.15 });
 
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+
+    <!-- ==========================================
+         CONEXIÓN REAL A FIREBASE FIRESTORE
+         ========================================== -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDVWAbr-x2LscQINp6NeNmZzsbW9jqsU9I",
+            authDomain: "mis-15-eliana-lopez.firebaseapp.com",
+            projectId: "mis-15-eliana-lopez",
+            storageBucket: "mis-15-eliana-lopez.firebasestorage.app",
+            messagingSenderId: "446826221919",
+            appId: "1:446826221919:web:347c723a9c5522496726ea"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const rsvpForm = document.getElementById('rsvpForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        rsvpForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const originalBtnHtml = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Guardando confirmación...`;
+
+            const name = document.getElementById('guestName').value.trim();
+            const attendance = document.querySelector('input[name="attendance"]:checked').value;
+            const count = attendance === "Confirmado" ? Number(document.getElementById('guestCount').value) : 0;
+            const menu = attendance === "Confirmado" ? document.getElementById('menuPreference').value : "Ninguno";
+            const song = document.getElementById('songSuggestion').value.trim() || "-";
+            const message = document.getElementById('guestMessage').value.trim() || "-";
+            const dateFormatted = new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' });
+
+            const newGuest = {
+                name,
+                attendance,
+                count,
+                menu,
+                song,
+                message,
+                date: dateFormatted,
+                createdAt: serverTimestamp()
+            };
+
+            try {
+                await addDoc(collection(db, "invitados"), newGuest);
+
+                if (attendance === "Confirmado" && typeof confetti === 'function') {
+                    confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: 0.6 },
+                        colors: ['#FFD54F', '#9B51E0', '#F48FB1', '#3D1E8E']
+                    });
+                }
+
+                rsvpForm.classList.add('hidden');
+                document.getElementById('rsvpSuccess').classList.remove('hidden');
+                showToast("¡Confirmación enviada con éxito!");
+            } catch (error) {
+                console.error("Error al guardar en Firebase:", error);
+                showToast("Error de conexión. Revisá tu internet e intentá de nuevo.");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnHtml;
+            }
+        });
     </script>
 </body>
 </html>
