@@ -59,6 +59,9 @@
     <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" defer></script>
 
+    <!-- QRCode.js para Credenciales Especiales -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
     <style>
         body {
             background-color: #d6b6f2;
@@ -67,7 +70,6 @@
             overflow-x: hidden;
         }
 
-        /* Animación letra por letra para texto HTML */
         .char-anim {
             display: inline-block;
             opacity: 0;
@@ -78,7 +80,6 @@
             margin: -0.18em -0.14em;
         }
 
-        /* Animación letra por letra para trazos del SVG */
         .svg-letter-anim {
             opacity: 0;
             transform: translateY(14px) scale(0.94);
@@ -87,7 +88,6 @@
             animation: svgLetterReveal 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
-        /* Trazo fino luminoso sutil (solo activo después de que las letras queden quietas) */
         .svg-letter-glow-stroke {
             fill: none;
             stroke: url(#elianaStrokeGlowGrad);
@@ -108,14 +108,8 @@
         }
 
         @keyframes svgLetterReveal {
-            0% {
-                opacity: 0;
-                transform: translateY(14px) scale(0.94);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            0% { opacity: 0; transform: translateY(14px) scale(0.94); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .violet-word-gradient {
@@ -137,32 +131,17 @@
         }
 
         @keyframes charReveal {
-            0% {
-                opacity: 0;
-                transform: translateY(22px) scale(0.9);
-                filter: blur(5px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-                filter: blur(0);
-            }
+            0% { opacity: 0; transform: translateY(22px) scale(0.9); filter: blur(5px); }
+            100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
         }
 
         .bg-magic-card {
             background: linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(243, 235, 255, 0.90));
             backdrop-filter: blur(8px);
-        }
-
-        /* Tarjetas de cristal oscuro para contraste sobre las linternas en Sección 2 */
-        .bg-lantern-card {
-            background: linear-gradient(145deg, rgba(29, 18, 38, 0.72), rgba(14, 10, 26, 0.82));
-            backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
         }
 
-        /* Escena nocturna integrada para Sección 2 */
-        #cuenta-regresiva {
+        footer {
             background: radial-gradient(ellipse at 50% 85%, #1d121c 0%, #120d1d 45%, #07060d 100%);
             overflow: hidden;
         }
@@ -183,7 +162,6 @@
             display: block;
             pointer-events: none;
             z-index: 2;
-            will-change: transform;
         }
 
         .box-shadow-magic {
@@ -223,39 +201,13 @@
             transform: translateY(0);
         }
 
-        @media (prefers-reduced-motion: reduce) {
-            .char-anim,
-            .svg-letter-anim {
-                opacity: 1;
-                transform: none;
-                filter: none;
-                animation: none;
-            }
-            .svg-letter-glow-stroke {
-                display: none;
-            }
-            .reveal {
-                opacity: 1;
-                transform: none;
-                transition: none;
-            }
-        }
-
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #d6b6f2;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #9B51E0;
-            border-radius: 3px;
-        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #d6b6f2; }
+        ::-webkit-scrollbar-thumb { background: #9B51E0; border-radius: 3px; }
     </style>
 </head>
 <body class="relative text-lavender-900">
 
-    <!-- Canvas de partículas y destellos de fondo -->
     <canvas id="particles-canvas" aria-hidden="true"></canvas>
 
     <!-- Control flotante de música -->
@@ -264,13 +216,9 @@
     </button>
     <audio id="bgMusic" loop preload="none" src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-piano-wedding-invitation-113524.mp3"></audio>
 
-    <!-- ==========================================
-         SECCIÓN 1: HERO / PORTADA PRINCIPAL
-         ========================================== -->
+    <!-- SECCIÓN 1: HERO / PORTADA -->
     <section id="heroSection" class="relative min-h-screen flex flex-col justify-between items-center text-center px-4 py-12 z-10 overflow-hidden bg-transparent">
-
-        <!-- Marco Decorativo Blanco & Dorado -->
-        <div id="heroFrame" class="absolute inset-4 sm:inset-8 border border-white/60 rounded-3xl pointer-events-none flex flex-col justify-between p-2 will-change-transform">
+        <div id="heroFrame" class="absolute inset-4 sm:inset-8 border border-white/60 rounded-3xl pointer-events-none flex flex-col justify-between p-2">
             <div class="flex justify-between">
                 <div class="w-8 h-8 border-t-2 border-l-2 border-gold-500 rounded-tl-xl"></div>
                 <div class="w-8 h-8 border-t-2 border-r-2 border-gold-500 rounded-tr-xl"></div>
@@ -281,24 +229,16 @@
             </div>
         </div>
 
-        <!-- Encabezado sutil -->
         <div class="pt-8 relative z-10">
-            <p class="font-serif tracking-[0.3em] uppercase text-xs sm:text-sm text-lavender-900 font-semibold mb-2">
-                Te invito a celebrar
-            </p>
+            <p class="font-serif tracking-[0.3em] uppercase text-xs sm:text-sm text-lavender-900 font-semibold mb-2">Te invito a celebrar</p>
             <div class="w-16 h-[1px] bg-gradient-to-r from-transparent via-gold-600 to-transparent mx-auto"></div>
         </div>
 
-        <!-- Título Principal con Halo Dorado -->
-        <div id="heroContent" class="relative my-auto py-10 sm:py-16 flex flex-col items-center justify-center w-full max-w-2xl will-change-transform">
+        <div id="heroContent" class="relative my-auto py-10 sm:py-16 flex flex-col items-center justify-center w-full max-w-2xl">
             <canvas id="heroRingCanvas" aria-hidden="true" class="absolute inset-0 m-auto pointer-events-none z-0"></canvas>
-
             <div class="relative z-10 px-2 sm:px-4 overflow-visible w-full flex flex-col items-center">
-                <span id="animSubtitle" aria-label="Mis 15 Años" class="font-serif italic text-3xl sm:text-5xl text-white block mb-1 sm:mb-2 leading-normal drop-shadow overflow-visible">
-                    Mis 15 Años
-                </span>
-
-                <h1 id="animTitle" aria-label="Eliana" class="w-[min(86vw,340px)] sm:w-[440px] mx-auto my-1 violet-word-gradient overflow-visible">
+                <span id="animSubtitle" aria-label="Mis 15 Años" class="font-serif italic text-3xl sm:text-5xl text-white block mb-1 sm:mb-2 leading-normal drop-shadow">Mis 15 Años</span>
+                <h1 id="animTitle" aria-label="Eliana" class="w-[min(86vw,340px)] sm:w-[440px] mx-auto my-1 violet-word-gradient">
                     <span class="sr-only">Eliana</span>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 336.42 186.74" class="w-full h-auto block overflow-visible" aria-hidden="true">
                         <defs>
@@ -313,16 +253,12 @@
                                 <stop offset="87.5%" stop-color="#5B21B6"/>
                                 <stop offset="100%" stop-color="#271066"/>
                             </linearGradient>
-
-                            <!-- Degradado suave para el destello periódico del contorno -->
                             <linearGradient id="elianaStrokeGlowGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="336.42" y2="186.74">
                                 <stop offset="0%" stop-color="#FAF7FF"/>
                                 <stop offset="35%" stop-color="#E5D4FA"/>
                                 <stop offset="70%" stop-color="#CFAEF5"/>
                                 <stop offset="100%" stop-color="#FFFFFF"/>
                             </linearGradient>
-
-                            <!-- Filtro glow sutil -->
                             <filter id="elianaStrokeGlowFilter" x="-15%" y="-15%" width="130%" height="130%">
                                 <feGaussianBlur stdDeviation="1.3" result="blur"/>
                                 <feMerge>
@@ -331,8 +267,6 @@
                                 </feMerge>
                             </filter>
                         </defs>
-
-                        <!-- Relleno principal (animación de entrada normal) -->
                         <g fill="url(#elianaVioletGrad)">
                             <path id="e" class="svg-letter-anim" d="m45.58,60.1c-5.28-1.42-10.29-3.02-14.86-5.72-1.7-1.01-3.39-2.13-4.85-3.46-5.69-5.17-6.97-11.56-4.8-18.75,1.71-5.65,5.12-10.22,9.41-14.18,5.77-5.33,12.53-9.01,19.79-11.83,7.9-3.07,16.09-4.93,24.53-5.76,5.16-.51,10.29-.6,15.43.09,3.14.42,6.21,1.14,9.12,2.47,1.88.86,3.58,1.98,5.05,3.45,5.07,5.08,4.94,13.02-.35,17.86-3.97,3.63-8.71,4.89-13.98,4.32-.68-.07-1.37-.34-1.97-.68-1.05-.58-1.08-1.28-.19-2.06.31-.27.65-.5.98-.74,4.22-3.01,4.64-11.54-1.68-14.33-2.46-1.09-5.03-1.66-7.66-1.74-12.42-.38-23.1,3.72-31.7,12.8-2.65,2.8-4.48,6.16-5.46,9.91-2.44,9.35,2.92,17.85,12.51,19.69,6.55,1.26,12.8-.06,18.82-2.7.75-.33,1.47-.75,2.24-1,1.5-.49,2.52-.17,3.24.96,2.27,3.59.37,10.87-4.91,11.62-1.51.21-3.02.41-4.52.65-8.19,1.31-15.84,4.08-22.83,8.57-4.51,2.9-8.65,6.22-12.1,10.36-6.51,7.8-9.55,16.77-8.63,26.87.86,9.46,5.05,17.23,12.94,22.76,6.06,4.25,12.84,6.68,20.13,7.75,4.99.73,10.02,1.21,15.06.96,4.85-.24,9.69-.72,14.52-1.24,7.98-.86,15.86-2.3,23.71-3.93,9.1-1.89,18.18-3.92,27.29-5.81,12.31-2.55,24.62-5.15,36.97-7.46,7.18-1.34,14.45-2.31,21.71-3.16,6.28-.74,12.59-1.27,18.91-1.53,7.61-.31,15.24-.47,22.85-.28,14.45.35,28.7,2.3,42.55,6.61,7.74,2.41,15.17,5.55,21.89,10.17,3.34,2.3,6.51,4.83,8.94,8.12,2.97,4.01,4.52,8.46,3.7,13.51-.51,3.12-1.87,5.89-3.76,8.42-2.64,3.52-5.96,6.28-9.62,8.66-6.23,4.06-13.03,6.87-20.06,9.17-7.8,2.56-15.81,4.16-23.93,5.37-8.01,1.2-16.07,1.81-24.15,1.88-6.97.05-13.93-.32-20.87-1.18-7.04-.87-14.01-2.02-20.83-3.98-5.63-1.62-11.16-3.58-16.15-6.72-1.92-1.21-3.75-2.63-5.4-4.19-5.2-4.94-5.18-11.4-.73-16.85,2.92-3.57,6.73-5.98,10.78-8.02,6.91-3.47,14.27-5.5,21.87-6.8,6.04-1.03,12.12-1.24,18.22-.97,7.89.35,15.6,1.66,22.86,4.93,3.23,1.45,6.27,3.24,8.61,5.95.86.99,1.43,2.25,2.04,3.43.2.38.21.93.12,1.36-.25,1.26-1.32,1.61-2.16.63-4.64-5.39-11.12-7.18-17.57-8.89-6.81-1.8-13.78-1.75-20.77-1.21-5.42.42-10.67,1.51-15.65,3.65-2.18.94-4.26,2.2-6.23,3.54-1.18.81-2.19,1.96-3.05,3.12-2.62,3.54-2.62,7.67-.07,11.28,1.54,2.19,3.53,3.9,5.86,5.21,4.69,2.64,9.78,4.19,15.01,5.26,9.11,1.87,18.34,2.58,27.62,2.07,13.59-.76,26.82-3.34,39.27-9.1,4.22-1.95,8.17-4.35,11.44-7.74,2.23-2.32,3.96-4.95,4.72-8.11,1.17-4.86-.15-9.17-3.26-12.96-2.18-2.66-4.89-4.7-7.82-6.46-6.7-4.03-14.03-6.39-21.64-7.95-12.93-2.65-26.02-3.36-39.16-2.71-6.66.33-13.3,1.1-19.93,1.91-19.16,2.32-37.76,7.24-56.25,12.58-11.74,3.39-23.47,6.83-35.41,9.41-7.02,1.52-14.14,2.64-21.23,3.84-8.51,1.44-17.1,2.06-25.72,1.98-10.94-.11-21.73-1.39-32.16-4.86-6.81-2.27-13.27-5.32-18.85-9.93-6.51-5.39-11.04-12.11-12.73-20.49-1.5-7.46-.36-14.7,2.46-21.68,2.99-7.38,7.89-13.39,13.78-18.63,6.7-5.96,14.27-10.61,22.36-14.43,2.1-.99,4.2-1.95,6.3-2.93Z"/>
                             <path id="l" class="svg-letter-anim" d="m116.87,72.87c0-8.26.08-16.53-.03-24.79-.07-4.92-.35-9.84-1.32-14.69-.13-.63-.3-1.25-.44-1.88-.41-1.87-1.48-3.01-3.45-3.17-.06,0-.12-.01-.18-.02-.72-.08-1.24-.37-1.24-1.19,0-.84.63-1.04,1.28-1.19,1.48-.35,2.98-.63,4.44-1.04,4.72-1.32,9.02-3.57,13.24-5.98,1.73-.99,3.42-2.04,5.17-3,.59-.32,1.3-.57,1.97-.6.88-.04,1.22.57.96,1.43-.07.22-.18.43-.3.63-2.47,4.23-3.45,8.92-4.26,13.67-1.12,6.54-1.49,13.16-1.65,19.77-.25,10.19-.39,20.39-.38,30.59.01,7.5.33,15,1.37,22.44.41,2.94,1.07,5.88,1.9,8.73.94,3.23,2.78,5.8,6.31,6.72.36.1.87.59.87.89,0,.32-.49.75-.86.92-3.69,1.67-7.5,1.66-11.32.53-7.03-2.09-11.12-6.81-12.42-14.01-.65-3.62-.34-7.25-.23-10.87.23-7.97.51-15.93.78-23.89-.06,0-.13,0-.19,0Z"/>
@@ -344,8 +278,6 @@
                             <path id="n" class="svg-letter-anim" d="m222.59,49.58c.78-.1,1.33-.25,1.87-.24,5.3.15,10.52-.35,15.67-1.64.81-.2,1.7-.12,2.83-.18-1.01,2.77-1.61,5.31-.51,8.14.46-.42.87-.79,1.25-1.17,2.76-2.71,5.91-4.84,9.69-5.77,7.24-1.77,14.98,1.45,18.51,8.94,1.46,3.11,2.17,6.42,2.58,9.81.61,5.08.43,10.18.17,15.27-.26,5.04-.41,10.07.17,15.09.31,2.69.95,5.29,1.96,7.81,1.11,2.78,3,4.86,5.62,6.28.26.14.52.27.78.4.51.25.97.65.71,1.21-.14.31-.72.57-1.11.58-7.91.19-14.74-2.29-20.02-8.34-2.26-2.6-3.48-5.72-3.43-9.18.04-3.1.38-6.19.53-9.29.27-5.62.54-11.24-.18-16.84-.34-2.63-.93-5.2-2.55-7.39-1.48-1.99-3.4-3.16-5.97-3.14-1.96,0-3.49.86-4.8,2.21-1.68,1.74-2.61,3.89-3.08,6.21-.39,1.94-.7,3.93-.77,5.91-.27,7.63.18,15.23,1.36,22.76.24,1.53.96,2.98,1.45,4.47.12.36.35.93.2,1.08-.27.26-.8.42-1.18.37-3.79-.48-7.58-.64-11.38-.12-2.79.39-5.54.86-8.14,2.02-.69.31-1.52,1.01-2.24.17-.79-.92.21-1.49.67-2.07,1.88-2.41,3.03-5.15,3.66-8.1,2.43-11.41,2.94-22.86.42-34.33-.75-3.39-1.79-6.67-3.97-9.47-.27-.35-.42-.78-.77-1.45Z"/>
                             <path id="a2" class="svg-letter-anim" d="m315.3,60.84c.14-.26.22-.35.25-.46.45-1.49.47-1.53,1.9-1.26,2.83.54,5.67.89,8.56.75,1.75-.09,3.5-.29,5.24-.48,1.5-.17,2.22.69,1.62,2.06-2.02,4.61-2.83,9.52-3.48,14.46-.93,7.16-1.29,14.35-1.06,21.57.08,2.39.39,4.78.67,7.16.1.8.37,1.6.69,2.35.78,1.79,2.27,2.32,4.04,1.52.16-.07.33-.14.47-.24.6-.47,1.19-.74,1.86-.09.63.61.28,1.21-.02,1.76-1.29,2.32-2.8,4.47-5.01,6.03-3.77,2.67-7.87,2.31-11.15-.93-1.58-1.57-2.6-3.49-3.19-5.59-.76-2.7-1.33-5.45-2-8.25-.16.28-.33.59-.51.9-1.07,1.87-1.99,3.87-3.25,5.6-3.41,4.66-10.11,7.72-17.23,4.24-5.73-2.8-9.47-7.43-11.5-13.36-3.51-10.28-2.23-20.21,2.85-29.69,1.59-2.96,3.82-5.45,6.43-7.61,7.04-5.82,17.34-5.06,23.12-.87.18.13.39.24.69.43Zm-1.01,19.05s-.05,0-.07,0c.12-2.92.24-5.85.35-8.77.09-2.3-.98-3.91-3.14-4.71-2.66-.98-5.25-.72-7.49.99-1.42,1.08-2.83,2.35-3.8,3.83-4.19,6.38-5.46,13.47-4.44,20.97.34,2.51,1.24,4.85,2.84,6.9,2.68,3.42,7.94,4.47,11.5.15,2.71-3.3,4.2-7.13,4.24-11.45.02-2.63,0-5.27,0-7.9Z"/>
                         </g>
-
-                        <!-- Trazo fino luminoso sutil (se activa únicamente una vez que las letras están quietas) -->
                         <g filter="url(#elianaStrokeGlowFilter)">
                             <path id="e-glow" class="svg-letter-glow-stroke" d="m45.58,60.1c-5.28-1.42-10.29-3.02-14.86-5.72-1.7-1.01-3.39-2.13-4.85-3.46-5.69-5.17-6.97-11.56-4.8-18.75,1.71-5.65,5.12-10.22,9.41-14.18,5.77-5.33,12.53-9.01,19.79-11.83,7.9-3.07,16.09-4.93,24.53-5.76,5.16-.51,10.29-.6,15.43.09,3.14.42,6.21,1.14,9.12,2.47,1.88.86,3.58,1.98,5.05,3.45,5.07,5.08,4.94,13.02-.35,17.86-3.97,3.63-8.71,4.89-13.98,4.32-.68-.07-1.37-.34-1.97-.68-1.05-.58-1.08-1.28-.19-2.06.31-.27.65-.5.98-.74,4.22-3.01,4.64-11.54-1.68-14.33-2.46-1.09-5.03-1.66-7.66-1.74-12.42-.38-23.1,3.72-31.7,12.8-2.65,2.8-4.48,6.16-5.46,9.91-2.44,9.35,2.92,17.85,12.51,19.69,6.55,1.26,12.8-.06,18.82-2.7.75-.33,1.47-.75,2.24-1,1.5-.49,2.52-.17,3.24.96,2.27,3.59.37,10.87-4.91,11.62-1.51.21-3.02.41-4.52.65-8.19,1.31-15.84,4.08-22.83,8.57-4.51,2.9-8.65,6.22-12.1,10.36-6.51,7.8-9.55,16.77-8.63,26.87.86,9.46,5.05,17.23,12.94,22.76,6.06,4.25,12.84,6.68,20.13,7.75,4.99.73,10.02,1.21,15.06.96,4.85-.24,9.69-.72,14.52-1.24,7.98-.86,15.86-2.3,23.71-3.93,9.1-1.89,18.18-3.92,27.29-5.81,12.31-2.55,24.62-5.15,36.97-7.46,7.18-1.34,14.45-2.31,21.71-3.16,6.28-.74,12.59-1.27,18.91-1.53,7.61-.31,15.24-.47,22.85-.28,14.45.35,28.7,2.3,42.55,6.61,7.74,2.41,15.17,5.55,21.89,10.17,3.34,2.3,6.51,4.83,8.94,8.12,2.97,4.01,4.52,8.46,3.7,13.51-.51,3.12-1.87,5.89-3.76,8.42-2.64,3.52-5.96,6.28-9.62,8.66-6.23,4.06-13.03,6.87-20.06,9.17-7.8,2.56-15.81,4.16-23.93,5.37-8.01,1.2-16.07,1.81-24.15,1.88-6.97.05-13.93-.32-20.87-1.18-7.04-.87-14.01-2.02-20.83-3.98-5.63-1.62-11.16-3.58-16.15-6.72-1.92-1.21-3.75-2.63-5.4-4.19-5.2-4.94-5.18-11.4-.73-16.85,2.92-3.57,6.73-5.98,10.78-8.02,6.91-3.47,14.27-5.5,21.87-6.8,6.04-1.03,12.12-1.24,18.22-.97,7.89.35,15.6,1.66,22.86,4.93,3.23,1.45,6.27,3.24,8.61,5.95.86.99,1.43,2.25,2.04,3.43.2.38.21.93.12,1.36-.25,1.26-1.32,1.61-2.16.63-4.64-5.39-11.12-7.18-17.57-8.89-6.81-1.8-13.78-1.75-20.77-1.21-5.42.42-10.67,1.51-15.65,3.65-2.18.94-4.26,2.2-6.23,3.54-1.18.81-2.19,1.96-3.05,3.12-2.62,3.54-2.62,7.67-.07,11.28,1.54,2.19,3.53,3.9,5.86,5.21,4.69,2.64,9.78,4.19,15.01,5.26,9.11,1.87,18.34,2.58,27.62,2.07,13.59-.76,26.82-3.34,39.27-9.1,4.22-1.95,8.17-4.35,11.44-7.74,2.23-2.32,3.96-4.95,4.72-8.11,1.17-4.86-.15-9.17-3.26-12.96-2.18-2.66-4.89-4.7-7.82-6.46-6.7-4.03-14.03-6.39-21.64-7.95-12.93-2.65-26.02-3.36-39.16-2.71-6.66.33-13.3,1.1-19.93,1.91-19.16,2.32-37.76,7.24-56.25,12.58-11.74,3.39-23.47,6.83-35.41,9.41-7.02,1.52-14.14,2.64-21.23,3.84-8.51,1.44-17.1,2.06-25.72,1.98-10.94-.11-21.73-1.39-32.16-4.86-6.81-2.27-13.27-5.32-18.85-9.93-6.51-5.39-11.04-12.11-12.73-20.49-1.5-7.46-.36-14.7,2.46-21.68,2.99-7.38,7.89-13.39,13.78-18.63,6.7-5.96,14.27-10.61,22.36-14.43,2.1-.99,4.2-1.95,6.3-2.93Z"/>
                             <path id="l-glow" class="svg-letter-glow-stroke" d="m116.87,72.87c0-8.26.08-16.53-.03-24.79-.07-4.92-.35-9.84-1.32-14.69-.13-.63-.3-1.25-.44-1.88-.41-1.87-1.48-3.01-3.45-3.17-.06,0-.12-.01-.18-.02-.72-.08-1.24-.37-1.24-1.19,0-.84.63-1.04,1.28-1.19,1.48-.35,2.98-.63,4.44-1.04,4.72-1.32,9.02-3.57,13.24-5.98,1.73-.99,3.42-2.04,5.17-3,.59-.32,1.3-.57,1.97-.6.88-.04,1.22.57.96,1.43-.07.22-.18.43-.3.63-2.47,4.23-3.45,8.92-4.26,13.67-1.12,6.54-1.49,13.16-1.65,19.77-.25,10.19-.39,20.39-.38,30.59.01,7.5.33,15,1.37,22.44.41,2.94,1.07,5.88,1.9,8.73.94,3.23,2.78,5.8,6.31,6.72.36.1.87.59.87.89,0,.32-.49.75-.86.92-3.69,1.67-7.5,1.66-11.32.53-7.03-2.09-11.12-6.81-12.42-14.01-.65-3.62-.34-7.25-.23-10.87.23-7.97.51-15.93.78-23.89-.06,0-.13,0-.19,0Z"/>
@@ -359,14 +291,12 @@
                         </g>
                     </svg>
                 </h1>
-
                 <p id="heroQuote" class="font-serif italic text-lg sm:text-2xl text-lavender-900 max-w-md mx-auto mt-2 sm:mt-3 font-medium leading-relaxed opacity-0 transition-opacity duration-1000">
                     "Hay momentos inolvidables que se atesoran en el corazón para siempre. Quiero compartir con vos la noche más especial de mi vida."
                 </p>
             </div>
         </div>
 
-        <!-- Indicador de Scroll -->
         <div class="pb-6 flex flex-col items-center relative z-10">
             <p class="font-sans text-xs tracking-widest text-lavender-900 uppercase mb-3 font-semibold">Deslizá hacia abajo</p>
             <a href="#cuenta-regresiva" aria-label="Ir a la cuenta regresiva" class="w-10 h-10 rounded-full border border-white/80 flex items-center justify-center text-lavender-800 animate-bounce bg-white/75 backdrop-blur-sm shadow-sm">
@@ -375,109 +305,73 @@
         </div>
     </section>
 
-    <!-- ==========================================
-         SECCIÓN 2: FECHA Y CUENTA REGRESIVA (FONDO DE LINTERNAS)
-         ========================================== -->
-    <section id="cuenta-regresiva" class="py-20 px-4 relative z-10 border-y border-gold-400/30">
-        <!-- Capas de animación de fondo -->
-        <div id="atmosphere-overlay" aria-hidden="true"></div>
-        <canvas id="lanterns-canvas" aria-hidden="true"></canvas>
-
-        <!-- Contenido de la tarjeta sobre las linternas -->
-        <div class="max-w-3xl mx-auto text-center reveal relative z-10">
-
+    <!-- SECCIÓN 2: CUENTA REGRESIVA -->
+    <section id="cuenta-regresiva" class="py-20 px-4 bg-white/15 backdrop-blur-[2px] border-y border-white/40 relative z-10">
+        <div class="max-w-2xl mx-auto bg-magic-card rounded-3xl p-6 sm:p-10 border border-white/80 box-shadow-magic text-center reveal relative z-10">
             <div class="inline-block px-5 py-1.5 rounded-full violet-pill-gradient border border-gold-400/50 text-white text-xs tracking-widest uppercase font-semibold mb-4 shadow-lg">
                 <i class="far fa-calendar-check mr-1.5 text-gold-300"></i> Comienza la cuenta regresiva
             </div>
-
-            <h2 class="font-title text-3xl sm:text-4xl text-gold-100 mb-1 drop-shadow-[0_2px_10px_rgba(0,0,0,0.75)]">Sábado 12 de Diciembre</h2>
+            <h2 class="font-title text-3xl sm:text-4xl text-lavender-900 mb-1">Sábado 12 de Diciembre</h2>
             <canvas class="comet-line-canvas" data-delay="0" aria-hidden="true"></canvas>
-            <p class="font-serif text-xl sm:text-2xl text-gold-300 italic font-semibold mb-8 drop-shadow">2026 — 21:30 HS</p>
+            <p class="font-serif text-xl sm:text-2xl text-lavender-700 italic font-semibold mb-8">2026 — 21:30 HS</p>
 
-            <!-- Contador Regresivo -->
-            <div class="grid grid-cols-4 gap-2 sm:gap-4 max-w-lg mx-auto mb-10">
-                <div class="bg-lantern-card p-3 sm:p-4 rounded-2xl border border-gold-400/40 shadow-lg">
-                    <span id="days" class="font-title text-2xl sm:text-4xl text-gold-300 font-bold block drop-shadow">00</span>
-                    <span class="text-[10px] sm:text-xs tracking-widest uppercase text-lavender-100 font-medium">Días</span>
+            <div class="grid grid-cols-4 gap-2 sm:gap-4 max-w-lg mx-auto mb-6">
+                <div class="bg-white/90 p-3 sm:p-4 rounded-2xl border border-lavender-200 shadow-sm">
+                    <span id="days" class="font-title text-2xl sm:text-4xl text-lavender-900 font-bold block">00</span>
+                    <span class="text-[10px] sm:text-xs tracking-widest uppercase text-lavender-600 font-semibold">Días</span>
                 </div>
-                <div class="bg-lantern-card p-3 sm:p-4 rounded-2xl border border-gold-400/40 shadow-lg">
-                    <span id="hours" class="font-title text-2xl sm:text-4xl text-gold-300 font-bold block drop-shadow">00</span>
-                    <span class="text-[10px] sm:text-xs tracking-widest uppercase text-lavender-100 font-medium">Hs</span>
+                <div class="bg-white/90 p-3 sm:p-4 rounded-2xl border border-lavender-200 shadow-sm">
+                    <span id="hours" class="font-title text-2xl sm:text-4xl text-lavender-900 font-bold block">00</span>
+                    <span class="text-[10px] sm:text-xs tracking-widest uppercase text-lavender-600 font-semibold">Hs</span>
                 </div>
-                <div class="bg-lantern-card p-3 sm:p-4 rounded-2xl border border-gold-400/40 shadow-lg">
-                    <span id="minutes" class="font-title text-2xl sm:text-4xl text-gold-300 font-bold block drop-shadow">00</span>
-                    <span class="text-[10px] sm:text-xs tracking-widest uppercase text-lavender-100 font-medium">Min</span>
+                <div class="bg-white/90 p-3 sm:p-4 rounded-2xl border border-lavender-200 shadow-sm">
+                    <span id="minutes" class="font-title text-2xl sm:text-4xl text-lavender-900 font-bold block">00</span>
+                    <span class="text-[10px] sm:text-xs tracking-widest uppercase text-lavender-600 font-semibold">Min</span>
                 </div>
-                <div class="bg-lantern-card p-3 sm:p-4 rounded-2xl border border-gold-400/40 shadow-lg">
-                    <span id="seconds" class="font-title text-2xl sm:text-4xl text-gold-300 font-bold block drop-shadow">00</span>
-                    <span class="text-[10px] sm:text-xs tracking-widest uppercase text-lavender-100 font-medium">Seg</span>
+                <div class="bg-white/90 p-3 sm:p-4 rounded-2xl border border-lavender-200 shadow-sm">
+                    <span id="seconds" class="font-title text-2xl sm:text-4xl text-lavender-900 font-bold block">00</span>
+                    <span class="text-[10px] sm:text-xs tracking-widest uppercase text-lavender-600 font-semibold">Seg</span>
                 </div>
             </div>
-
-            <!-- Botón Agregar al Calendario -->
-            <a id="addToCalendarBtn" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/95 border border-gold-400 text-lavender-900 font-semibold text-sm shadow-lg hover:bg-white transition-all active:scale-95">
-                <i class="far fa-calendar-plus text-gold-600"></i> Agendar en Google Calendar
-            </a>
         </div>
     </section>
 
-    <!-- ==========================================
-         SECCIÓN 3: UBICACIÓN Y CÓMO LLEGAR
-         ========================================== -->
+    <!-- SECCIÓN 3: UBICACIÓN -->
     <section class="py-20 px-4 relative z-10 bg-transparent">
         <div class="max-w-3xl mx-auto text-center reveal">
-
             <div class="w-14 h-14 rounded-full bg-white/90 border border-lavender-400 text-lavender-600 flex items-center justify-center mx-auto mb-6 text-xl shadow-sm">
                 <i class="fas fa-map-marker-alt"></i>
             </div>
-
             <h2 class="font-title text-3xl sm:text-4xl text-lavender-900 mb-1">Ubicación de la Fiesta</h2>
             <canvas class="comet-line-canvas" data-delay="0.25" aria-hidden="true"></canvas>
             <p class="font-serif text-lg text-lavender-900 italic font-medium mb-6">¡Te espero para celebrar juntos!</p>
 
-            <!-- Card del Salón -->
             <div class="bg-magic-card rounded-3xl p-6 sm:p-8 border border-white/80 box-shadow-magic max-w-xl mx-auto mb-8 relative overflow-hidden">
-                <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-gold-300/30 rounded-full blur-2xl pointer-events-none"></div>
-                <div class="absolute -left-10 -top-10 w-32 h-32 bg-blush-400/20 rounded-full blur-2xl pointer-events-none"></div>
-
-                <h3 id="venueName" class="font-title text-2xl text-lavender-900 font-bold mb-2">
-                    Círculo de Oficiales de la Policía
-                </h3>
-                <p id="venueAddress" class="text-lavender-800 text-sm sm:text-base mb-6 leading-relaxed">
-                    Colectora Ruta 12 y Caraguatay, Garupá, Misiones
-                </p>
-
+                <h3 id="venueName" class="font-title text-2xl text-lavender-900 font-bold mb-2">Círculo de Oficiales de la Policía</h3>
+                <p id="venueAddress" class="text-lavender-800 text-sm sm:text-base mb-6 leading-relaxed">Colectora Ruta 12 y Caraguatay, Garupá, Misiones</p>
                 <a id="gmapsLink" href="https://maps.app.goo.gl/RJdTcPxEkVnHheLt9" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-lavender-600 to-lavender-800 text-white font-semibold text-sm shadow-md hover:from-lavender-500 hover:to-lavender-800 transition-all duration-300 transform active:scale-95 gap-3">
                     <i class="fas fa-directions text-gold-300 text-lg"></i> Abrir en Google Maps / GPS
                 </a>
             </div>
 
-            <!-- Mapa Embebido -->
             <div class="rounded-3xl overflow-hidden border border-white/80 box-shadow-subtle max-w-xl mx-auto h-64 bg-slate-100 relative">
                 <iframe id="gmapsIframe" title="Mapa de ubicación del evento" class="w-full h-full border-0" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Circulo%20de%20Oficiales%20de%20la%20Policia%20Garupa%20Misiones&t=&z=16&ie=UTF8&iwloc=&output=embed"></iframe>
             </div>
         </div>
     </section>
 
-    <!-- ==========================================
-         SECCIÓN EXTRA: DRESS CODE & CRONOGRAMA
-         ========================================== -->
+    <!-- SECCIÓN EXTRA: DRESS CODE & CRONOGRAMA -->
     <section class="py-16 px-4 bg-white/15 backdrop-blur-[2px] border-y border-white/40 relative z-10">
         <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 reveal">
-
-            <!-- Dress Code Card -->
             <div class="bg-magic-card p-6 sm:p-8 rounded-3xl border border-white/80 box-shadow-subtle text-center flex flex-col items-center justify-center">
                 <div class="w-12 h-12 rounded-full bg-blush-100 text-blush-500 flex items-center justify-center text-xl mb-4 border border-blush-400">
                     <i class="fas fa-user-tie"></i>
                 </div>
                 <h3 class="font-title text-2xl text-lavender-900 font-bold mb-2">Código de Vestimenta</h3>
                 <p class="font-serif text-xl text-lavender-600 font-semibold mb-3">Elegante / Formal</p>
-                <p class="text-xs text-lavender-800 max-w-xs leading-relaxed">
-                    Te pedimos venir radiante para celebrar esta noche inolvidable. (Sugerencia: Reservar los tonos lila y lavanda para la quinceañera).
-                </p>
+                <p class="text-xs text-lavender-800 max-w-xs leading-relaxed">Te pedimos venir radiante para celebrar esta noche inolvidable. (Sugerencia: Reservar los tonos lila y lavanda para la quinceañera).</p>
             </div>
 
-            <!-- Cronograma -->
             <div class="bg-magic-card p-6 sm:p-8 rounded-3xl border border-white/80 box-shadow-subtle">
                 <h3 class="font-title text-2xl text-lavender-900 font-bold mb-6 text-center">Itinerario de la Noche</h3>
                 <ul class="space-y-4 text-sm text-lavender-900">
@@ -506,60 +400,29 @@
         </div>
     </section>
 
-    <!-- ==========================================
-         SECCIÓN 4: REGALOS (MERCADO PAGO)
-         ========================================== -->
+    <!-- SECCIÓN 4: REGALOS -->
     <section class="py-20 px-4 relative z-10 bg-transparent">
         <div class="max-w-2xl mx-auto text-center reveal">
-
             <div class="w-14 h-14 rounded-full bg-gold-100 border border-gold-400 text-gold-600 flex items-center justify-center mx-auto mb-6 text-xl shadow-sm">
                 <i class="fas fa-gift"></i>
             </div>
-
             <h2 class="font-title text-3xl sm:text-4xl text-lavender-900 mb-1">Muestra de Cariño</h2>
             <canvas class="comet-line-canvas" data-delay="0.5" aria-hidden="true"></canvas>
             <p class="font-serif italic text-lg text-lavender-900 font-medium leading-relaxed mb-8 px-4">
                 "Tu presencia es mi mejor regalo y el recuerdo más bonito. Si deseás hacerme un obsequio para ayudar a cumplir mis sueños, podés hacerlo a través de transferencia bancaria."
             </p>
 
-            <!-- Card Datos Mercado Pago -->
             <div class="bg-magic-card rounded-3xl p-6 sm:p-8 border border-white/80 box-shadow-magic relative text-left">
-
-                <div class="flex items-center justify-between mb-6 pb-4 border-b border-lavender-200">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-lavender-500/15 text-lavender-600 flex items-center justify-center font-bold text-lg">
-                            <i class="fas fa-wallet"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-lavender-900 text-base">Mercado Pago / Banco</h4>
-                            <p class="text-xs text-lavender-800">Titular: Eliana / Juan Carlos</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Fila Alias -->
                 <div class="mb-5 bg-white/90 p-4 rounded-2xl border border-lavender-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
-                        <span class="text-xs uppercase font-semibold tracking-wider text-lavender-600 block mb-1">Alias MP</span>
-                        <span id="aliasText" class="font-mono text-base font-bold text-lavender-900 select-all">unamas.juank.mp</span>
+                        <span class="text-xs uppercase font-semibold tracking-wider text-lavender-600 block mb-1">ALIAS</span>
+                        <span id="aliasText" class="font-mono text-xl font-bold text-lavender-900 select-all tracking-wide">elilopez15.mp</span>
                     </div>
-                    <button type="button" data-copy="unamas.juank.mp" class="copy-btn inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-lavender-100 hover:bg-lavender-200 text-lavender-800 font-medium text-xs transition-all active:scale-95 self-start sm:self-auto">
+                    <button type="button" data-copy="elilopez15.mp" class="copy-btn inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-lavender-100 hover:bg-lavender-200 text-lavender-800 font-medium text-xs transition-all active:scale-95 self-start sm:self-auto">
                         <i class="far fa-copy"></i> <span>Copiar Alias</span>
                     </button>
                 </div>
 
-                <!-- Fila CVU -->
-                <div class="mb-6 bg-white/90 p-4 rounded-2xl border border-lavender-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div>
-                        <span class="text-xs uppercase font-semibold tracking-wider text-lavender-600 block mb-1">CVU</span>
-                        <span id="cvuText" class="font-mono text-sm font-bold text-lavender-900 break-all select-all">0000003100084395160978</span>
-                    </div>
-                    <button type="button" data-copy="0000003100084395160978" class="copy-btn inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-lavender-100 hover:bg-lavender-200 text-lavender-800 font-medium text-xs transition-all active:scale-95 self-start sm:self-auto">
-                        <i class="far fa-copy"></i> <span>Copiar CVU</span>
-                    </button>
-                </div>
-
-                <!-- Botón Mercado Pago Directo -->
                 <a href="https://link.mercadopago.com.ar/amarillacomunicacion" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-semibold text-sm transition-all shadow-sm active:scale-95">
                     <i class="fas fa-gift"></i> Enviar Regalo por Mercado Pago
                 </a>
@@ -567,23 +430,19 @@
         </div>
     </section>
 
-    <!-- ==========================================
-         SECCIÓN 5: RSVP / CONFIRMACIÓN DE ASISTENCIA
-         ========================================== -->
+    <!-- SECCIÓN 5: RSVP / CONFIRMACIÓN DE ASISTENCIA Y ACCESO ESPECIAL -->
     <section id="rsvp" class="py-20 px-4 bg-white/15 backdrop-blur-[2px] border-t border-white/40 relative z-10">
         <div class="max-w-2xl mx-auto text-center reveal">
-
             <div class="w-14 h-14 rounded-full bg-blush-100 border border-blush-400 text-blush-500 flex items-center justify-center mx-auto mb-6 text-xl shadow-sm">
                 <i class="fas fa-envelope-open-text"></i>
             </div>
 
             <h2 class="font-title text-3xl sm:text-4xl text-lavender-900 mb-1">Confirmación de Asistencia</h2>
             <canvas class="comet-line-canvas" data-delay="0.75" aria-hidden="true"></canvas>
-            <p class="font-serif italic text-lg text-lavender-900 font-medium mb-8">Por favor confirmá tu presencia antes del 25 de Noviembre</p>
+            <p id="rsvpSubtitle" class="font-serif italic text-lg text-lavender-900 font-medium mb-8">Por favor confirmá tu presencia antes del 25 de Noviembre</p>
 
-            <!-- Formulario RSVP -->
+            <!-- Formulario RSVP Tradicional -->
             <form id="rsvpForm" class="bg-magic-card p-6 sm:p-10 rounded-3xl border border-white/80 box-shadow-magic text-left space-y-5">
-
                 <div>
                     <label for="guestName" class="block text-xs uppercase font-semibold text-lavender-900 tracking-wider mb-2">
                         Nombre y Apellido del Invitado / Familia *
@@ -591,60 +450,72 @@
                     <input type="text" id="guestName" required placeholder="Ej. María García" class="w-full px-4 py-3.5 rounded-xl border border-lavender-300 bg-white focus:outline-none focus:ring-2 focus:ring-lavender-500 text-sm text-lavender-900 placeholder-slate-400 transition-all">
                 </div>
 
-                <div>
-                    <span class="block text-xs uppercase font-semibold text-lavender-900 tracking-wider mb-2">
-                        ¿Asistirás al evento? *
-                    </span>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label class="border border-lavender-300 bg-white p-3.5 rounded-xl flex items-center justify-center gap-2 cursor-pointer hover:border-lavender-500 transition-all">
-                            <input type="radio" name="attendance" value="Confirmado" checked class="accent-lavender-600">
-                            <span class="text-sm font-medium text-lavender-900">¡Sí, ahí estaré! ✨</span>
-                        </label>
-                        <label class="border border-lavender-300 bg-white p-3.5 rounded-xl flex items-center justify-center gap-2 cursor-pointer hover:border-lavender-500 transition-all">
-                            <input type="radio" name="attendance" value="No Asiste" class="accent-lavender-600">
-                            <span class="text-sm font-medium text-lavender-900">No podré asistir 😔</span>
-                        </label>
+                <div id="traditionalRsvpFields" class="space-y-5">
+                    <div>
+                        <span class="block text-xs uppercase font-semibold text-lavender-900 tracking-wider mb-2">¿Asistirás al evento? *</span>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="border border-lavender-300 bg-white p-3.5 rounded-xl flex items-center justify-center gap-2 cursor-pointer hover:border-lavender-500 transition-all">
+                                <input type="radio" name="attendance" value="Confirmado" checked class="accent-lavender-600">
+                                <span class="text-sm font-medium text-lavender-900">¡Sí, ahí estaré! ✨</span>
+                            </label>
+                            <label class="border border-lavender-300 bg-white p-3.5 rounded-xl flex items-center justify-center gap-2 cursor-pointer hover:border-lavender-500 transition-all">
+                                <input type="radio" name="attendance" value="No Asiste" class="accent-lavender-600">
+                                <span class="text-sm font-medium text-lavender-900">No podré asistir 😔</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="companionsGroup">
+                        <label for="guestCount" class="block text-xs uppercase font-semibold text-lavender-900 tracking-wider mb-2">Cantidad Total de Personas (Incluyéndote)</label>
+                        <select id="guestCount" class="w-full px-4 py-3.5 rounded-xl border border-lavender-300 bg-white focus:outline-none focus:ring-2 focus:ring-lavender-500 text-sm text-lavender-900 transition-all">
+                            <option value="1">1 Persona (Solo yo)</option>
+                            <option value="2">2 Personas</option>
+                            <option value="3">3 Personas</option>
+                            <option value="4">4 Personas</option>
+                            <option value="5">5 Personas o grupo familiar</option>
+                        </select>
+                    </div>
+
+                    <div id="menuGroup">
+                        <label for="menuPreference" class="block text-xs uppercase font-semibold text-lavender-900 tracking-wider mb-2">Restricción Alimentaria / Menú Especial</label>
+                        <select id="menuPreference" class="w-full px-4 py-3.5 rounded-xl border border-lavender-300 bg-white focus:outline-none focus:ring-2 focus:ring-lavender-500 text-sm text-lavender-900 transition-all">
+                            <option value="Ninguno">Ninguno (Menú estándar)</option>
+                            <option value="Vegetariano">Vegetariano</option>
+                            <option value="Vegano">Vegano</option>
+                            <option value="Celiaco (Sin TACC)">Celíaco (Sin TACC)</option>
+                            <option value="Infantil">Menú Infantil</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="songSuggestion" class="block text-xs uppercase font-semibold text-lavender-900 tracking-wider mb-2">¿Qué tema no puede faltar en la fiesta? 🎵</label>
+                        <input type="text" id="songSuggestion" placeholder="Ej. Que se pique - Artista..." class="w-full px-4 py-3.5 rounded-xl border border-lavender-300 bg-white focus:outline-none focus:ring-2 focus:ring-lavender-500 text-sm text-lavender-900 placeholder-slate-400 transition-all">
+                    </div>
+
+                    <div>
+                        <label for="guestMessage" class="block text-xs uppercase font-semibold text-lavender-900 tracking-wider mb-2">Mensaje para Eliana (Opcional)</label>
+                        <textarea id="guestMessage" rows="3" placeholder="Dejá unas palabras lindas para la agasajada..." class="w-full px-4 py-3.5 rounded-xl border border-lavender-300 bg-white focus:outline-none focus:ring-2 focus:ring-lavender-500 text-sm text-lavender-900 placeholder-slate-400 transition-all"></textarea>
                     </div>
                 </div>
 
-                <div id="companionsGroup">
-                    <label for="guestCount" class="block text-xs uppercase font-semibold text-lavender-900 tracking-wider mb-2">
-                        Cantidad Total de Personas (Incluyéndote)
-                    </label>
-                    <select id="guestCount" class="w-full px-4 py-3.5 rounded-xl border border-lavender-300 bg-white focus:outline-none focus:ring-2 focus:ring-lavender-500 text-sm text-lavender-900 transition-all">
-                        <option value="1">1 Persona (Solo yo)</option>
-                        <option value="2">2 Personas</option>
-                        <option value="3">3 Personas</option>
-                        <option value="4">4 Personas</option>
-                        <option value="5">5 Personas o grupo familiar</option>
-                    </select>
-                </div>
-
-                <div id="menuGroup">
-                    <label for="menuPreference" class="block text-xs uppercase font-semibold text-lavender-900 tracking-wider mb-2">
-                        Restricción Alimentaria / Menú Especial
-                    </label>
-                    <select id="menuPreference" class="w-full px-4 py-3.5 rounded-xl border border-lavender-300 bg-white focus:outline-none focus:ring-2 focus:ring-lavender-500 text-sm text-lavender-900 transition-all">
-                        <option value="Ninguno">Ninguno (Menú estándar)</option>
-                        <option value="Vegetariano">Vegetariano</option>
-                        <option value="Vegano">Vegano</option>
-                        <option value="Celiaco (Sin TACC)">Celíaco (Sin TACC)</option>
-                        <option value="Infantil">Menú Infantil</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label for="songSuggestion" class="block text-xs uppercase font-semibold text-lavender-900 tracking-wider mb-2">
-                        ¿Qué tema no puede faltar en la fiesta? 🎵
-                    </label>
-                    <input type="text" id="songSuggestion" placeholder="Ej. Que se pique - Artista..." class="w-full px-4 py-3.5 rounded-xl border border-lavender-300 bg-white focus:outline-none focus:ring-2 focus:ring-lavender-500 text-sm text-lavender-900 placeholder-slate-400 transition-all">
-                </div>
-
-                <div>
-                    <label for="guestMessage" class="block text-xs uppercase font-semibold text-lavender-900 tracking-wider mb-2">
-                        Mensaje para Eliana (Opcional)
-                    </label>
-                    <textarea id="guestMessage" rows="3" placeholder="Dejá unas palabras lindas para la agasajada..." class="w-full px-4 py-3.5 rounded-xl border border-lavender-300 bg-white focus:outline-none focus:ring-2 focus:ring-lavender-500 text-sm text-lavender-900 placeholder-slate-400 transition-all"></textarea>
+                <!-- CONTENEDOR DE ACCESO ESPECIAL (Oculto inicialmente) -->
+                <div id="specialAccessCard" class="hidden bg-gradient-to-br from-lavender-100 to-white p-6 rounded-2xl border-2 border-lavender-400 text-center space-y-4 shadow-md">
+                    <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-lavender-900 text-gold-300 text-xs font-bold uppercase tracking-wider">
+                        <i class="fas fa-ticket-alt"></i> Acceso Especial — 00:00 hs
+                    </div>
+                    <h3 class="font-title text-xl font-bold text-lavender-900" id="specialGuestNameDisplay">Invitado Especial</h3>
+                    <p class="text-xs text-lavender-800 leading-relaxed max-w-md mx-auto">
+                        "Tu ingreso estará habilitado a partir de las 00:00 hs, una vez finalizada la cena." Credencial personal e intransferible. El QR se valida una sola vez en puerta.
+                    </p>
+                    <div class="bg-white p-4 rounded-xl border border-lavender-200 inline-block mx-auto shadow-sm">
+                        <div id="qrcode" class="flex justify-center items-center"></div>
+                        <span id="braceletBadge" class="inline-block mt-3 px-3 py-1 rounded-lg bg-gold-400 text-lavender-900 font-bold text-xs">Pulsera E1</span>
+                    </div>
+                    <div>
+                        <button type="button" id="downloadQrBtn" class="px-6 py-3 rounded-xl bg-lavender-800 hover:bg-lavender-900 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 mx-auto">
+                            <i class="fas fa-download"></i> Descargar mi credencial (PNG)
+                        </button>
+                    </div>
                 </div>
 
                 <button type="submit" id="submitBtn" class="w-full py-4 rounded-2xl violet-pill-gradient border border-white/40 text-white font-bold text-base shadow-lg hover:opacity-95 transition-all duration-300 active:scale-95">
@@ -652,7 +523,6 @@
                 </button>
             </form>
 
-            <!-- Mensaje de Éxito -->
             <div id="rsvpSuccess" class="hidden mt-6 p-6 rounded-3xl bg-white/90 border border-lavender-400 text-lavender-900">
                 <i class="fas fa-check-circle text-4xl text-gold-600 mb-2 block"></i>
                 <h3 class="font-title text-2xl font-bold">¡Muchas gracias por confirmar!</h3>
@@ -664,16 +534,10 @@
         </div>
     </section>
 
-    <!-- ==========================================
-         FOOTER
-         ========================================== -->
-    <footer class="py-12 px-4 text-center bg-lavender-900 text-lavender-200 relative z-10">
-        <div class="max-w-xl mx-auto space-y-4">
-            <h3 class="font-script text-5xl text-gold-400">Eliana</h3>
-            <p class="font-serif italic text-sm text-lavender-300">Mis 15 Años — 2026</p>
-            <div class="w-12 h-[1px] bg-gold-400/50 mx-auto my-4"></div>
-            <p class="text-xs text-lavender-300">Diseñado con amor para una noche inolvidable.</p>
-        </div>
+    <!-- FOOTER -->
+    <footer class="relative min-h-[320px] py-20 px-4 text-center overflow-hidden border-t border-gold-400/30">
+        <div id="atmosphere-overlay" aria-hidden="true"></div>
+        <canvas id="lanterns-canvas" aria-hidden="true"></canvas>
     </footer>
 
     <!-- Toast Notification -->
@@ -682,30 +546,22 @@
         <span id="toastMsg">¡Mensaje del sistema!</span>
     </div>
 
-    <!-- ==========================================
-         SCRIPT ANIMACIÓN DE LINTERNAS (SECCIÓN 2)
-         ========================================== -->
+    <!-- SCRIPT ANIMACIÓN LINTERNAS FOOTER -->
     <script>
         (function () {
             const LANTERN_IMAGE_URL = 'https://github.com/bybuzko/elianalopez/blob/main/img/linterna%202.png?raw=true';
-
-            const section = document.getElementById('cuenta-regresiva');
+            const section = document.querySelector('footer');
             const canvas = document.getElementById('lanterns-canvas');
             if (!section || !canvas) return;
-
             const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
-
             let width = section.clientWidth || window.innerWidth;
-            let height = section.clientHeight || 520;
+            let height = section.clientHeight || 320;
             let isMobile = width < 640;
             let isSectionVisible = false;
-
             let bokehCount = isMobile ? 45 : 75;
             let lanternCount = isMobile ? 10 : 15;
-
             let bokehParticles = [];
             let lanterns = [];
-
             const bokehSprites = [];
             const lanternSprites = [];
             let lanternsReady = false;
@@ -714,141 +570,87 @@
             function resizeCanvas() {
                 const rect = section.getBoundingClientRect();
                 width = Math.max(1, Math.floor(rect.width || window.innerWidth));
-                height = Math.max(1, Math.floor(rect.height || 520));
+                height = Math.max(1, Math.floor(rect.height || 320));
                 isMobile = width < 640;
-
                 const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
                 canvas.width = Math.floor(width * dpr);
                 canvas.height = Math.floor(height * dpr);
                 ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-                const targetBokeh = isMobile ? 45 : 75;
-                if (bokehParticles.length !== targetBokeh) {
-                    bokehCount = targetBokeh;
-                    initBokeh(true);
-                }
-
-                const targetLanterns = isMobile ? 10 : 15;
-                if (lanternsReady && lanterns.length !== targetLanterns) {
-                    lanternCount = targetLanterns;
-                    initLanterns(true);
-                }
             }
 
             function buildBokehSprites() {
                 bokehSprites.length = 0;
-
                 const styles = [
                     { radius: 14, inner: 'rgba(255, 210, 115, 0.55)', mid: 'rgba(255, 155, 50, 0.22)' },
-                    { radius: 24, inner: 'rgba(255, 185, 85, 0.45)',  mid: 'rgba(245, 125, 35, 0.18)' },
-                    { radius: 36, inner: 'rgba(255, 160, 65, 0.35)',  mid: 'rgba(230, 95, 25, 0.14)' },
+                    { radius: 24, inner: 'rgba(255, 185, 85, 0.45)', mid: 'rgba(245, 125, 35, 0.18)' },
+                    { radius: 36, inner: 'rgba(255, 160, 65, 0.35)', mid: 'rgba(230, 95, 25, 0.14)' },
                     { radius: 52, inner: 'rgba(255, 195, 100, 0.26)', mid: 'rgba(240, 130, 40, 0.10)' }
                 ];
-
                 styles.forEach(st => {
                     const size = st.radius * 2;
                     const off = document.createElement('canvas');
-                    off.width = size;
-                    off.height = size;
+                    off.width = size; off.height = size;
                     const octx = off.getContext('2d');
-
                     const grad = octx.createRadialGradient(st.radius, st.radius, st.radius * 0.12, st.radius, st.radius, st.radius);
-                    grad.addColorStop(0, st.inner);
-                    grad.addColorStop(0.55, st.mid);
-                    grad.addColorStop(1, 'rgba(255, 110, 20, 0)');
-
-                    octx.fillStyle = grad;
-                    octx.fillRect(0, 0, size, size);
-
-                    bokehSprites.push({
-                        canvas: off,
-                        half: st.radius
-                    });
+                    grad.addColorStop(0, st.inner); grad.addColorStop(0.55, st.mid); grad.addColorStop(1, 'rgba(255, 110, 20, 0)');
+                    octx.fillStyle = grad; octx.fillRect(0, 0, size, size);
+                    bokehSprites.push({ canvas: off, half: st.radius });
                 });
             }
 
             function createFallbackSource() {
                 const off = document.createElement('canvas');
-                off.width = 160;
-                off.height = 200;
+                off.width = 160; off.height = 200;
                 const octx = off.getContext('2d');
                 const grad = octx.createRadialGradient(80, 125, 14, 80, 100, 88);
-                grad.addColorStop(0, '#fff9db');
-                grad.addColorStop(0.55, '#ffb732');
-                grad.addColorStop(1, '#d9531e');
-                octx.fillStyle = grad;
-                octx.beginPath();
-                octx.moveTo(36, 28);
-                octx.quadraticCurveTo(80, 12, 124, 28);
-                octx.lineTo(110, 172);
-                octx.quadraticCurveTo(80, 185, 50, 172);
-                octx.closePath();
-                octx.fill();
+                grad.addColorStop(0, '#fff9db'); grad.addColorStop(0.55, '#ffb732'); grad.addColorStop(1, '#d9531e');
+                octx.fillStyle = grad; octx.beginPath();
+                octx.moveTo(36, 28); octx.quadraticCurveTo(80, 12, 124, 28);
+                octx.lineTo(110, 172); octx.quadraticCurveTo(80, 185, 50, 172);
+                octx.closePath(); octx.fill();
                 return off;
             }
 
             function buildLanternSprites(sourceImg) {
                 lanternSprites.length = 0;
                 const aspect = (sourceImg.height || 130) / (sourceImg.width || 100);
-
                 const configs = [
-                    { w: 68,  glowRadius: 22, glowAlpha: 0.55 },
+                    { w: 68, glowRadius: 22, glowAlpha: 0.55 },
                     { w: 108, glowRadius: 34, glowAlpha: 0.68 },
                     { w: 152, glowRadius: 46, glowAlpha: 0.80 }
                 ];
-
                 configs.forEach(cfg => {
                     const pad = cfg.glowRadius * 2;
                     const drawW = cfg.w;
                     const drawH = Math.round(cfg.w * aspect);
-
                     const off = document.createElement('canvas');
-                    off.width = drawW + pad * 2;
-                    off.height = drawH + pad * 2;
+                    off.width = drawW + pad * 2; off.height = drawH + pad * 2;
                     const octx = off.getContext('2d');
-
-                    const cx = off.width / 2;
-                    const cy = off.height / 2;
-
+                    const cx = off.width / 2; const cy = off.height / 2;
                     const halo = octx.createRadialGradient(cx, cy, drawW * 0.16, cx, cy, drawW * 0.52 + cfg.glowRadius);
                     halo.addColorStop(0, `rgba(255, 200, 85, ${cfg.glowAlpha})`);
                     halo.addColorStop(0.52, `rgba(255, 135, 35, ${cfg.glowAlpha * 0.45})`);
                     halo.addColorStop(1, 'rgba(255, 105, 15, 0)');
-
-                    octx.fillStyle = halo;
-                    octx.fillRect(0, 0, off.width, off.height);
+                    octx.fillStyle = halo; octx.fillRect(0, 0, off.width, off.height);
                     octx.drawImage(sourceImg, pad, pad, drawW, drawH);
-
-                    lanternSprites.push({
-                        canvas: off,
-                        halfW: off.width / 2,
-                        halfH: off.height / 2
-                    });
+                    lanternSprites.push({ canvas: off, halfW: off.width / 2, halfH: off.height / 2 });
                 });
-
                 lanternsReady = true;
             }
 
-            function randomRange(min, max) {
-                return Math.random() * (max - min) + min;
-            }
+            function randomRange(min, max) { return Math.random() * (max - min) + min; }
 
             function resetBokeh(b, scatter) {
                 b.spriteIndex = Math.floor(Math.random() * bokehSprites.length);
                 b.scale = randomRange(0.45, 1.35);
                 if (isMobile) b.scale *= 0.82;
-
                 b.x = randomRange(-20, width + 20);
-                b.y = scatter
-                    ? height * (1 - Math.pow(Math.random(), 1.35))
-                    : height + randomRange(20, 90);
-
+                b.y = scatter ? height * (1 - Math.pow(Math.random(), 1.35)) : height + randomRange(20, 90);
                 b.vy = randomRange(3.5, 11.5);
                 b.driftX = randomRange(-2.5, 2.5);
                 b.swayAmp = randomRange(4, 14);
                 b.swayFreq = randomRange(0.25, 0.65);
                 b.swayPhase = randomRange(0, Math.PI * 2);
-
                 b.baseAlpha = randomRange(0.32, 0.85);
                 b.pulseSpeed = randomRange(0.5, 1.4);
                 b.pulsePhase = randomRange(0, Math.PI * 2);
@@ -857,40 +659,21 @@
 
             function initBokeh(scatter) {
                 bokehParticles = Array.from({ length: bokehCount }, () => {
-                    const b = {};
-                    resetBokeh(b, scatter);
-                    return b;
+                    const b = {}; resetBokeh(b, scatter); return b;
                 });
             }
 
             function resetLantern(item, scatter) {
                 const tier = Math.random();
-
-                if (tier < 0.35) {
-                    item.spriteIndex = 0;
-                    item.scale = randomRange(0.85, 1.08);
-                    item.alpha = randomRange(0.78, 0.92);
-                } else if (tier < 0.78) {
-                    item.spriteIndex = 1;
-                    item.scale = randomRange(0.90, 1.15);
-                    item.alpha = randomRange(0.88, 1.0);
-                } else {
-                    item.spriteIndex = 2;
-                    item.scale = randomRange(0.92, 1.18);
-                    item.alpha = 1.0;
-                }
-
-                if (isMobile) {
-                    item.scale *= 0.78;
-                }
-
+                if (tier < 0.35) { item.spriteIndex = 0; item.scale = randomRange(0.85, 1.08); item.alpha = randomRange(0.78, 0.92); }
+                else if (tier < 0.78) { item.spriteIndex = 1; item.scale = randomRange(0.90, 1.15); item.alpha = randomRange(0.88, 1.0); }
+                else { item.spriteIndex = 2; item.scale = randomRange(0.92, 1.18); item.alpha = 1.0; }
+                if (isMobile) item.scale *= 0.78;
                 item.x = randomRange(30, Math.max(60, width - 30));
                 item.y = scatter ? randomRange(0, height) : height + randomRange(80, 180);
-
                 const depthFactor = (item.spriteIndex + 1) / 3;
                 item.vy = (18 + depthFactor * 26) * randomRange(0.88, 1.12);
                 item.driftX = randomRange(-6, 7) * (0.5 + depthFactor * 0.5);
-
                 item.swayAmp = randomRange(12, 26) * (0.6 + depthFactor * 0.4);
                 item.swayFreq = randomRange(0.45, 0.95);
                 item.swayPhase = randomRange(0, Math.PI * 2);
@@ -900,9 +683,7 @@
 
             function initLanterns(scatter) {
                 lanterns = Array.from({ length: lanternCount }, () => {
-                    const item = {};
-                    resetLantern(item, scatter);
-                    return item;
+                    const item = {}; resetLantern(item, scatter); return item;
                 });
                 lanterns.sort((a, b) => a.spriteIndex - b.spriteIndex);
             }
@@ -910,57 +691,33 @@
             function renderLoop(now) {
                 const dt = Math.min((now - lastTime) / 1000, 0.06);
                 lastTime = now;
-
                 if (isSectionVisible) {
                     ctx.clearRect(0, 0, width, height);
-
-                    // 1. Capa de fondo: partículas bokeh cálidas
                     ctx.globalCompositeOperation = 'lighter';
                     for (let i = 0; i < bokehParticles.length; i++) {
                         const b = bokehParticles[i];
-                        b.time += dt;
-                        b.y -= b.vy * dt;
-                        b.x += b.driftX * dt;
-
-                        if (b.x < -50) b.x = width + 40;
-                        else if (b.x > width + 50) b.x = -40;
-
-                        if (b.y < -65) {
-                            resetBokeh(b, false);
-                        }
-
+                        b.time += dt; b.y -= b.vy * dt; b.x += b.driftX * dt;
+                        if (b.x < -50) b.x = width + 40; else if (b.x > width + 50) b.x = -40;
+                        if (b.y < -65) resetBokeh(b, false);
                         const rx = b.x + Math.sin(b.time * b.swayFreq + b.swayPhase) * b.swayAmp;
                         const twinkle = 0.82 + 0.18 * Math.sin(b.time * b.pulseSpeed + b.pulsePhase);
                         const sprite = bokehSprites[b.spriteIndex];
                         const drawSize = sprite.half * 2 * b.scale;
                         const halfDraw = drawSize * 0.5;
-
                         ctx.globalAlpha = b.baseAlpha * twinkle;
                         ctx.drawImage(sprite.canvas, rx - halfDraw, b.y - halfDraw, drawSize, drawSize);
                     }
-
-                    // 2. Capa de primer plano: linternas protagonistas
                     ctx.globalCompositeOperation = 'source-over';
                     if (lanternsReady) {
                         for (let i = 0; i < lanterns.length; i++) {
                             const p = lanterns[i];
-
-                            p.time += dt;
-                            p.y -= p.vy * dt;
-                            p.x += p.driftX * dt;
-
-                            if (p.x < -110) p.x = width + 100;
-                            else if (p.x > width + 110) p.x = -100;
-
-                            if (p.y < -160) {
-                                resetLantern(p, false);
-                            }
-
+                            p.time += dt; p.y -= p.vy * dt; p.x += p.driftX * dt;
+                            if (p.x < -110) p.x = width + 100; else if (p.x > width + 110) p.x = -100;
+                            if (p.y < -160) resetLantern(p, false);
                             const wave = Math.sin(p.time * p.swayFreq + p.swayPhase);
                             const renderX = p.x + wave * p.swayAmp;
                             const angle = wave * p.maxTilt;
                             const sprite = lanternSprites[p.spriteIndex];
-
                             ctx.save();
                             ctx.globalAlpha = p.alpha;
                             ctx.translate(renderX, p.y);
@@ -971,111 +728,204 @@
                         }
                     }
                 }
-
                 requestAnimationFrame(renderLoop);
             }
 
-            buildBokehSprites();
-            resizeCanvas();
-            initBokeh(true);
-
-            // Observa cambios de tamaño de la tarjeta/sección y visibilidad en pantalla
-            if ('ResizeObserver' in window) {
-                const ro = new ResizeObserver(() => resizeCanvas());
-                ro.observe(section);
-            } else {
-                window.addEventListener('resize', resizeCanvas);
-            }
-
+            buildBokehSprites(); resizeCanvas(); initBokeh(true);
             if ('IntersectionObserver' in window) {
                 const io = new IntersectionObserver(entries => {
-                    entries.forEach(entry => {
-                        isSectionVisible = entry.isIntersecting;
-                        if (isSectionVisible) lastTime = performance.now();
-                    });
+                    entries.forEach(entry => { isSectionVisible = entry.isIntersecting; if (isSectionVisible) lastTime = performance.now(); });
                 }, { threshold: 0.02 });
                 io.observe(section);
-            } else {
-                isSectionVisible = true;
-            }
+            } else { isSectionVisible = true; }
 
             const img = new Image();
             img.crossOrigin = 'anonymous';
-            img.onload = () => {
-                buildLanternSprites(img);
-                initLanterns(true);
-            };
-            img.onerror = () => {
-                const imgNoCors = new Image();
-                imgNoCors.onload = () => {
-                    buildLanternSprites(imgNoCors);
-                    initLanterns(true);
-                };
-                imgNoCors.onerror = () => {
-                    buildLanternSprites(createFallbackSource());
-                    initLanterns(true);
-                };
-                imgNoCors.src = LANTERN_IMAGE_URL;
-            };
+            img.onload = () => { buildLanternSprites(img); initLanterns(true); };
+            img.onerror = () => { buildLanternSprites(createFallbackSource()); initLanterns(true); };
             img.src = LANTERN_IMAGE_URL;
-
             lastTime = performance.now();
             requestAnimationFrame(renderLoop);
         })();
     </script>
 
-    <!-- ==========================================
-         JAVASCRIPT UNIFICADO (UI + ANIMACIONES + FIREBASE)
-         ========================================== -->
+    <!-- JAVASCRIPT UNIFICADO: ANIMACIONES, RSVP Y ACCESO ESPECIAL (FIREBASE) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, doc, getDoc, setDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // Hora explícita en Argentina (UTC-3) para precisión absoluta
         const EVENT_CONFIG = {
             targetDate: new Date('2026-12-12T21:30:00-03:00'),
             venueName: "Círculo de Oficiales de la Policía",
             venueAddress: "Colectora Ruta 12 y Caraguatay, Garupá, Misiones"
         };
 
+        const SPECIAL_GUESTS = [
+            { name: "MAITE A.", bracelet: "E1" },
+            { name: "THIAN R.", bracelet: "E2" },
+            { name: "LUCIANA S.", bracelet: "E3" },
+            { name: "MAXIMO V.", bracelet: "E4" },
+            { name: "AMAIA G.", bracelet: "E5" },
+            { name: "ENZO Z.", bracelet: "E6" },
+            { name: "PALOMA P.", bracelet: "E7" },
+            { name: "LUDMILA V.", bracelet: "E8" },
+            { name: "MACARENA M.", bracelet: "E9" },
+            { name: "VICKI C.", bracelet: "E10" },
+            { name: "MIA L.", bracelet: "E11" },
+            { name: "CALEB C.", bracelet: "E12" },
+            { name: "THIAGO A.", bracelet: "E13" },
+            { name: "RODRIGO L.", bracelet: "E14" },
+            { name: "ANTONELLA A.", bracelet: "E15" },
+            { name: "MARIANO O.", bracelet: "E16" },
+            { name: "NAOMI A.", bracelet: "E17" },
+            { name: "BRIAN M.", bracelet: "E18" },
+            { name: "IAN S.", bracelet: "E19" },
+            { name: "TIZIANA G.", bracelet: "E20" },
+            { name: "JOEL S.", bracelet: "E21" },
+            { name: "VALENTINA AQUINO", bracelet: "E22" },
+            { name: "FLOR R.", bracelet: "E23" },
+            { name: "DAHI", bracelet: "E24" },
+            { name: "PRISCILA F.", bracelet: "E25" }
+        ];
+
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-        // ==========================================
-        // 1. ANIMACIÓN DE TEXTO + GLOW PERIÓDICO EN TRAZO SVG
-        // ==========================================
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDVWAbr-x2LscQINp6NeNmZzsbW9jqsU9I",
+            authDomain: "mis-15-eliana-lopez.firebaseapp.com",
+            projectId: "mis-15-eliana-lopez",
+            storageBucket: "mis-15-eliana-lopez.firebasestorage.app",
+            messagingSenderId: "446826221919",
+            appId: "1:446826221919:web:347c723a9c5522496726ea"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Normalización de texto para búsqueda de invitados especiales
+        function normalizeName(str) {
+            if (!str) return "";
+            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+        }
+
+        function findSpecialGuest(inputName) {
+            const norm = normalizeName(inputName);
+            if (!norm) return null;
+            return SPECIAL_GUESTS.find(g => normalizeName(g.name) === norm) || null;
+        }
+
+        // Generación de Token aleatorio de 32 bytes (hex)
+        function generateSecureToken() {
+            const array = new Uint8Array(32);
+            crypto.getRandomValues(array);
+            return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+        }
+
+        let currentSpecialGuestData = null;
+
+        // Detección en tiempo real en el input de nombre
+        const guestNameInput = document.getElementById('guestName');
+        const traditionalFields = document.getElementById('traditionalRsvpFields');
+        const specialAccessCard = document.getElementById('specialAccessCard');
+        const submitBtn = document.getElementById('submitBtn');
+        const rsvpSubtitle = document.getElementById('rsvpSubtitle');
+
+        guestNameInput.addEventListener('input', async (e) => {
+            const val = e.target.value;
+            const match = findSpecialGuest(val);
+
+            if (match) {
+                currentSpecialGuestData = match;
+                traditionalFields.classList.add('hidden');
+                specialAccessCard.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+                rsvpSubtitle.textContent = "¡Sos parte de nuestros invitados especiales para la madrugada!";
+                document.getElementById('specialGuestNameDisplay').textContent = match.name;
+                document.getElementById('braceletBadge').textContent = `Pulsera ${match.bracelet}`;
+
+                // Generar o recuperar credencial en Firestore (colección accesos_15)
+                const docRef = doc(db, "accesos_15", match.bracelet);
+                let docSnap = await getDoc(docRef);
+                let token = "";
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    token = data.token;
+                    if (data.status === "cancelled") {
+                        token = generateSecureToken();
+                        await updateDoc(docRef, { token: token, status: "pending", issuedAt: serverTimestamp() });
+                    }
+                } else {
+                    token = generateSecureToken();
+                    await setDoc(docRef, {
+                        name: match.name,
+                        bracelet: match.bracelet,
+                        token: token,
+                        status: "pending",
+                        issuedAt: serverTimestamp(),
+                        enteredAt: null
+                    });
+                }
+
+                // Renderizar QR
+                const qrContainer = document.getElementById('qrcode');
+                qrContainer.innerHTML = "";
+                const qrPayload = JSON.stringify({
+                    event: "ELIANA15",
+                    bracelet: match.bracelet,
+                    token: token
+                });
+                new QRCode(qrContainer, {
+                    text: qrPayload,
+                    width: 180,
+                    height: 180,
+                    colorDark: "#271066",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+
+            } else {
+                currentSpecialGuestData = null;
+                traditionalFields.classList.remove('hidden');
+                specialAccessCard.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+                rsvpSubtitle.textContent = "Por favor confirmá tu presencia antes del 25 de Noviembre";
+            }
+        });
+
+        // Botón Descargar Credencial QR como PNG
+        document.getElementById('downloadQrBtn').addEventListener('click', () => {
+            const imgEl = document.querySelector('#qrcode img') || document.querySelector('#qrcode canvas');
+            if (!imgEl) {
+                showToast("El código QR aún se está generando.");
+                return;
+            }
+            let dataUrl = "";
+            if (imgEl.tagName === 'CANVAS') {
+                dataUrl = imgEl.toDataURL("image/png");
+            } else {
+                dataUrl = imgEl.src;
+            }
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = `Credencial_Eliana15_${currentSpecialGuestData ? currentSpecialGuestData.bracelet : 'QR'}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("¡Credencial descargada con éxito!");
+        });
+
+        // Animación de texto principal
         const elianaGradEl = document.getElementById('elianaVioletGrad');
         let svgGradShift = 0;
-
-        function shuffleArray(array) {
-            const arr = [...array];
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
-        }
-
-        function triggerSubtleStrokeGlow(letterIds) {
-            if (prefersReducedMotion || !isHeroVisible) return;
-            const randomized = shuffleArray(letterIds);
-            randomized.forEach((id, idx) => {
-                const glowEl = document.getElementById(`${id}-glow`);
-                if (!glowEl) return;
-                glowEl.classList.remove('is-glowing');
-                glowEl.style.animationDelay = `${(idx * 0.14).toFixed(2)}s`;
-                void glowEl.getBoundingClientRect();
-                glowEl.classList.add('is-glowing');
-            });
-        }
+        let isHeroVisible = true;
 
         function initHeroTypography() {
             const subEl = document.getElementById('animSubtitle');
             const quoteEl = document.getElementById('heroQuote');
             const subText = subEl.textContent.trim();
-
             subEl.innerHTML = '';
-
             let delay = 0.25;
             [...subText].forEach(char => {
                 const span = document.createElement('span');
@@ -1085,38 +935,135 @@
                 subEl.appendChild(span);
                 delay += 0.065;
             });
-
-            delay += 0.2;
-            const svgLetters = ['e', 'l', 'i', 'a', 'n', 'a2'];
-            svgLetters.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.style.animationDelay = `${delay}s`;
-                    delay += 0.11;
-                }
-            });
-
-            // Momento en el que la última letra termina su entrada (delay + 0.75s de duración)
-            const lettersSettledMs = (delay + 0.75) * 1000;
-
-            setTimeout(() => {
-                quoteEl.classList.remove('opacity-0');
-            }, prefersReducedMotion ? 0 : (delay + 0.15) * 1000);
-
-            if (!prefersReducedMotion) {
-                setTimeout(() => {
-                    triggerSubtleStrokeGlow(svgLetters);
-                    setInterval(() => {
-                        triggerSubtleStrokeGlow(svgLetters);
-                    }, 6000);
-                }, lettersSettledMs + 400);
-            }
+            setTimeout(() => { quoteEl.classList.remove('opacity-0'); }, prefersReducedMotion ? 0 : (delay + 0.15) * 1000);
         }
-
         initHeroTypography();
 
+        // Cuenta regresiva
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
+
+        function updateCountdown() {
+            const distance = EVENT_CONFIG.targetDate.getTime() - Date.now();
+            if (distance <= 0) {
+                daysEl.textContent = hoursEl.textContent = minutesEl.textContent = secondsEl.textContent = "00";
+                return;
+            }
+            daysEl.textContent = String(Math.floor(distance / 86400000)).padStart(2, '0');
+            hoursEl.textContent = String(Math.floor((distance % 86400000) / 3600000)).padStart(2, '0');
+            minutesEl.textContent = String(Math.floor((distance % 3600000) / 60000)).padStart(2, '0');
+            secondsEl.textContent = String(Math.floor((distance % 60000) / 1000)).padStart(2, '0');
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // Música & Toasts
+        const bgMusic = document.getElementById('bgMusic');
+        const musicIcon = document.getElementById('musicIcon');
+        const musicToggleBtn = document.getElementById('musicToggleBtn');
+
+        musicToggleBtn.addEventListener('click', () => {
+            if (!bgMusic.paused) {
+                bgMusic.pause();
+                musicIcon.className = "fas fa-music text-lg";
+            } else {
+                bgMusic.play().catch(() => showToast("Toca la pantalla para permitir reproducir audio."));
+                musicIcon.className = "fas fa-pause text-lg text-lavender-600";
+            }
+        });
+
+        let toastTimer = null;
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
+        }
+
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const text = btn.dataset.copy;
+                try {
+                    await navigator.clipboard.writeText(text);
+                    showToast("Copiado al portapapeles correctamente");
+                } catch {
+                    showToast("No se pudo copiar automáticamente.");
+                }
+            });
+        });
+
+        const companionsGroup = document.getElementById('companionsGroup');
+        const menuGroup = document.getElementById('menuGroup');
+        function toggleCompanionsVisibility() {
+            const selected = document.querySelector('input[name="attendance"]:checked')?.value;
+            const isConfirmed = selected === "Confirmado";
+            companionsGroup.classList.toggle('hidden', !isConfirmed);
+            menuGroup.classList.toggle('hidden', !isConfirmed);
+        }
+        document.querySelectorAll('input[name="attendance"]').forEach(radio => {
+            radio.addEventListener('change', toggleCompanionsVisibility);
+        });
+
+        // Formulario RSVP Tradicional
+        const rsvpForm = document.getElementById('rsvpForm');
+        const rsvpSuccess = document.getElementById('rsvpSuccess');
+
+        document.getElementById('resetRsvpBtn').addEventListener('click', () => {
+            rsvpForm.reset();
+            toggleCompanionsVisibility();
+            rsvpForm.classList.remove('hidden');
+            rsvpSuccess.classList.add('hidden');
+            specialAccessCard.classList.add('hidden');
+            traditionalFields.classList.remove('hidden');
+            submitBtn.classList.remove('hidden');
+            rsvpSubtitle.textContent = "Por favor confirmá tu presencia antes del 25 de Noviembre";
+        });
+
+        rsvpForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (currentSpecialGuestData) return;
+
+            const originalBtnHtml = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Guardando confirmación...`;
+
+            const name = document.getElementById('guestName').value.trim();
+            const attendance = document.querySelector('input[name="attendance"]:checked').value;
+            const isConfirmed = attendance === "Confirmado";
+
+            const newGuest = {
+                name,
+                attendance,
+                count: isConfirmed ? Number(document.getElementById('guestCount').value) : 0,
+                menu: isConfirmed ? document.getElementById('menuPreference').value : "Ninguno",
+                song: document.getElementById('songSuggestion').value.trim() || "-",
+                message: document.getElementById('guestMessage').value.trim() || "-",
+                date: new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' }),
+                createdAt: serverTimestamp()
+            };
+
+            try {
+                await addDoc(collection(db, "invitados"), newGuest);
+                if (isConfirmed && typeof window.confetti === 'function') {
+                    window.confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#FFD54F', '#9B51E0', '#F48FB1', '#3D1E8E'] });
+                }
+                rsvpForm.classList.add('hidden');
+                rsvpSuccess.classList.remove('hidden');
+                showToast("¡Confirmación enviada con éxito!");
+            } catch (error) {
+                console.error("Error al guardar en Firebase:", error);
+                showToast("Error de conexión. Revisá tu internet.");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnHtml;
+            }
+        });
+
         // ==========================================
-        // 2. CLASE PARTÍCULA MÁGICA COMPARTIDA
+        // ANIMACIONES DE CANVAS & PARTÍCULAS DE FONDO
         // ==========================================
         class MagicDust {
             constructor(x, y, spreadRange = 24) {
@@ -1140,28 +1087,21 @@
                 if (this.alpha <= 0) return;
                 ctx.globalAlpha = Math.max(0, this.alpha);
                 ctx.fillStyle = this.isBright ? '#FFFDF0' : '#FFD54F';
-                ctx.shadowBlur = this.isBright ? 5 : 0;
-                ctx.shadowColor = this.isBright ? '#FBC02D' : 'transparent';
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fill();
             }
         }
 
-        // ==========================================
-        // 3. ANILLO DORADO HERO + COMETAS + PARTÍCULAS DE FONDO
-        // ==========================================
         const heroCanvas = document.getElementById('heroRingCanvas');
         const heroCtx = heroCanvas.getContext('2d');
         let heroW = 0, heroH = 0, ringRadius = 0;
         let dustParticles = [];
         let loopProgress = 0;
-        let isHeroVisible = true;
 
         function resizeHeroRing() {
             const size = Math.min(heroCanvas.parentElement.offsetWidth, 560);
-            heroW = size;
-            heroH = size;
+            heroW = size; heroH = size;
             heroCanvas.width = size * dpr;
             heroCanvas.height = size * dpr;
             heroCanvas.style.width = `${size}px`;
@@ -1172,27 +1112,17 @@
 
         function renderHeroRing() {
             heroCtx.clearRect(0, 0, heroW, heroH);
-            const cx = heroW / 2;
-            const cy = heroH / 2;
-
+            const cx = heroW / 2; const cy = heroH / 2;
             loopProgress = (loopProgress + 0.0042) % 1;
             const drawPhaseEnd = 0.68;
-
             if (loopProgress <= drawPhaseEnd) {
                 const t = loopProgress / drawPhaseEnd;
                 const eased = -(Math.cos(Math.PI * t) - 1) / 2;
                 const currentAngle = -Math.PI / 2 + eased * Math.PI * 2;
-
-                let headAlpha = 1;
-                if (t < 0.1) headAlpha = t / 0.1;
-                else if (t > 0.85) headAlpha = (1 - t) / 0.15;
-
+                let headAlpha = (t < 0.1) ? t / 0.1 : (t > 0.85 ? (1 - t) / 0.15 : 1);
                 const tailLength = 0.75;
                 const segments = 24;
                 heroCtx.lineCap = 'round';
-                heroCtx.shadowBlur = 10;
-                heroCtx.shadowColor = '#FBC02D';
-
                 for (let i = 0; i < segments; i++) {
                     const ratio = 1 - i / segments;
                     const segStart = currentAngle - (tailLength * (i + 1)) / segments;
@@ -1203,144 +1133,101 @@
                     heroCtx.lineWidth = ratio * 3.5 + 0.5;
                     heroCtx.stroke();
                 }
-
                 const headX = cx + Math.cos(currentAngle) * ringRadius;
                 const headY = cy + Math.sin(currentAngle) * ringRadius;
-
                 if (headAlpha > 0.2) {
                     if (dustParticles.length < 180) {
                         for (let i = 0; i < 4; i++) dustParticles.push(new MagicDust(headX, headY));
                     }
                     heroCtx.globalAlpha = headAlpha;
                     heroCtx.fillStyle = '#FFFDF0';
-                    heroCtx.shadowBlur = 16;
-                    heroCtx.shadowColor = '#FFD54F';
                     heroCtx.beginPath();
                     heroCtx.arc(headX, headY, 3, 0, Math.PI * 2);
                     heroCtx.fill();
                 }
             }
-
             for (let i = dustParticles.length - 1; i >= 0; i--) {
                 dustParticles[i].update();
                 dustParticles[i].draw(heroCtx);
                 if (dustParticles[i].alpha <= 0) dustParticles.splice(i, 1);
             }
             heroCtx.globalAlpha = 1;
-            heroCtx.shadowBlur = 0;
         }
 
-        // Cometas bajo títulos
         const cometInstances = Array.from(document.querySelectorAll('.comet-line-canvas')).map(c => ({
             canvas: c,
             ctx: c.getContext('2d'),
-            w: 300,
-            h: 36,
+            w: 300, h: 36,
             progress: parseFloat(c.dataset.delay || '0') % 1,
             dust: [],
-            visible: false
+            visible: true
         }));
 
         function resizeCometLines() {
             cometInstances.forEach(item => {
                 const w = Math.max(200, Math.round(item.canvas.getBoundingClientRect().width || 300));
-                const h = 36;
                 item.w = w;
-                item.h = h;
                 item.canvas.width = w * dpr;
-                item.canvas.height = h * dpr;
+                item.canvas.height = 36 * dpr;
                 item.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             });
         }
 
         function renderCometLines() {
             cometInstances.forEach(item => {
-                if (!item.visible) return;
                 const { ctx: cCtx, w, h, dust } = item;
                 cCtx.clearRect(0, 0, w, h);
-
-                const pad = 22;
-                const startX = pad;
-                const endX = w - pad;
-                const span = endX - startX;
-                const lineY = h / 2;
-
+                const startX = 22; const endX = w - 22; const span = endX - startX; const lineY = h / 2;
                 const baseGrad = cCtx.createLinearGradient(startX, lineY, endX, lineY);
                 baseGrad.addColorStop(0, 'rgba(245, 127, 23, 0)');
                 baseGrad.addColorStop(0.5, 'rgba(245, 127, 23, 0.32)');
                 baseGrad.addColorStop(1, 'rgba(245, 127, 23, 0)');
-
-                cCtx.shadowBlur = 0;
-                cCtx.globalAlpha = 1;
                 cCtx.beginPath();
-                cCtx.moveTo(startX, lineY);
-                cCtx.lineTo(endX, lineY);
-                cCtx.strokeStyle = baseGrad;
-                cCtx.lineWidth = 1;
-                cCtx.stroke();
+                cCtx.moveTo(startX, lineY); cCtx.lineTo(endX, lineY);
+                cCtx.strokeStyle = baseGrad; cCtx.lineWidth = 1; cCtx.stroke();
 
                 item.progress = (item.progress + 0.0055) % 1;
                 const drawPhaseEnd = 0.72;
-
                 if (item.progress <= drawPhaseEnd) {
                     const t = item.progress / drawPhaseEnd;
                     const eased = -(Math.cos(Math.PI * t) - 1) / 2;
                     const headX = startX + eased * span;
-
-                    let headAlpha = 1;
-                    if (t < 0.12) headAlpha = t / 0.12;
-                    else if (t > 0.85) headAlpha = (1 - t) / 0.15;
-
+                    let headAlpha = (t < 0.12) ? t / 0.12 : (t > 0.85 ? (1 - t) / 0.15 : 1);
                     const tailLen = Math.min(75, span * 0.32);
                     const segments = 20;
-                    cCtx.lineCap = 'round';
-                    cCtx.shadowBlur = 8;
-                    cCtx.shadowColor = '#FBC02D';
-
                     for (let i = 0; i < segments; i++) {
                         const segEnd = headX - (tailLen * i) / segments;
                         const segStart = Math.max(startX, headX - (tailLen * (i + 1)) / segments);
                         if (segEnd <= startX) break;
-
                         const ratio = 1 - i / segments;
                         cCtx.beginPath();
-                        cCtx.moveTo(segStart, lineY);
-                        cCtx.lineTo(segEnd, lineY);
+                        cCtx.moveTo(segStart, lineY); cCtx.lineTo(segEnd, lineY);
                         cCtx.strokeStyle = `rgba(255, 224, 130, ${ratio * 0.9 * headAlpha})`;
                         cCtx.lineWidth = ratio * 3 + 0.5;
                         cCtx.stroke();
                     }
-
                     if (headAlpha > 0.2) {
                         if (dust.length < 70) {
                             for (let i = 0; i < 2; i++) dust.push(new MagicDust(headX, lineY, 12));
                         }
-                        cCtx.globalAlpha = headAlpha;
                         cCtx.fillStyle = '#FFFDF0';
-                        cCtx.shadowBlur = 14;
-                        cCtx.shadowColor = '#FFD54F';
                         cCtx.beginPath();
                         cCtx.arc(headX, lineY, 2.5, 0, Math.PI * 2);
                         cCtx.fill();
                     }
                 }
-
                 for (let i = dust.length - 1; i >= 0; i--) {
-                    dust[i].update();
-                    dust[i].draw(cCtx);
+                    dust[i].update(); dust[i].draw(cCtx);
                     if (dust[i].alpha <= 0) dust.splice(i, 1);
                 }
-                cCtx.globalAlpha = 1;
-                cCtx.shadowBlur = 0;
             });
         }
 
-        // Fondo con partículas y estrellas
+        // Fondo Estrellado
         const bgCanvas = document.getElementById('particles-canvas');
         const bgCtx = bgCanvas.getContext('2d');
         let bgW = 0, bgH = 0;
-        let dots = [];
-        let sparkles = [];
+        let dots = [], sparkles = [];
 
         function wrapY(val, margin = 20) {
             const total = bgH + margin * 2;
@@ -1359,8 +1246,7 @@
                 this.parallaxFactor = 0.04 + (this.radius / 6) * 0.08;
             }
             update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
+                this.x += this.speedX; this.y += this.speedY;
                 if (this.y < -10 || this.x < -10 || this.x > bgW + 10) this.reset(false);
             }
             draw(scrollOffset) {
@@ -1392,11 +1278,9 @@
                 const flicker = 0.72 + 0.28 * Math.sin(this.progress * Math.PI * this.twinkleFreq);
                 const currentSize = this.maxSize * envelope * flicker;
                 if (currentSize <= 0.2) return;
-
                 const alpha = envelope * flicker;
                 const renderY = wrapY(this.y - scrollOffset * this.parallaxFactor, 20);
-                const outer = currentSize;
-                const inner = currentSize * 0.16;
+                const outer = currentSize; const inner = currentSize * 0.16;
 
                 bgCtx.save();
                 bgCtx.translate(this.x, renderY);
@@ -1414,10 +1298,8 @@
         }
 
         function resizeBgCanvas() {
-            bgW = window.innerWidth;
-            bgH = window.innerHeight;
-            bgCanvas.width = bgW * dpr;
-            bgCanvas.height = bgH * dpr;
+            bgW = window.innerWidth; bgH = window.innerHeight;
+            bgCanvas.width = bgW * dpr; bgCanvas.height = bgH * dpr;
             bgCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
         }
 
@@ -1428,82 +1310,30 @@
             sparkles = Array.from({ length: Math.max(12, Math.floor(area / 65000)) }, () => new Sparkle());
         }
 
-        // ==========================================
-        // 4. BUCLE MAESTRO DE ANIMACIÓN + PARALLAX
-        // ==========================================
-        const heroContent = document.getElementById('heroContent');
-        const heroFrame = document.getElementById('heroFrame');
         let currentScrollY = window.scrollY;
         let smoothScrollY = currentScrollY;
-
-        window.addEventListener('scroll', () => {
-            currentScrollY = window.scrollY;
-            if (!prefersReducedMotion && currentScrollY < window.innerHeight * 1.2) {
-                heroContent.style.transform = `translate3d(0, ${currentScrollY * 0.25}px, 0)`;
-                heroContent.style.opacity = Math.max(0, 1 - currentScrollY / (window.innerHeight * 0.85));
-                heroFrame.style.transform = `translate3d(0, ${currentScrollY * 0.1}px, 0)`;
-            }
-        }, { passive: true });
+        window.addEventListener('scroll', () => { currentScrollY = window.scrollY; }, { passive: true });
 
         function masterAnimationLoop() {
             if (isHeroVisible && elianaGradEl) {
                 svgGradShift = (svgGradShift + 0.8) % 336.42;
                 elianaGradEl.setAttribute('gradientTransform', `translate(-${svgGradShift}, 0)`);
             }
-
-            if (isHeroVisible) {
-                renderHeroRing();
-            }
-
+            if (isHeroVisible) { renderHeroRing(); }
             renderCometLines();
 
             bgCtx.clearRect(0, 0, bgW, bgH);
             smoothScrollY += (currentScrollY - smoothScrollY) * 0.08;
 
-            bgCtx.shadowBlur = 0;
-            for (const dot of dots) {
-                dot.update();
-                dot.draw(smoothScrollY);
-            }
-
-            bgCtx.shadowBlur = 10;
-            bgCtx.shadowColor = 'rgba(255, 255, 255, 0.9)';
-            for (const sparkle of sparkles) {
-                sparkle.update();
-                sparkle.draw(smoothScrollY);
-            }
-            bgCtx.shadowBlur = 0;
+            for (const dot of dots) { dot.update(); dot.draw(smoothScrollY); }
+            for (const sparkle of sparkles) { sparkle.update(); sparkle.draw(smoothScrollY); }
 
             requestAnimationFrame(masterAnimationLoop);
         }
 
-        // Resize unificado con debounce
-        let resizeTimer = null;
-        let lastWidth = window.innerWidth;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(() => {
-                resizeHeroRing();
-                resizeCometLines();
-                if (window.innerWidth !== lastWidth) {
-                    lastWidth = window.innerWidth;
-                    initParticles();
-                } else {
-                    resizeBgCanvas();
-                }
-            }, 150);
-        });
+        resizeHeroRing(); resizeCometLines(); initParticles();
+        if (!prefersReducedMotion) { requestAnimationFrame(masterAnimationLoop); }
 
-        resizeHeroRing();
-        resizeCometLines();
-        initParticles();
-        if (!prefersReducedMotion) {
-            requestAnimationFrame(masterAnimationLoop);
-        }
-
-        // ==========================================
-        // 5. INTERSECTION OBSERVERS (REVEAL + VISIBILIDAD CANVAS)
-        // ==========================================
         const revealObserver = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -1513,211 +1343,6 @@
             });
         }, { threshold: 0.15 });
         document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-
-        const visibilityObserver = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (entry.target.id === 'heroSection') {
-                    isHeroVisible = entry.isIntersecting;
-                } else {
-                    const comet = cometInstances.find(c => c.canvas === entry.target);
-                    if (comet) comet.visible = entry.isIntersecting;
-                }
-            });
-        }, { threshold: 0.05 });
-
-        visibilityObserver.observe(document.getElementById('heroSection'));
-        cometInstances.forEach(item => visibilityObserver.observe(item.canvas));
-
-        // ==========================================
-        // 6. CUENTA REGRESIVA & GOOGLE CALENDAR
-        // ==========================================
-        const daysEl = document.getElementById('days');
-        const hoursEl = document.getElementById('hours');
-        const minutesEl = document.getElementById('minutes');
-        const secondsEl = document.getElementById('seconds');
-
-        function updateCountdown() {
-            const distance = EVENT_CONFIG.targetDate.getTime() - Date.now();
-            if (distance <= 0) {
-                daysEl.textContent = hoursEl.textContent = minutesEl.textContent = secondsEl.textContent = "00";
-                return;
-            }
-            daysEl.textContent = String(Math.floor(distance / 86400000)).padStart(2, '0');
-            hoursEl.textContent = String(Math.floor((distance % 86400000) / 3600000)).padStart(2, '0');
-            minutesEl.textContent = String(Math.floor((distance % 3600000) / 60000)).padStart(2, '0');
-            secondsEl.textContent = String(Math.floor((distance % 60000) / 1000)).padStart(2, '0');
-        }
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
-
-        function setupCalendarLink() {
-            const title = encodeURIComponent("Mis 15 Años - Eliana");
-            const details = encodeURIComponent("¡Te espero para festejar mis 15 años!");
-            const location = encodeURIComponent(`${EVENT_CONFIG.venueName}, ${EVENT_CONFIG.venueAddress}`);
-            const formatCalDate = date => date.toISOString().replace(/-|:|\.\d{3}/g, "");
-            const startTime = formatCalDate(EVENT_CONFIG.targetDate);
-            const endTime = formatCalDate(new Date(EVENT_CONFIG.targetDate.getTime() + 6 * 3600000));
-            document.getElementById('addToCalendarBtn').href =
-                `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startTime}/${endTime}&details=${details}&location=${location}`;
-        }
-        setupCalendarLink();
-
-        // ==========================================
-        // 7. MÚSICA, TOAST, PORTAPAPELES & CONTROLES RSVP
-        // ==========================================
-        const bgMusic = document.getElementById('bgMusic');
-        const musicIcon = document.getElementById('musicIcon');
-        const musicToggleBtn = document.getElementById('musicToggleBtn');
-
-        bgMusic.addEventListener('play', () => {
-            musicIcon.className = "fas fa-pause text-lg text-lavender-600";
-            musicToggleBtn.setAttribute('aria-pressed', 'true');
-        });
-
-        bgMusic.addEventListener('pause', () => {
-            musicIcon.className = "fas fa-music text-lg";
-            musicToggleBtn.setAttribute('aria-pressed', 'false');
-        });
-
-        musicToggleBtn.addEventListener('click', () => {
-            if (!bgMusic.paused) {
-                bgMusic.pause();
-            } else {
-                bgMusic.play().catch(() => {
-                    showToast("Toca la pantalla para permitir reproducir audio.");
-                });
-            }
-        });
-
-        let toastTimer = null;
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toastMsg').textContent = msg;
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            clearTimeout(toastTimer);
-            toastTimer = setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
-        }
-
-        function triggerCopySuccess(btn) {
-            const originalHTML = btn.innerHTML;
-            btn.innerHTML = `<i class="fas fa-check text-emerald-600"></i> <span class="text-emerald-700">¡Copiado!</span>`;
-            btn.classList.add("bg-emerald-100", "border-emerald-300");
-            showToast("Copiado al portapapeles correctamente");
-            setTimeout(() => {
-                btn.innerHTML = originalHTML;
-                btn.classList.remove("bg-emerald-100", "border-emerald-300");
-            }, 2500);
-        }
-
-        document.querySelectorAll('.copy-btn').forEach(btn => {
-            btn.addEventListener('click', async () => {
-                const text = btn.dataset.copy;
-                try {
-                    await navigator.clipboard.writeText(text);
-                    triggerCopySuccess(btn);
-                } catch {
-                    const textArea = document.createElement("textarea");
-                    textArea.value = text;
-                    textArea.style.position = "fixed";
-                    textArea.style.opacity = "0";
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    try {
-                        document.execCommand('copy');
-                        triggerCopySuccess(btn);
-                    } catch {
-                        showToast("No se pudo copiar automáticamente.");
-                    }
-                    document.body.removeChild(textArea);
-                }
-            });
-        });
-
-        const companionsGroup = document.getElementById('companionsGroup');
-        const menuGroup = document.getElementById('menuGroup');
-
-        function toggleCompanionsVisibility() {
-            const selected = document.querySelector('input[name="attendance"]:checked')?.value;
-            const isConfirmed = selected === "Confirmado";
-            companionsGroup.classList.toggle('hidden', !isConfirmed);
-            menuGroup.classList.toggle('hidden', !isConfirmed);
-        }
-
-        document.querySelectorAll('input[name="attendance"]').forEach(radio => {
-            radio.addEventListener('change', toggleCompanionsVisibility);
-        });
-
-        // ==========================================
-        // 8. FIREBASE FIRESTORE (RSVP)
-        // ==========================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyDVWAbr-x2LscQINp6NeNmZzsbW9jqsU9I",
-            authDomain: "mis-15-eliana-lopez.firebaseapp.com",
-            projectId: "mis-15-eliana-lopez",
-            storageBucket: "mis-15-eliana-lopez.firebasestorage.app",
-            messagingSenderId: "446826221919",
-            appId: "1:446826221919:web:347c723a9c5522496726ea"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        const rsvpForm = document.getElementById('rsvpForm');
-        const submitBtn = document.getElementById('submitBtn');
-        const rsvpSuccess = document.getElementById('rsvpSuccess');
-
-        document.getElementById('resetRsvpBtn').addEventListener('click', () => {
-            rsvpForm.reset();
-            toggleCompanionsVisibility();
-            rsvpForm.classList.remove('hidden');
-            rsvpSuccess.classList.add('hidden');
-        });
-
-        rsvpForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const originalBtnHtml = submitBtn.innerHTML;
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Guardando confirmación...`;
-
-            const name = document.getElementById('guestName').value.trim();
-            const attendance = document.querySelector('input[name="attendance"]:checked').value;
-            const isConfirmed = attendance === "Confirmado";
-
-            const newGuest = {
-                name,
-                attendance,
-                count: isConfirmed ? Number(document.getElementById('guestCount').value) : 0,
-                menu: isConfirmed ? document.getElementById('menuPreference').value : "Ninguno",
-                song: document.getElementById('songSuggestion').value.trim() || "-",
-                message: document.getElementById('guestMessage').value.trim() || "-",
-                date: new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' }),
-                createdAt: serverTimestamp()
-            };
-
-            try {
-                await addDoc(collection(db, "invitados"), newGuest);
-
-                if (isConfirmed && typeof window.confetti === 'function') {
-                    window.confetti({
-                        particleCount: 100,
-                        spread: 70,
-                        origin: { y: 0.6 },
-                        colors: ['#FFD54F', '#9B51E0', '#F48FB1', '#3D1E8E']
-                    });
-                }
-
-                rsvpForm.classList.add('hidden');
-                rsvpSuccess.classList.remove('hidden');
-                showToast("¡Confirmación enviada con éxito!");
-            } catch (error) {
-                console.error("Error al guardar en Firebase:", error);
-                showToast("Error de conexión. Revisá tu internet e intentá de nuevo.");
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnHtml;
-            }
-        });
     </script>
 </body>
 </html>
