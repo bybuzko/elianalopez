@@ -80,7 +80,7 @@
 
         .violet-word-gradient {
             display: inline-block;
-            padding: 0.15em 0.25em;
+            padding: 0.12em 0.22em;
             overflow: visible;
             filter: drop-shadow(0 3px 10px rgba(39, 16, 102, 0.22));
         }
@@ -215,19 +215,19 @@
         </div>
 
         <!-- Título Principal con Halo Dorado -->
-        <div id="heroContent" class="relative my-auto py-12 sm:py-16 flex flex-col items-center justify-center w-full max-w-2xl will-change-transform">
+        <div id="heroContent" class="relative my-auto py-10 sm:py-16 flex flex-col items-center justify-center w-full max-w-2xl will-change-transform">
             <canvas id="heroRingCanvas" aria-hidden="true" class="absolute inset-0 m-auto pointer-events-none z-0"></canvas>
 
-            <div class="relative z-10 px-4 overflow-visible">
-                <span id="animSubtitle" aria-label="Mis 15 Años" class="font-serif italic text-3xl sm:text-5xl text-white block mb-1 leading-normal drop-shadow overflow-visible">
+            <div class="relative z-10 px-2 sm:px-4 overflow-visible">
+                <span id="animSubtitle" aria-label="Mis 15 Años" class="font-serif italic text-3xl sm:text-5xl text-white block mb-1 sm:mb-2 leading-normal drop-shadow overflow-visible">
                     Mis 15 Años
                 </span>
 
-                <h1 id="animTitle" aria-label="Eliana" class="font-script text-7xl sm:text-9xl font-normal violet-word-gradient leading-normal overflow-visible">
+                <h1 id="animTitle" aria-label="Eliana" class="font-script text-[clamp(6.2rem,24vw,8rem)] sm:text-9xl font-normal violet-word-gradient leading-none sm:leading-normal my-1 overflow-visible">
                     Eliana
                 </h1>
 
-                <p id="heroQuote" class="font-serif italic text-lg sm:text-2xl text-lavender-900 max-w-md mx-auto mt-3 font-medium leading-relaxed opacity-0 transition-opacity duration-1000">
+                <p id="heroQuote" class="font-serif italic text-lg sm:text-2xl text-lavender-900 max-w-md mx-auto mt-2 sm:mt-3 font-medium leading-relaxed opacity-0 transition-opacity duration-1000">
                     "Hay momentos inolvidables que se atesoran en el corazón para siempre. Quiero compartir con vos la noche más especial de mi vida."
                 </p>
             </div>
@@ -1001,7 +1001,6 @@
                 measureWordLayout();
                 resizeHeroRing();
                 resizeCometLines();
-                // Evita reiniciar partículas en móviles cuando solo cambia la altura por la barra del navegador
                 if (window.innerWidth !== lastWidth) {
                     lastWidth = window.innerWidth;
                     initParticles();
