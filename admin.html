@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Html5-QRCode Scanner Library -->
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script>
         tailwind.config = {
@@ -60,7 +59,7 @@
                 <div>
                     <h1 class="font-title text-2xl font-bold text-gold-300">Administración — 15 de Eliana</h1>
                     <p class="text-xs text-lavender-200 flex items-center justify-center sm:justify-start gap-1.5 mt-0.5">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Sincronizado en tiempo real
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Sincronizado en tiempo real (Modo Pruebas Activo)
                     </p>
                 </div>
             </div>
@@ -69,7 +68,7 @@
             </button>
         </div>
 
-        <!-- ================= NUEVA SECCIÓN: CONTROL DE ACCESO (00:00 HS) ================= -->
+        <!-- CONTROL DE ACCESO (00:00 HS) Y LISTA DESPLEGABLE -->
         <div class="bg-white p-6 rounded-3xl border-2 border-lavender-400 shadow-lg space-y-5">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-4 border-b border-lavender-200">
                 <div>
@@ -78,9 +77,14 @@
                     </h2>
                     <p class="text-xs text-slate-600">"Validación de las 25 credenciales especiales E1–E25"</p>
                 </div>
-                <div class="bg-lavender-100 px-4 py-2 rounded-2xl border border-lavender-300 text-center">
-                    <span class="text-xs uppercase tracking-wider font-bold text-lavender-700 block">Ingresados</span>
-                    <span id="accessCounterDisplay" class="text-2xl font-bold text-lavender-900">0 / 25</span>
+                <div class="flex items-center gap-3">
+                    <button type="button" id="resetAllAccesosBtn" class="px-3 py-2 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-xl text-xs font-bold transition-all shadow-xs" title="Restaurar todos los estados a pendientes">
+                        <i class="fas fa-redo mr-1"></i> Restaurar Lista
+                    </button>
+                    <div class="bg-lavender-100 px-4 py-2 rounded-2xl border border-lavender-300 text-center">
+                        <span class="text-xs uppercase tracking-wider font-bold text-lavender-700 block">Ingresados</span>
+                        <span id="accessCounterDisplay" class="text-2xl font-bold text-lavender-900">0 / 25</span>
+                    </div>
                 </div>
             </div>
 
@@ -111,7 +115,6 @@
                         </div>
                     </div>
 
-                    <!-- Cuadro de Resultado de Validación -->
                     <div id="validationResultBox" class="p-4 rounded-2xl border-2 border-slate-200 bg-slate-50 text-center space-y-1 transition-all">
                         <span class="text-xs uppercase tracking-widest font-bold text-slate-500 block">Estado del Acceso</span>
                         <h4 id="validationTitle" class="font-bold text-lg text-slate-700">Listo para escanear</h4>
@@ -120,14 +123,17 @@
                 </div>
             </div>
 
-            <!-- Listado de los 25 Invitados Especiales -->
+            <!-- Listado Desplegable -->
             <div class="pt-4 border-t border-lavender-200">
-                <h3 class="font-bold text-sm text-lavender-900 mb-3">Estado en tiempo real de los 25 Invitados Especiales (E1–E25)</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5 max-h-72 overflow-y-auto pr-1">
-                    <div id="specialGuestsGrid" class="col-span-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5">
-                        <!-- Generado por JS -->
+                <details class="group bg-lavender-50 p-4 rounded-2xl border border-lavender-200">
+                    <summary class="flex justify-between items-center cursor-pointer font-bold text-sm text-lavender-900">
+                        <span><i class="fas fa-list-ul mr-2 text-lavender-600"></i> Ver listado de los 25 Invitados Especiales (E1–E25) y Estados</span>
+                        <span class="text-xs text-lavender-600 group-open:rotate-180 transition-transform"><i class="fas fa-chevron-down"></i></span>
+                    </summary>
+                    <div class="mt-4 pt-4 border-t border-lavender-200 max-h-64 overflow-y-auto pr-1">
+                        <div id="specialGuestsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5"></div>
                     </div>
-                </div>
+                </details>
             </div>
         </div>
 
@@ -179,49 +185,33 @@
                         </tr>
                     </thead>
                     <tbody id="guestTableBody" class="divide-y divide-slate-100">
-                        <tr>
-                            <td colspan="7" class="p-8 text-center text-slate-400">Cargando lista desde la nube...</td>
-                        </tr>
+                        <tr><td colspan="7" class="p-8 text-center text-slate-400">Cargando lista desde la nube...</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
-
     </div>
 
-    <!-- JAVASCRIPT DEL PANEL -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, query, orderBy, deleteDoc, doc, getDoc, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, query, orderBy, deleteDoc, doc, setDoc, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         const ADMIN_PIN = "1515";
-        const HABILITATION_DATE = new Date('2026-12-13T00:00:00-03:00'); // 13 de diciembre de 2026, 00:00 hs
+        const TEST_MODE = true;
 
         const SPECIAL_GUESTS_LIST = [
-            { bracelet: "E1", name: "MAITE A." },
-            { bracelet: "E2", name: "THIAN R." },
-            { bracelet: "E3", name: "LUCIANA S." },
-            { bracelet: "E4", name: "MAXIMO V." },
-            { bracelet: "E5", name: "AMAIA G." },
-            { bracelet: "E6", name: "ENZO Z." },
-            { bracelet: "E7", name: "PALOMA P." },
-            { bracelet: "E8", name: "LUDMILA V." },
-            { bracelet: "E9", name: "MACARENA M." },
-            { bracelet: "E10", name: "VICKI C." },
-            { bracelet: "E11", name: "MIA L." },
-            { bracelet: "E12", name: "CALEB C." },
-            { bracelet: "E13", name: "THIAGO A." },
-            { bracelet: "E14", name: "RODRIGO L." },
-            { bracelet: "E15", name: "ANTONELLA A." },
-            { bracelet: "E16", name: "MARIANO O." },
-            { bracelet: "E17", name: "NAOMI A." },
-            { bracelet: "E18", name: "BRIAN M." },
-            { bracelet: "E19", name: "IAN S." },
-            { bracelet: "E20", name: "TIZIANA G." },
-            { bracelet: "E21", name: "JOEL S." },
-            { bracelet: "E22", name: "VALENTINA AQUINO" },
-            { bracelet: "E23", name: "FLOR R." },
-            { bracelet: "E24", name: "DAHI" },
+            { bracelet: "E1", name: "MAITE A." }, { bracelet: "E2", name: "THIAN R." },
+            { bracelet: "E3", name: "LUCIANA S." }, { bracelet: "E4", name: "MAXIMO V." },
+            { bracelet: "E5", name: "AMAIA G." }, { bracelet: "E6", name: "ENZO Z." },
+            { bracelet: "E7", name: "PALOMA P." }, { bracelet: "E8", name: "LUDMILA V." },
+            { bracelet: "E9", name: "MACARENA M." }, { bracelet: "E10", name: "VICKI C." },
+            { bracelet: "E11", name: "MIA L." }, { bracelet: "E12", name: "CALEB C." },
+            { bracelet: "E13", name: "THIAGO A." }, { bracelet: "E14", name: "RODRIGO L." },
+            { bracelet: "E15", name: "ANTONELLA A." }, { bracelet: "E16", name: "MARIANO O." },
+            { bracelet: "E17", name: "NAOMI A." }, { bracelet: "E18", name: "BRIAN M." },
+            { bracelet: "E19", name: "IAN S." }, { bracelet: "E20", name: "TIZIANA G." },
+            { bracelet: "E21", name: "JOEL S." }, { bracelet: "E22", name: "VALENTINA AQUINO" },
+            { bracelet: "E23", name: "FLOR R." }, { bracelet: "E24", name: "DAHI" },
             { bracelet: "E25", name: "PRISCILA F." }
         ];
 
@@ -239,7 +229,6 @@
         let allGuests = [];
         let accesosMap = {};
 
-        // Control de PIN
         document.getElementById('pinForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const val = document.getElementById('pinInput').value.trim();
@@ -258,25 +247,19 @@
             return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
         }
 
-        // Escuchar base de datos tradicional invitados
         function listenToGuests() {
             const q = query(collection(db, "invitados"), orderBy("createdAt", "desc"));
             onSnapshot(q, (snapshot) => {
                 allGuests = [];
-                snapshot.forEach((docSnap) => {
-                    allGuests.push({ id: docSnap.id, ...docSnap.data() });
-                });
+                snapshot.forEach((docSnap) => { allGuests.push({ id: docSnap.id, ...docSnap.data() }); });
                 renderTable(allGuests);
             });
         }
 
-        // Escuchar colección accesos_15 en tiempo real
         function listenToAccesos15() {
             onSnapshot(collection(db, "accesos_15"), (snapshot) => {
                 accesosMap = {};
-                snapshot.forEach(docSnap => {
-                    accesosMap[docSnap.id] = docSnap.data();
-                });
+                snapshot.forEach(docSnap => { accesosMap[docSnap.id] = docSnap.data(); });
                 renderSpecialGuestsGrid();
                 updateAccessCounter();
             });
@@ -294,21 +277,35 @@
         function renderSpecialGuestsGrid() {
             const grid = document.getElementById('specialGuestsGrid');
             grid.innerHTML = '';
-            SPECIAL_GUESTS_LIST.forEach(item => {
+
+            const sortedList = [...SPECIAL_GUESTS_LIST].sort((a, b) => {
+                const dataA = accesosMap[a.bracelet];
+                const dataB = accesosMap[b.bracelet];
+                const statusA = dataA?.status || "none";
+                const statusB = dataB?.status || "none";
+                if (statusA === "used" && statusB !== "used") return -1;
+                if (statusB === "used" && statusA !== "used") return 1;
+                return 0;
+            });
+
+            sortedList.forEach(item => {
                 const data = accesosMap[item.bracelet];
                 let statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-200 text-slate-700">Sin emitir</span>`;
+                let cardBg = "bg-white";
+
                 if (data) {
                     if (data.status === "used") {
                         statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">Ingresó</span>`;
+                        cardBg = "bg-emerald-50/60 border-emerald-300";
                     } else if (data.status === "cancelled") {
                         statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800">Cancelada</span>`;
-                    } else {
-                        statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">Pendiente</span>`;
+                    } else if (data.status === "pending") {
+                        statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">QR generado</span>`;
                     }
                 }
 
                 const card = document.createElement('div');
-                card.className = "bg-white p-2.5 rounded-xl border border-lavender-200 text-left flex flex-col justify-between shadow-xs";
+                card.className = `${cardBg} p-2.5 rounded-xl border border-lavender-200 text-left flex flex-col justify-between shadow-xs`;
                 card.innerHTML = `
                     <div>
                         <div class="flex justify-between items-center mb-1">
@@ -322,28 +319,32 @@
             });
         }
 
-        // Lógica central de validación de QR / Token
+        // Botón Restaurar Lista con PIN obligatorio y limpieza de documentos
+        document.getElementById('resetAllAccesosBtn').addEventListener('click', async () => {
+            const enteredPin = prompt("⚠️ ADVERTENCIA: Restaurar la lista requiere ingresar el PIN de administrador:");
+            if (enteredPin !== ADMIN_PIN) {
+                if (enteredPin !== null) alert("PIN incorrecto. Operación cancelada.");
+                return;
+            }
+            if (confirm("¿Estás 100% seguro de restablecer todos los accesos especiales a estado 'Sin emitir'?")) {
+                for (const item of SPECIAL_GUESTS_LIST) {
+                    const docRef = doc(db, "accesos_15", item.bracelet);
+                    await deleteDoc(docRef).catch(() => {});
+                }
+                alert("¡Lista restaurada con éxito! Todos los invitados especiales figuran como Sin emitir.");
+            }
+        });
+
         async function validateQrPayload(rawText) {
             const resultBox = document.getElementById('validationResultBox');
             const titleEl = document.getElementById('validationTitle');
             const msgEl = document.getElementById('validationMessage');
 
-            // 1. Verificar fecha y hora de habilitación (13/12/2026 00:00 hs)
-            if (new Date() < HABILITATION_DATE) {
-                resultBox.className = "p-4 rounded-2xl border-2 border-amber-300 bg-amber-50 text-center space-y-1";
-                titleEl.className = "font-bold text-lg text-amber-800";
-                titleEl.innerText = "TODAVÍA NO HABILITADO";
-                msgEl.innerText = "El acceso especial comienza el 13 de diciembre de 2026 a las 00:00 hs.";
-                return;
-            }
-
             let parsed;
-            try {
-                parsed = JSON.parse(rawText);
-            } catch {
+            try { parsed = JSON.parse(rawText); } catch {
                 resultBox.className = "p-4 rounded-2xl border-2 border-rose-300 bg-rose-50 text-center space-y-1";
                 titleEl.className = "font-bold text-lg text-rose-800";
-                titleEl.innerText = "QR INCORRECTO";
+                titleEl.innerText = "QR INCORRECTO ❌";
                 msgEl.innerText = "El formato del código QR no es válido.";
                 return;
             }
@@ -351,7 +352,7 @@
             if (parsed.event !== "ELIANA15" || !parsed.bracelet || !parsed.token) {
                 resultBox.className = "p-4 rounded-2xl border-2 border-rose-300 bg-rose-50 text-center space-y-1";
                 titleEl.className = "font-bold text-lg text-rose-800";
-                titleEl.innerText = "QR INCORRECTO";
+                titleEl.innerText = "QR INCORRECTO ❌";
                 msgEl.innerText = "Los datos del evento o credencial no coinciden.";
                 return;
             }
@@ -361,40 +362,33 @@
             const docRef = doc(db, "accesos_15", braceletId);
 
             try {
+                let guestFullName = braceletId;
+                let scanTimeStr = "";
+
                 await runTransaction(db, async (transaction) => {
                     const docSnap = await transaction.get(docRef);
-                    if (!docSnap.exists()) {
-                        throw new Error("INEXISTENTE");
-                    }
+                    if (!docSnap.exists()) throw new Error("INEXISTENTE");
                     const data = docSnap.data();
+                    guestFullName = data.name || braceletId;
 
-                    if (data.status === "cancelled") {
-                        throw new Error("CANCELADA");
-                    }
-                    if (data.status === "used") {
-                        throw new Error("YA_UTILIZADO");
-                    }
-                    if (data.token !== scannedToken) {
-                        throw new Error("TOKEN_INCORRECTO");
-                    }
+                    if (data.status === "cancelled") throw new Error("CANCELADA");
+                    if (data.status === "used") throw new Error("YA_UTILIZADO");
+                    if (!TEST_MODE && data.token !== scannedToken) throw new Error("TOKEN_INCORRECTO");
 
-                    // Autorizar ingreso
-                    transaction.update(docRef, {
-                        status: "used",
-                        enteredAt: serverTimestamp()
-                    });
+                    const now = new Date();
+                    scanTimeStr = now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+                    transaction.update(docRef, { status: "used", enteredAt: serverTimestamp() });
                 });
 
-                // Éxito
-                resultBox.className = "p-4 rounded-2xl border-2 border-emerald-300 bg-emerald-50 text-center space-y-1";
-                titleEl.className = "font-bold text-lg text-emerald-800";
-                titleEl.innerText = "INGRESO AUTORIZADO 🎉";
-                msgEl.innerText = `Pulsera ${braceletId} validada correctamente. ¡Bienvenido/a!`;
+                resultBox.className = "p-4 rounded-2xl border-2 border-emerald-400 bg-emerald-50 text-center space-y-2";
+                titleEl.className = "font-bold text-xl text-emerald-900";
+                titleEl.innerText = `¡INGRESO AUTORIZADO! 🎉`;
+                msgEl.innerHTML = `<span class="block text-base font-bold text-lavender-900 mt-1">${escapeHtml(guestFullName)} (${braceletId})</span><span class="block text-xs text-emerald-700 mt-1">Registrado a las ${scanTimeStr} hs. QR bloqueado permanentemente.</span>`;
 
                 if (typeof window.confetti === 'function') {
-                    window.confetti({ particleCount: 70, spread: 60, origin: { y: 0.7 } });
+                    window.confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
                 }
-
             } catch (err) {
                 const errCode = err.message;
                 resultBox.className = "p-4 rounded-2xl border-2 border-rose-300 bg-rose-50 text-center space-y-1";
@@ -402,13 +396,10 @@
 
                 if (errCode === "YA_UTILIZADO") {
                     titleEl.innerText = "QR YA UTILIZADO ⚠️";
-                    msgEl.innerText = `La credencial ${braceletId} ya fue validada anteriormente y se rechazó el reingreso.`;
+                    msgEl.innerText = `La credencial ${braceletId} ya fue validada con anterioridad y se rechazó el reingreso.`;
                 } else if (errCode === "CANCELADA") {
                     titleEl.innerText = "CREDENCIAL CANCELADA ❌";
-                    msgEl.innerText = `La credencial ${braceletId} fue cancelada por los organizadores.`;
-                } else if (errCode === "TOKEN_INCORRECTO") {
-                    titleEl.innerText = "TOKEN INCORRECTO ❌";
-                    msgEl.innerText = `El código de seguridad de la credencial ${braceletId} no coincide.`;
+                    msgEl.innerText = `La credencial ${braceletId} fue cancelada.`;
                 } else {
                     titleEl.innerText = "CREDENCIAL INEXISTENTE ❌";
                     msgEl.innerText = `No se encontró registro para la pulsera ${braceletId}.`;
@@ -416,18 +407,13 @@
             }
         }
 
-        // Validación Manual
         document.getElementById('validateManualBtn').addEventListener('click', () => {
             const val = document.getElementById('manualInput').value.trim();
-            if (!val) {
-                alert("Ingresá o pegá el contenido del QR.");
-                return;
-            }
+            if (!val) { alert("Ingresá o pegá el contenido del QR."); return; }
             validateQrPayload(val);
             document.getElementById('manualInput').value = "";
         });
 
-        // Configuración de Escáner QR de Cámara
         let html5QrCode = null;
         const startBtn = document.getElementById('startScannerBtn');
         const stopBtn = document.getElementById('stopScannerBtn');
@@ -435,21 +421,12 @@
         startBtn.addEventListener('click', async () => {
             startBtn.classList.add('hidden');
             stopBtn.classList.remove('hidden');
-            if (!html5QrCode) {
-                html5QrCode = new Html5Qrcode("reader");
-            }
+            if (!html5QrCode) html5QrCode = new Html5Qrcode("reader");
             try {
-                await html5QrCode.start(
-                    { facingMode: "environment" },
-                    { fps: 10, qrbox: { width: 220, height: 220 } },
-                    (decodedText) => {
-                        validateQrPayload(decodedText);
-                        // Pausar o detener brevemente tras lectura exitosa si se desea
-                    },
-                    (errorMessage) => { /* ignorar errores de frame */ }
-                );
+                await html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 220, height: 220 } }, (decodedText) => {
+                    validateQrPayload(decodedText);
+                }, () => {});
             } catch (err) {
-                console.error("Error al iniciar cámara:", err);
                 alert("No se pudo acceder a la cámara. Verificá permisos HTTPS.");
                 startBtn.classList.remove('hidden');
                 stopBtn.classList.add('hidden');
@@ -457,21 +434,15 @@
         });
 
         stopBtn.addEventListener('click', async () => {
-            if (html5QrCode && html5QrCode.isScanning) {
-                await html5QrCode.stop();
-            }
+            if (html5QrCode && html5QrCode.isScanning) await html5QrCode.stop();
             stopBtn.classList.add('hidden');
             startBtn.classList.remove('hidden');
         });
 
-        // Render tabla RSVP tradicional
         function renderTable(guestsList) {
             const tbody = document.getElementById('guestTableBody');
             tbody.innerHTML = '';
-            let confirmedGroups = 0;
-            let totalPeople = 0;
-            let declinedGroups = 0;
-            let specialMenus = 0;
+            let confirmedGroups = 0, totalPeople = 0, declinedGroups = 0, specialMenus = 0;
 
             allGuests.forEach(g => {
                 if (g.attendance === "Confirmado") {
@@ -499,11 +470,7 @@
                 tr.className = "hover:bg-lavender-50/50 transition-colors";
                 tr.innerHTML = `
                     <td class="p-4 font-bold text-lavender-900">${escapeHtml(g.name)}</td>
-                    <td class="p-4">
-                        <span class="px-2.5 py-1 rounded-full text-[11px] font-bold ${isConf ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
-                            ${escapeHtml(g.attendance)}
-                        </span>
-                    </td>
+                    <td class="p-4"><span class="px-2.5 py-1 rounded-full text-[11px] font-bold ${isConf ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${escapeHtml(g.attendance)}</span></td>
                     <td class="p-4 text-center font-bold text-base">${isConf ? g.count : 0}</td>
                     <td class="p-4 text-slate-600">${escapeHtml(g.menu || 'Ninguno')}</td>
                     <td class="p-4 max-w-xs">
@@ -512,11 +479,7 @@
                         ${(!g.song || g.song === '-') && (!g.message || g.message === '-') ? '<span class="text-slate-300">-</span>' : ''}
                     </td>
                     <td class="p-4 text-slate-400 text-xs whitespace-nowrap">${escapeHtml(g.date || '')}</td>
-                    <td class="p-4 text-center">
-                        <button data-id="${g.id}" data-name="${escapeHtml(g.name)}" class="delete-btn text-slate-400 hover:text-rose-600 p-2 transition-colors" title="Eliminar registro">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </td>
+                    <td class="p-4 text-center"><button data-id="${g.id}" data-name="${escapeHtml(g.name)}" class="delete-btn text-slate-400 hover:text-rose-600 p-2 transition-colors" title="Eliminar registro"><i class="fas fa-trash-alt"></i></button></td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -525,41 +488,21 @@
                 btn.addEventListener('click', async () => {
                     const id = btn.getAttribute('data-id');
                     const name = btn.getAttribute('data-name');
-                    if (confirm(`¿Eliminar el registro de "${name}"?`)) {
-                        await deleteDoc(doc(db, "invitados", id));
-                    }
+                    if (confirm(`¿Eliminar el registro de "${name}"?`)) await deleteDoc(doc(db, "invitados", id));
                 });
             });
         }
 
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
-            const filtered = allGuests.filter(g => 
-                (g.name || '').toLowerCase().includes(term) ||
-                (g.menu || '').toLowerCase().includes(term) ||
-                (g.song || '').toLowerCase().includes(term) ||
-                (g.message || '').toLowerCase().includes(term)
-            );
-            renderTable(filtered);
+            renderTable(allGuests.filter(g => (g.name || '').toLowerCase().includes(term) || (g.menu || '').toLowerCase().includes(term) || (g.song || '').toLowerCase().includes(term) || (g.message || '').toLowerCase().includes(term)));
         });
 
         document.getElementById('exportExcelBtn').addEventListener('click', () => {
-            if (allGuests.length === 0) {
-                alert("No hay datos para descargar todavía.");
-                return;
-            }
+            if (allGuests.length === 0) { alert("No hay datos para descargar todavía."); return; }
             let csv = "\uFEFFNombre;Asistencia;Cantidad Personas;Menu Especial;Cancion Sugerida;Mensaje;Fecha Registro\n";
             allGuests.forEach(g => {
-                const row = [
-                    `"${(g.name || '').replace(/"/g, '""')}"`,
-                    `"${g.attendance || ''}"`,
-                    g.attendance === "Confirmado" ? (g.count || 1) : 0,
-                    `"${g.menu || 'Ninguno'}"`,
-                    `"${(g.song || '-').replace(/"/g, '""')}"`,
-                    `"${(g.message || '-').replace(/"/g, '""')}"`,
-                    `"${g.date || ''}"`
-                ];
-                csv += row.join(";") + "\n";
+                csv += [`"${(g.name || '').replace(/"/g, '""')}"`, `"${g.attendance || ''}"`, g.attendance === "Confirmado" ? (g.count || 1) : 0, `"${g.menu || 'Ninguno'}"`, `"${(g.song || '-').replace(/"/g, '""')}"`, `"${(g.message || '-').replace(/"/g, '""')}"`, `"${g.date || ''}"`].join(";") + "\n";
             });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
