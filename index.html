@@ -141,8 +141,21 @@
             -webkit-backdrop-filter: blur(8px);
         }
 
+        /* Footer / Escena Nocturna con Linternas */
         footer {
+            position: relative;
+            width: 100%;
+            min-height: 380px;
             background: radial-gradient(ellipse at 50% 85%, #1d121c 0%, #120d1d 45%, #07060d 100%);
+            overflow: hidden;
+            border-top: 1px solid rgba(251, 192, 45, 0.3);
+        }
+
+        #sky-scene {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 380px;
             overflow: hidden;
         }
 
@@ -162,6 +175,7 @@
             display: block;
             pointer-events: none;
             z-index: 2;
+            will-change: transform;
         }
 
         .box-shadow-magic {
@@ -441,13 +455,22 @@
             <canvas class="comet-line-canvas" data-delay="0.75" aria-hidden="true"></canvas>
             <p id="rsvpSubtitle" class="font-serif italic text-lg text-lavender-900 font-medium mb-8">Por favor confirmá tu presencia antes del 25 de Noviembre</p>
 
-            <!-- Formulario RSVP Tradicional -->
+            <!-- Formulario RSVP -->
             <form id="rsvpForm" class="bg-magic-card p-6 sm:p-10 rounded-3xl border border-white/80 box-shadow-magic text-left space-y-5">
                 <div>
                     <label for="guestName" class="block text-xs uppercase font-semibold text-lavender-900 tracking-wider mb-2">
                         Nombre y Apellido del Invitado / Familia *
                     </label>
-                    <input type="text" id="guestName" required placeholder="Ej. María García" class="w-full px-4 py-3.5 rounded-xl border border-lavender-300 bg-white focus:outline-none focus:ring-2 focus:ring-lavender-500 text-sm text-lavender-900 placeholder-slate-400 transition-all">
+                    <input type="text" id="guestName" required placeholder="Ej. María García o Joel Segovia" class="w-full px-4 py-3.5 rounded-xl border border-lavender-300 bg-white focus:outline-none focus:ring-2 focus:ring-lavender-500 text-sm text-lavender-900 placeholder-slate-400 transition-all">
+                </div>
+
+                <!-- Cuadro de Verificación de Invitado Especial (Aparece al salir del campo con blur) -->
+                <div id="guestMatchPrompt" class="hidden bg-lavender-100 p-4 rounded-2xl border border-lavender-300 text-center space-y-3">
+                    <p id="matchQuestionText" class="text-sm font-semibold text-lavender-900">¿Sos [NOMBRE]?</p>
+                    <div class="flex justify-center gap-3">
+                        <button type="button" id="confirmMatchYes" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-sm transition-all">Sí, soy yo ✨</button>
+                        <button type="button" id="confirmMatchNo" class="px-5 py-2 rounded-xl bg-slate-300 hover:bg-slate-400 text-slate-800 font-semibold text-xs transition-all">No, soy otro</button>
+                    </div>
                 </div>
 
                 <div id="traditionalRsvpFields" class="space-y-5">
@@ -486,20 +509,31 @@
                             <option value="Infantil">Menú Infantil</option>
                         </select>
                     </div>
-
-                    <div>
-                        <label for="songSuggestion" class="block text-xs uppercase font-semibold text-lavender-900 tracking-wider mb-2">¿Qué tema no puede faltar en la fiesta? 🎵</label>
-                        <input type="text" id="songSuggestion" placeholder="Ej. Que se pique - Artista..." class="w-full px-4 py-3.5 rounded-xl border border-lavender-300 bg-white focus:outline-none focus:ring-2 focus:ring-lavender-500 text-sm text-lavender-900 placeholder-slate-400 transition-all">
-                    </div>
-
-                    <div>
-                        <label for="guestMessage" class="block text-xs uppercase font-semibold text-lavender-900 tracking-wider mb-2">Mensaje para Eliana (Opcional)</label>
-                        <textarea id="guestMessage" rows="3" placeholder="Dejá unas palabras lindas para la agasajada..." class="w-full px-4 py-3.5 rounded-xl border border-lavender-300 bg-white focus:outline-none focus:ring-2 focus:ring-lavender-500 text-sm text-lavender-900 placeholder-slate-400 transition-all"></textarea>
-                    </div>
                 </div>
 
-                <!-- CONTENEDOR DE ACCESO ESPECIAL (Oculto inicialmente) -->
-                <div id="specialAccessCard" class="hidden bg-gradient-to-br from-lavender-100 to-white p-6 rounded-2xl border-2 border-lavender-400 text-center space-y-4 shadow-md">
+                <div>
+                    <label for="songSuggestion" class="block text-xs uppercase font-semibold text-lavender-900 tracking-wider mb-2">¿Qué tema no puede faltar en la fiesta? 🎵</label>
+                    <input type="text" id="songSuggestion" placeholder="Ej. Que se pique - Artista..." class="w-full px-4 py-3.5 rounded-xl border border-lavender-300 bg-white focus:outline-none focus:ring-2 focus:ring-lavender-500 text-sm text-lavender-900 placeholder-slate-400 transition-all">
+                </div>
+
+                <div>
+                    <label for="guestMessage" class="block text-xs uppercase font-semibold text-lavender-900 tracking-wider mb-2">Mensaje para Eliana (Opcional)</label>
+                    <textarea id="guestMessage" rows="3" placeholder="Dejá unas palabras lindas para la agasajada..." class="w-full px-4 py-3.5 rounded-xl border border-lavender-300 bg-white focus:outline-none focus:ring-2 focus:ring-lavender-500 text-sm text-lavender-900 placeholder-slate-400 transition-all"></textarea>
+                </div>
+
+                <button type="submit" id="submitBtn" class="w-full py-4 rounded-2xl violet-pill-gradient border border-white/40 text-white font-bold text-base shadow-lg hover:opacity-95 transition-all duration-300 active:scale-95">
+                    <i class="fas fa-paper-plane mr-2 text-gold-300"></i> Confirmar Asistencia
+                </button>
+            </form>
+
+            <!-- CONTENEDOR DE CREDENCIAL Y QR (Aparece al Enviar con Éxito) -->
+            <div id="rsvpSuccess" class="hidden mt-6 p-6 sm:p-8 rounded-3xl bg-white/95 border-2 border-lavender-400 text-lavender-900 shadow-xl space-y-4">
+                <i class="fas fa-check-circle text-4xl text-gold-600 mb-1 block"></i>
+                <h3 class="font-title text-2xl font-bold">¡Muchas gracias por confirmar!</h3>
+                <p id="successSubtitle" class="text-sm text-lavender-800">Tu respuesta quedó registrada con éxito en nuestra lista.</p>
+
+                <!-- Tarjeta QR Especial (Si aplica) -->
+                <div id="specialAccessCard" class="hidden bg-gradient-to-br from-lavender-100 to-white p-6 rounded-2xl border-2 border-lavender-400 text-center space-y-3 shadow-md">
                     <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-lavender-900 text-gold-300 text-xs font-bold uppercase tracking-wider">
                         <i class="fas fa-ticket-alt"></i> Acceso Especial — 00:00 hs
                     </div>
@@ -518,15 +552,6 @@
                     </div>
                 </div>
 
-                <button type="submit" id="submitBtn" class="w-full py-4 rounded-2xl violet-pill-gradient border border-white/40 text-white font-bold text-base shadow-lg hover:opacity-95 transition-all duration-300 active:scale-95">
-                    <i class="fas fa-paper-plane mr-2 text-gold-300"></i> Confirmar Asistencia
-                </button>
-            </form>
-
-            <div id="rsvpSuccess" class="hidden mt-6 p-6 rounded-3xl bg-white/90 border border-lavender-400 text-lavender-900">
-                <i class="fas fa-check-circle text-4xl text-gold-600 mb-2 block"></i>
-                <h3 class="font-title text-2xl font-bold">¡Muchas gracias por confirmar!</h3>
-                <p class="text-sm mt-1">Tu respuesta quedó registrada con éxito en nuestra lista. ¡Nos vemos muy pronto para celebrar!</p>
                 <button type="button" id="resetRsvpBtn" class="mt-4 px-4 py-2 text-xs bg-lavender-200 hover:bg-lavender-300 rounded-lg text-lavender-900 font-semibold transition-all">
                     Enviar otra confirmación
                 </button>
@@ -535,9 +560,11 @@
     </section>
 
     <!-- FOOTER -->
-    <footer class="relative min-h-[320px] py-20 px-4 text-center overflow-hidden border-t border-gold-400/30">
-        <div id="atmosphere-overlay" aria-hidden="true"></div>
-        <canvas id="lanterns-canvas" aria-hidden="true"></canvas>
+    <footer>
+        <div id="sky-scene">
+            <div id="atmosphere-overlay"></div>
+            <canvas id="lanterns-canvas"></canvas>
+        </div>
     </footer>
 
     <!-- Toast Notification -->
@@ -546,36 +573,52 @@
         <span id="toastMsg">¡Mensaje del sistema!</span>
     </div>
 
-    <!-- SCRIPT ANIMACIÓN LINTERNAS FOOTER -->
+    <!-- SCRIPT DE LINTERNAS DEL FOOTER -->
     <script>
         (function () {
             const LANTERN_IMAGE_URL = 'https://github.com/bybuzko/elianalopez/blob/main/img/linterna%202.png?raw=true';
-            const section = document.querySelector('footer');
+            const footerSection = document.querySelector('footer');
             const canvas = document.getElementById('lanterns-canvas');
-            if (!section || !canvas) return;
             const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
-            let width = section.clientWidth || window.innerWidth;
-            let height = section.clientHeight || 320;
+
+            let width = footerSection.clientWidth || window.innerWidth;
+            let height = footerSection.clientHeight || 380;
             let isMobile = width < 640;
             let isSectionVisible = false;
-            let bokehCount = isMobile ? 45 : 75;
-            let lanternCount = isMobile ? 10 : 15;
+
+            let bokehCount = isMobile ? 55 : 95;
+            let lanternCount = isMobile ? 12 : 18;
+
             let bokehParticles = [];
             let lanterns = [];
+
             const bokehSprites = [];
             const lanternSprites = [];
             let lanternsReady = false;
             let lastTime = performance.now();
 
             function resizeCanvas() {
-                const rect = section.getBoundingClientRect();
+                const rect = footerSection.getBoundingClientRect();
                 width = Math.max(1, Math.floor(rect.width || window.innerWidth));
-                height = Math.max(1, Math.floor(rect.height || 320));
+                height = Math.max(1, Math.floor(rect.height || 380));
                 isMobile = width < 640;
+
                 const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
                 canvas.width = Math.floor(width * dpr);
                 canvas.height = Math.floor(height * dpr);
                 ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+                const targetBokeh = isMobile ? 55 : 95;
+                if (bokehParticles.length !== targetBokeh) {
+                    bokehCount = targetBokeh;
+                    initBokeh(true);
+                }
+
+                const targetLanterns = isMobile ? 12 : 18;
+                if (lanternsReady && lanterns.length !== targetLanterns) {
+                    lanternCount = targetLanterns;
+                    initLanterns(true);
+                }
             }
 
             function buildBokehSprites() {
@@ -586,14 +629,18 @@
                     { radius: 36, inner: 'rgba(255, 160, 65, 0.35)', mid: 'rgba(230, 95, 25, 0.14)' },
                     { radius: 52, inner: 'rgba(255, 195, 100, 0.26)', mid: 'rgba(240, 130, 40, 0.10)' }
                 ];
+
                 styles.forEach(st => {
                     const size = st.radius * 2;
                     const off = document.createElement('canvas');
                     off.width = size; off.height = size;
                     const octx = off.getContext('2d');
                     const grad = octx.createRadialGradient(st.radius, st.radius, st.radius * 0.12, st.radius, st.radius, st.radius);
-                    grad.addColorStop(0, st.inner); grad.addColorStop(0.55, st.mid); grad.addColorStop(1, 'rgba(255, 110, 20, 0)');
-                    octx.fillStyle = grad; octx.fillRect(0, 0, size, size);
+                    grad.addColorStop(0, st.inner);
+                    grad.addColorStop(0.55, st.mid);
+                    grad.addColorStop(1, 'rgba(255, 110, 20, 0)');
+                    octx.fillStyle = grad;
+                    octx.fillRect(0, 0, size, size);
                     bokehSprites.push({ canvas: off, half: st.radius });
                 });
             }
@@ -603,11 +650,17 @@
                 off.width = 160; off.height = 200;
                 const octx = off.getContext('2d');
                 const grad = octx.createRadialGradient(80, 125, 14, 80, 100, 88);
-                grad.addColorStop(0, '#fff9db'); grad.addColorStop(0.55, '#ffb732'); grad.addColorStop(1, '#d9531e');
-                octx.fillStyle = grad; octx.beginPath();
-                octx.moveTo(36, 28); octx.quadraticCurveTo(80, 12, 124, 28);
-                octx.lineTo(110, 172); octx.quadraticCurveTo(80, 185, 50, 172);
-                octx.closePath(); octx.fill();
+                grad.addColorStop(0, '#fff9db');
+                grad.addColorStop(0.55, '#ffb732');
+                grad.addColorStop(1, '#d9531e');
+                octx.fillStyle = grad;
+                octx.beginPath();
+                octx.moveTo(36, 28);
+                octx.quadraticCurveTo(80, 12, 124, 28);
+                octx.lineTo(110, 172);
+                octx.quadraticCurveTo(80, 185, 50, 172);
+                octx.closePath();
+                octx.fill();
                 return off;
             }
 
@@ -619,6 +672,7 @@
                     { w: 108, glowRadius: 34, glowAlpha: 0.68 },
                     { w: 152, glowRadius: 46, glowAlpha: 0.80 }
                 ];
+
                 configs.forEach(cfg => {
                     const pad = cfg.glowRadius * 2;
                     const drawW = cfg.w;
@@ -627,13 +681,21 @@
                     off.width = drawW + pad * 2; off.height = drawH + pad * 2;
                     const octx = off.getContext('2d');
                     const cx = off.width / 2; const cy = off.height / 2;
+
                     const halo = octx.createRadialGradient(cx, cy, drawW * 0.16, cx, cy, drawW * 0.52 + cfg.glowRadius);
                     halo.addColorStop(0, `rgba(255, 200, 85, ${cfg.glowAlpha})`);
                     halo.addColorStop(0.52, `rgba(255, 135, 35, ${cfg.glowAlpha * 0.45})`);
                     halo.addColorStop(1, 'rgba(255, 105, 15, 0)');
-                    octx.fillStyle = halo; octx.fillRect(0, 0, off.width, off.height);
+
+                    octx.fillStyle = halo;
+                    octx.fillRect(0, 0, off.width, off.height);
                     octx.drawImage(sourceImg, pad, pad, drawW, drawH);
-                    lanternSprites.push({ canvas: off, halfW: off.width / 2, halfH: off.height / 2 });
+
+                    lanternSprites.push({
+                        canvas: off,
+                        halfW: off.width / 2,
+                        halfH: off.height / 2
+                    });
                 });
                 lanternsReady = true;
             }
@@ -668,9 +730,11 @@
                 if (tier < 0.35) { item.spriteIndex = 0; item.scale = randomRange(0.85, 1.08); item.alpha = randomRange(0.78, 0.92); }
                 else if (tier < 0.78) { item.spriteIndex = 1; item.scale = randomRange(0.90, 1.15); item.alpha = randomRange(0.88, 1.0); }
                 else { item.spriteIndex = 2; item.scale = randomRange(0.92, 1.18); item.alpha = 1.0; }
+
                 if (isMobile) item.scale *= 0.78;
-                item.x = randomRange(30, Math.max(60, width - 30));
+                item.x = randomRange(30, width - 30);
                 item.y = scatter ? randomRange(0, height) : height + randomRange(80, 180);
+
                 const depthFactor = (item.spriteIndex + 1) / 3;
                 item.vy = (18 + depthFactor * 26) * randomRange(0.88, 1.12);
                 item.driftX = randomRange(-6, 7) * (0.5 + depthFactor * 0.5);
@@ -691,22 +755,27 @@
             function renderLoop(now) {
                 const dt = Math.min((now - lastTime) / 1000, 0.06);
                 lastTime = now;
+
                 if (isSectionVisible) {
                     ctx.clearRect(0, 0, width, height);
+
                     ctx.globalCompositeOperation = 'lighter';
                     for (let i = 0; i < bokehParticles.length; i++) {
                         const b = bokehParticles[i];
                         b.time += dt; b.y -= b.vy * dt; b.x += b.driftX * dt;
                         if (b.x < -50) b.x = width + 40; else if (b.x > width + 50) b.x = -40;
                         if (b.y < -65) resetBokeh(b, false);
+
                         const rx = b.x + Math.sin(b.time * b.swayFreq + b.swayPhase) * b.swayAmp;
                         const twinkle = 0.82 + 0.18 * Math.sin(b.time * b.pulseSpeed + b.pulsePhase);
                         const sprite = bokehSprites[b.spriteIndex];
                         const drawSize = sprite.half * 2 * b.scale;
                         const halfDraw = drawSize * 0.5;
+
                         ctx.globalAlpha = b.baseAlpha * twinkle;
                         ctx.drawImage(sprite.canvas, rx - halfDraw, b.y - halfDraw, drawSize, drawSize);
                     }
+
                     ctx.globalCompositeOperation = 'source-over';
                     if (lanternsReady) {
                         for (let i = 0; i < lanterns.length; i++) {
@@ -714,10 +783,12 @@
                             p.time += dt; p.y -= p.vy * dt; p.x += p.driftX * dt;
                             if (p.x < -110) p.x = width + 100; else if (p.x > width + 110) p.x = -100;
                             if (p.y < -160) resetLantern(p, false);
+
                             const wave = Math.sin(p.time * p.swayFreq + p.swayPhase);
                             const renderX = p.x + wave * p.swayAmp;
                             const angle = wave * p.maxTilt;
                             const sprite = lanternSprites[p.spriteIndex];
+
                             ctx.save();
                             ctx.globalAlpha = p.alpha;
                             ctx.translate(renderX, p.y);
@@ -728,28 +799,44 @@
                         }
                     }
                 }
+
                 requestAnimationFrame(renderLoop);
             }
 
-            buildBokehSprites(); resizeCanvas(); initBokeh(true);
+            buildBokehSprites();
+            resizeCanvas();
+            initBokeh(true);
+            window.addEventListener('resize', resizeCanvas);
+
             if ('IntersectionObserver' in window) {
                 const io = new IntersectionObserver(entries => {
-                    entries.forEach(entry => { isSectionVisible = entry.isIntersecting; if (isSectionVisible) lastTime = performance.now(); });
+                    entries.forEach(entry => {
+                        isSectionVisible = entry.isIntersecting;
+                        if (isSectionVisible) lastTime = performance.now();
+                    });
                 }, { threshold: 0.02 });
-                io.observe(section);
-            } else { isSectionVisible = true; }
+                io.observe(footerSection);
+            } else {
+                isSectionVisible = true;
+            }
 
             const img = new Image();
             img.crossOrigin = 'anonymous';
             img.onload = () => { buildLanternSprites(img); initLanterns(true); };
-            img.onerror = () => { buildLanternSprites(createFallbackSource()); initLanterns(true); };
+            img.onerror = () => {
+                const imgNoCors = new Image();
+                imgNoCors.onload = () => { buildLanternSprites(imgNoCors); initLanterns(true); };
+                imgNoCors.onerror = () => { buildLanternSprites(createFallbackSource()); initLanterns(true); };
+                imgNoCors.src = LANTERN_IMAGE_URL;
+            };
             img.src = LANTERN_IMAGE_URL;
+
             lastTime = performance.now();
             requestAnimationFrame(renderLoop);
         })();
     </script>
 
-    <!-- JAVASCRIPT UNIFICADO: ANIMACIONES, RSVP Y ACCESO ESPECIAL (FIREBASE) -->
+    <!-- SCRIPT DE LÓGICA GENERAL: FIREBASE, RSVP, BÚSQUEDA INTELIGENTE FLEXIBLE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getFirestore, collection, addDoc, doc, getDoc, setDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -803,120 +890,100 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Normalización de texto para búsqueda de invitados especiales
-        function normalizeName(str) {
+        // --- BÚSQUEDA INTELIGENTE FLEXIBLE Y BIDIRECCIONAL ---
+        function normalizeStr(str) {
             if (!str) return "";
-            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+            return str.normalize("NFD")
+                      .replace(/[\u0300-\u036f]/g, "") // Remueve tildes
+                      .toLowerCase()
+                      .replace(/y/g, "i")           // Unifica 'y' / 'i'
+                      .replace(/[^a-z0-9\s]/g, "")    // Remueve puntos y símbolos
+                      .trim();
         }
 
-        function findSpecialGuest(inputName) {
-            const norm = normalizeName(inputName);
-            if (!norm) return null;
-            return SPECIAL_GUESTS.find(g => normalizeName(g.name) === norm) || null;
+        function tokensMatch(t1, t2) {
+            if (t1 === t2) return true;
+            if (t1.startsWith(t2) || t2.startsWith(t1)) return true;
+            if (t1.length === 1 && t2.startsWith(t1)) return true;
+            if (t2.length === 1 && t1.startsWith(t2)) return true;
+            return false;
         }
 
-        // Generación de Token aleatorio de 32 bytes (hex)
+        function findSpecialGuest(inputStr) {
+            const cleanInput = normalizeStr(inputStr);
+            if (cleanInput.length < 2) return null;
+            
+            const inputTokens = cleanInput.split(/\s+/).filter(t => t.length > 0);
+            if (inputTokens.length === 0) return null;
+
+            for (const guest of SPECIAL_GUESTS) {
+                const cleanGuestName = normalizeStr(guest.name);
+                const guestTokens = cleanGuestName.split(/\s+/).filter(t => t.length > 0);
+
+                const matchesAllInput = inputTokens.every(inToken => 
+                    guestTokens.some(gToken => tokensMatch(inToken, gToken))
+                );
+
+                const matchesAllGuest = guestTokens.every(gToken => 
+                    inputTokens.some(inToken => tokensMatch(inToken, gToken))
+                );
+
+                if (matchesAllInput || matchesAllGuest || cleanGuestName.includes(cleanInput) || cleanInput.includes(cleanGuestName)) {
+                    return guest;
+                }
+            }
+            return null;
+        }
+
         function generateSecureToken() {
             const array = new Uint8Array(32);
             crypto.getRandomValues(array);
             return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
         }
 
-        let currentSpecialGuestData = null;
+        let pendingSpecialGuestMatch = null;
+        let confirmedSpecialGuest = null;
 
-        // Detección en tiempo real en el input de nombre
         const guestNameInput = document.getElementById('guestName');
         const traditionalFields = document.getElementById('traditionalRsvpFields');
-        const specialAccessCard = document.getElementById('specialAccessCard');
-        const submitBtn = document.getElementById('submitBtn');
+        const guestMatchPrompt = document.getElementById('guestMatchPrompt');
+        const matchQuestionText = document.getElementById('matchQuestionText');
+        const confirmMatchYes = document.getElementById('confirmMatchYes');
+        const confirmMatchNo = document.getElementById('confirmMatchNo');
         const rsvpSubtitle = document.getElementById('rsvpSubtitle');
 
-        guestNameInput.addEventListener('input', async (e) => {
+        guestNameInput.addEventListener('blur', (e) => {
             const val = e.target.value;
+            if (confirmedSpecialGuest) return;
+
             const match = findSpecialGuest(val);
-
             if (match) {
-                currentSpecialGuestData = match;
-                traditionalFields.classList.add('hidden');
-                specialAccessCard.classList.remove('hidden');
-                submitBtn.classList.add('hidden');
-                rsvpSubtitle.textContent = "¡Sos parte de nuestros invitados especiales para la madrugada!";
-                document.getElementById('specialGuestNameDisplay').textContent = match.name;
-                document.getElementById('braceletBadge').textContent = `Pulsera ${match.bracelet}`;
-
-                // Generar o recuperar credencial en Firestore (colección accesos_15)
-                const docRef = doc(db, "accesos_15", match.bracelet);
-                let docSnap = await getDoc(docRef);
-                let token = "";
-
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    token = data.token;
-                    if (data.status === "cancelled") {
-                        token = generateSecureToken();
-                        await updateDoc(docRef, { token: token, status: "pending", issuedAt: serverTimestamp() });
-                    }
-                } else {
-                    token = generateSecureToken();
-                    await setDoc(docRef, {
-                        name: match.name,
-                        bracelet: match.bracelet,
-                        token: token,
-                        status: "pending",
-                        issuedAt: serverTimestamp(),
-                        enteredAt: null
-                    });
-                }
-
-                // Renderizar QR
-                const qrContainer = document.getElementById('qrcode');
-                qrContainer.innerHTML = "";
-                const qrPayload = JSON.stringify({
-                    event: "ELIANA15",
-                    bracelet: match.bracelet,
-                    token: token
-                });
-                new QRCode(qrContainer, {
-                    text: qrPayload,
-                    width: 180,
-                    height: 180,
-                    colorDark: "#271066",
-                    colorLight: "#ffffff",
-                    correctLevel: QRCode.CorrectLevel.H
-                });
-
-            } else {
-                currentSpecialGuestData = null;
-                traditionalFields.classList.remove('hidden');
-                specialAccessCard.classList.add('hidden');
-                submitBtn.classList.remove('hidden');
-                rsvpSubtitle.textContent = "Por favor confirmá tu presencia antes del 25 de Noviembre";
+                pendingSpecialGuestMatch = match;
+                matchQuestionText.textContent = `¿Te referís a ${match.name}?`;
+                guestMatchPrompt.classList.remove('hidden');
             }
         });
 
-        // Botón Descargar Credencial QR como PNG
-        document.getElementById('downloadQrBtn').addEventListener('click', () => {
-            const imgEl = document.querySelector('#qrcode img') || document.querySelector('#qrcode canvas');
-            if (!imgEl) {
-                showToast("El código QR aún se está generando.");
-                return;
-            }
-            let dataUrl = "";
-            if (imgEl.tagName === 'CANVAS') {
-                dataUrl = imgEl.toDataURL("image/png");
-            } else {
-                dataUrl = imgEl.src;
-            }
-            const link = document.createElement('a');
-            link.href = dataUrl;
-            link.download = `Credencial_Eliana15_${currentSpecialGuestData ? currentSpecialGuestData.bracelet : 'QR'}.png`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            showToast("¡Credencial descargada con éxito!");
+        confirmMatchYes.addEventListener('click', () => {
+            if (!pendingSpecialGuestMatch) return;
+            confirmedSpecialGuest = pendingSpecialGuestMatch;
+            guestNameInput.value = confirmedSpecialGuest.name;
+            guestMatchPrompt.classList.add('hidden');
+            traditionalFields.classList.add('hidden');
+            rsvpSubtitle.textContent = "¡Sos parte de nuestros invitados especiales para la madrugada!";
+            showToast(`¡Invitado especial reconocido: ${confirmedSpecialGuest.name}!`);
         });
 
-        // Animación de texto principal
+        confirmMatchNo.addEventListener('click', () => {
+            pendingSpecialGuestMatch = null;
+            confirmedSpecialGuest = null;
+            guestMatchPrompt.classList.add('hidden');
+            traditionalFields.classList.remove('hidden');
+            rsvpSubtitle.textContent = "Por favor confirmá tu presencia antes del 25 de Noviembre";
+            guestNameInput.focus();
+        });
+
+        // Animación de título principal
         const elianaGradEl = document.getElementById('elianaVioletGrad');
         let svgGradShift = 0;
         let isHeroVisible = true;
@@ -995,64 +1062,122 @@
             });
         });
 
-        const companionsGroup = document.getElementById('companionsGroup');
-        const menuGroup = document.getElementById('menuGroup');
-        function toggleCompanionsVisibility() {
-            const selected = document.querySelector('input[name="attendance"]:checked')?.value;
-            const isConfirmed = selected === "Confirmado";
-            companionsGroup.classList.toggle('hidden', !isConfirmed);
-            menuGroup.classList.toggle('hidden', !isConfirmed);
-        }
-        document.querySelectorAll('input[name="attendance"]').forEach(radio => {
-            radio.addEventListener('change', toggleCompanionsVisibility);
-        });
-
-        // Formulario RSVP Tradicional
+        // Formulario RSVP con Firebase y generación de QR posterior
         const rsvpForm = document.getElementById('rsvpForm');
         const rsvpSuccess = document.getElementById('rsvpSuccess');
+        const specialAccessCard = document.getElementById('specialAccessCard');
 
         document.getElementById('resetRsvpBtn').addEventListener('click', () => {
             rsvpForm.reset();
-            toggleCompanionsVisibility();
+            confirmedSpecialGuest = null;
+            pendingSpecialGuestMatch = null;
             rsvpForm.classList.remove('hidden');
             rsvpSuccess.classList.add('hidden');
             specialAccessCard.classList.add('hidden');
+            guestMatchPrompt.classList.add('hidden');
             traditionalFields.classList.remove('hidden');
-            submitBtn.classList.remove('hidden');
             rsvpSubtitle.textContent = "Por favor confirmá tu presencia antes del 25 de Noviembre";
         });
 
         rsvpForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (currentSpecialGuestData) return;
-
+            const submitBtn = document.getElementById('submitBtn');
             const originalBtnHtml = submitBtn.innerHTML;
             submitBtn.disabled = true;
             submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Guardando confirmación...`;
 
             const name = document.getElementById('guestName').value.trim();
-            const attendance = document.querySelector('input[name="attendance"]:checked').value;
-            const isConfirmed = attendance === "Confirmado";
+            const song = document.getElementById('songSuggestion').value.trim() || "-";
+            const message = document.getElementById('guestMessage').value.trim() || "-";
 
-            const newGuest = {
-                name,
-                attendance,
-                count: isConfirmed ? Number(document.getElementById('guestCount').value) : 0,
-                menu: isConfirmed ? document.getElementById('menuPreference').value : "Ninguno",
-                song: document.getElementById('songSuggestion').value.trim() || "-",
-                message: document.getElementById('guestMessage').value.trim() || "-",
-                date: new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' }),
-                createdAt: serverTimestamp()
-            };
+            let newGuest;
+            if (confirmedSpecialGuest) {
+                newGuest = {
+                    name: confirmedSpecialGuest.name,
+                    attendance: "Confirmado (Especial 00hs)",
+                    count: 1,
+                    menu: "Especial Madrugada",
+                    song,
+                    message,
+                    date: new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' }),
+                    createdAt: serverTimestamp()
+                };
+            } else {
+                const attendance = document.querySelector('input[name="attendance"]:checked').value;
+                const isConfirmed = attendance === "Confirmado";
+                newGuest = {
+                    name,
+                    attendance,
+                    count: isConfirmed ? Number(document.getElementById('guestCount').value) : 0,
+                    menu: isConfirmed ? document.getElementById('menuPreference').value : "Ninguno",
+                    song,
+                    message,
+                    date: new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' }),
+                    createdAt: serverTimestamp()
+                };
+            }
 
             try {
                 await addDoc(collection(db, "invitados"), newGuest);
-                if (isConfirmed && typeof window.confetti === 'function') {
+
+                if (confirmedSpecialGuest) {
+                    const match = confirmedSpecialGuest;
+                    const docRef = doc(db, "accesos_15", match.bracelet);
+                    let docSnap = await getDoc(docRef);
+                    let token = "";
+
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        token = data.token;
+                        if (data.status === "cancelled") {
+                            token = generateSecureToken();
+                            await updateDoc(docRef, { token: token, status: "pending", issuedAt: serverTimestamp() });
+                        }
+                    } else {
+                        token = generateSecureToken();
+                        await setDoc(docRef, {
+                            name: match.name,
+                            bracelet: match.bracelet,
+                            token: token,
+                            status: "pending",
+                            issuedAt: serverTimestamp(),
+                            enteredAt: null
+                        });
+                    }
+
+                    const qrContainer = document.getElementById('qrcode');
+                    qrContainer.innerHTML = "";
+                    const qrPayload = JSON.stringify({
+                        event: "ELIANA15",
+                        bracelet: match.bracelet,
+                        token: token
+                    });
+                    new QRCode(qrContainer, {
+                        text: qrPayload,
+                        width: 180,
+                        height: 180,
+                        colorDark: "#271066",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+
+                    document.getElementById('specialGuestNameDisplay').textContent = match.name;
+                    document.getElementById('braceletBadge').textContent = `Pulsera ${match.bracelet}`;
+                    specialAccessCard.classList.remove('hidden');
+                    document.getElementById('successSubtitle').textContent = "¡Estás registrado en la lista de invitados especiales de la madrugada! Aquí tenés tu credencial QR.";
+                } else {
+                    specialAccessCard.classList.add('hidden');
+                    document.getElementById('successSubtitle').textContent = "Tu respuesta quedó registrada con éxito en nuestra lista. ¡Nos vemos muy pronto para celebrar!";
+                }
+
+                if (typeof window.confetti === 'function') {
                     window.confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#FFD54F', '#9B51E0', '#F48FB1', '#3D1E8E'] });
                 }
+
                 rsvpForm.classList.add('hidden');
                 rsvpSuccess.classList.remove('hidden');
                 showToast("¡Confirmación enviada con éxito!");
+
             } catch (error) {
                 console.error("Error al guardar en Firebase:", error);
                 showToast("Error de conexión. Revisá tu internet.");
@@ -1062,9 +1187,23 @@
             }
         });
 
-        // ==========================================
-        // ANIMACIONES DE CANVAS & PARTÍCULAS DE FONDO
-        // ==========================================
+        document.getElementById('downloadQrBtn').addEventListener('click', () => {
+            const imgEl = document.querySelector('#qrcode img') || document.querySelector('#qrcode canvas');
+            if (!imgEl) {
+                showToast("El código QR aún se está generando.");
+                return;
+            }
+            let dataUrl = imgEl.tagName === 'CANVAS' ? imgEl.toDataURL("image/png") : imgEl.src;
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = `Credencial_Eliana15_${confirmedSpecialGuest ? confirmedSpecialGuest.bracelet : 'QR'}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("¡Credencial descargada con éxito!");
+        });
+
+        // Partículas Hero & Cometas
         class MagicDust {
             constructor(x, y, spreadRange = 24) {
                 const spread = (Math.random() - 0.5) * spreadRange;
@@ -1079,9 +1218,7 @@
                 this.isBright = Math.random() > 0.72;
             }
             update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                this.alpha -= this.decay;
+                this.x += this.vx; this.y += this.vy; this.alpha -= this.decay;
             }
             draw(ctx) {
                 if (this.alpha <= 0) return;
@@ -1159,8 +1296,7 @@
             ctx: c.getContext('2d'),
             w: 300, h: 36,
             progress: parseFloat(c.dataset.delay || '0') % 1,
-            dust: [],
-            visible: true
+            dust: []
         }));
 
         function resizeCometLines() {
