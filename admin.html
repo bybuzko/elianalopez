@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -35,7 +36,7 @@
             </div>
             <div>
                 <h1 class="font-title text-2xl font-bold text-lavender-900">Lista de Invitados</h1>
-                <p class="text-xs text-slate-500 mt-1">15 Años de Eliana — Acceso Organizadores</p>
+                <p class="text-xs text-slate-500 mt-1">15 Años de Eliana — Control Organizadores</p>
             </div>
             <form id="pinForm" class="space-y-3">
                 <input type="password" id="pinInput" inputmode="numeric" placeholder="Ingresá el PIN" required class="w-full px-4 py-3 rounded-xl border border-lavender-300 text-center font-mono text-xl tracking-widest focus:ring-2 focus:ring-lavender-500 outline-none">
@@ -50,16 +51,17 @@
     <!-- Panel Principal -->
     <div id="adminDashboard" class="hidden max-w-6xl mx-auto p-4 sm:p-8 space-y-6">
         
-        <!-- Encabezado -->
+        <!-- Encabezado con Logo SVG y Textos Estándar -->
         <div class="bg-lavender-900 text-white p-6 rounded-3xl shadow-lg flex flex-col sm:flex-row justify-between items-center gap-4 border-b-4 border-gold-400">
-            <div class="flex items-center gap-3 text-center sm:text-left">
-                <div class="w-12 h-12 rounded-2xl bg-gold-400 text-lavender-900 flex items-center justify-center font-bold text-xl shrink-0">
-                    <i class="fas fa-crown"></i>
-                </div>
+            <div class="flex flex-col items-center sm:items-start text-center sm:text-left gap-1.5">
+                <!-- Logo SVG sin efectos -->
+                <svg class="h-7 w-auto" viewBox="0 0 280 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <text x="0" y="26" fill="#FFE082" font-family="'Playfair Display', serif" font-size="23" font-weight="bold">Mis 15 Años Eliana</text>
+                </svg>
                 <div>
-                    <h1 class="font-title text-2xl font-bold text-gold-300">Administración — 15 de Eliana</h1>
-                    <p class="text-xs text-lavender-200 flex items-center justify-center sm:justify-start gap-1.5 mt-0.5">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Sincronizado en tiempo real (Modo Pruebas Activo)
+                    <h1 class="font-sans text-sm font-bold text-white tracking-wide">Control organizadores</h1>
+                    <p class="text-xs text-lavender-200 flex items-center justify-center sm:justify-start gap-1.5 mt-0.5 font-sans">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Sincronizado en tiempo real
                     </p>
                 </div>
             </div>
@@ -68,30 +70,25 @@
             </button>
         </div>
 
-        <!-- CONTROL DE ACCESO (00:00 HS) Y LISTA DESPLEGABLE -->
+        <!-- CONTROL DE ACCESO -->
         <div class="bg-white p-6 rounded-3xl border-2 border-lavender-400 shadow-lg space-y-5">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-4 border-b border-lavender-200">
                 <div>
                     <h2 class="font-title text-2xl font-bold text-lavender-900 flex items-center gap-2">
-                        <i class="fas fa-qrcode text-lavender-600"></i> Control de acceso · 00:00 hs
+                        <i class="fas fa-qrcode text-lavender-600"></i> Control acceso
                     </h2>
-                    <p class="text-xs text-slate-600">"Validación de las 25 credenciales especiales E1–E25"</p>
                 </div>
                 <div class="flex items-center gap-3">
                     <button type="button" id="resetAllAccesosBtn" class="px-3 py-2 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-xl text-xs font-bold transition-all shadow-xs" title="Restaurar todos los estados a pendientes">
                         <i class="fas fa-redo mr-1"></i> Restaurar Lista
                     </button>
-                    <div class="bg-lavender-100 px-4 py-2 rounded-2xl border border-lavender-300 text-center">
-                        <span class="text-xs uppercase tracking-wider font-bold text-lavender-700 block">Ingresados</span>
-                        <span id="accessCounterDisplay" class="text-2xl font-bold text-lavender-900">0 / 25</span>
-                    </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Escáner QR de Cámara -->
                 <div class="bg-lavender-50 p-4 rounded-2xl border border-lavender-200 space-y-3">
-                    <h3 class="font-bold text-sm text-lavender-900"><i class="fas fa-camera mr-1"></i> Escáner QR (Cámara Trasera)</h3>
+                    <h3 class="font-bold text-sm text-lavender-900"><i class="fas fa-camera mr-1"></i> Escáner QR</h3>
                     <div id="reader" class="w-full rounded-xl overflow-hidden bg-slate-900 min-h-[220px]"></div>
                     <div class="flex gap-2">
                         <button type="button" id="startScannerBtn" class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-sm">
@@ -103,32 +100,23 @@
                     </div>
                 </div>
 
-                <!-- Validación Manual y Resultado -->
+                <!-- Estado del Acceso y Confirmación -->
                 <div class="space-y-4 flex flex-col justify-between">
-                    <div class="bg-lavender-50 p-4 rounded-2xl border border-lavender-200 space-y-3">
-                        <h3 class="font-bold text-sm text-lavender-900"><i class="fas fa-keyboard mr-1"></i> Validación Manual (Contenido QR / Token)</h3>
-                        <div class="flex gap-2">
-                            <input type="text" id="manualInput" placeholder="Pegar JSON o token del QR..." class="flex-1 px-3 py-2.5 rounded-xl border border-lavender-300 text-xs bg-white outline-none focus:ring-2 focus:ring-lavender-500 font-mono">
-                            <button type="button" id="validateManualBtn" class="px-4 py-2.5 rounded-xl bg-lavender-600 hover:bg-lavender-500 text-white font-bold text-xs transition-all shadow-sm">
-                                Validar
-                            </button>
-                        </div>
-                    </div>
-
-                    <div id="validationResultBox" class="p-4 rounded-2xl border-2 border-slate-200 bg-slate-50 text-center space-y-1 transition-all">
+                    <div id="validationResultBox" class="p-5 rounded-2xl border-2 border-slate-200 bg-slate-50 text-center space-y-3 transition-all my-auto">
                         <span class="text-xs uppercase tracking-widest font-bold text-slate-500 block">Estado del Acceso</span>
                         <h4 id="validationTitle" class="font-bold text-lg text-slate-700">Listo para escanear</h4>
                         <p id="validationMessage" class="text-xs text-slate-500">Presentá la credencial QR del invitado especial en la puerta.</p>
+                        <div id="actionContainer" class="pt-2"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Listado Desplegable -->
+            <!-- Listado Desplegable con Contador de Ingresados -->
             <div class="pt-4 border-t border-lavender-200">
                 <details class="group bg-lavender-50 p-4 rounded-2xl border border-lavender-200">
                     <summary class="flex justify-between items-center cursor-pointer font-bold text-sm text-lavender-900">
                         <span><i class="fas fa-list-ul mr-2 text-lavender-600"></i> Ver listado de los 25 Invitados Especiales (E1–E25) y Estados</span>
-                        <span class="text-xs text-lavender-600 group-open:rotate-180 transition-transform"><i class="fas fa-chevron-down"></i></span>
+                        <span id="accessCounterSummaryBadge" class="bg-lavender-200 text-lavender-900 px-3 py-1 rounded-full text-xs font-bold">Ingresados: 0 / 25</span>
                     </summary>
                     <div class="mt-4 pt-4 border-t border-lavender-200 max-h-64 overflow-y-auto pr-1">
                         <div id="specialGuestsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5"></div>
@@ -161,14 +149,6 @@
             </div>
         </div>
 
-        <!-- Buscador RSVP -->
-        <div class="bg-white p-4 rounded-2xl border border-lavender-200 shadow-sm">
-            <div class="relative">
-                <i class="fas fa-search absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
-                <input type="text" id="searchInput" placeholder="Buscar invitado por nombre, menú o canción..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-lavender-500 outline-none">
-            </div>
-        </div>
-
         <!-- Tabla de Invitados RSVP -->
         <div class="bg-white rounded-3xl border border-lavender-200 shadow-sm overflow-hidden">
             <div class="overflow-x-auto">
@@ -194,7 +174,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, query, orderBy, deleteDoc, doc, setDoc, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, query, orderBy, deleteDoc, doc, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         const ADMIN_PIN = "1515";
         const TEST_MODE = true;
@@ -228,6 +208,8 @@
         const db = getFirestore(app);
         let allGuests = [];
         let accesosMap = {};
+        let pendingScanData = null;
+        let html5QrCode = null;
 
         document.getElementById('pinForm').addEventListener('submit', (e) => {
             e.preventDefault();
@@ -271,7 +253,10 @@
                 const data = accesosMap[item.bracelet];
                 if (data && data.status === "used") usedCount++;
             });
-            document.getElementById('accessCounterDisplay').innerText = `${usedCount} / 25`;
+            const badge = document.getElementById('accessCounterSummaryBadge');
+            if (badge) {
+                badge.innerText = `Ingresados: ${usedCount} / 25`;
+            }
         }
 
         function renderSpecialGuestsGrid() {
@@ -319,7 +304,6 @@
             });
         }
 
-        // Botón Restaurar Lista con PIN obligatorio y limpieza de documentos
         document.getElementById('resetAllAccesosBtn').addEventListener('click', async () => {
             const enteredPin = prompt("⚠️ ADVERTENCIA: Restaurar la lista requiere ingresar el PIN de administrador:");
             if (enteredPin !== ADMIN_PIN) {
@@ -335,14 +319,22 @@
             }
         });
 
-        async function validateQrPayload(rawText) {
+        async function handleQrScanned(rawText) {
+            if (html5QrCode && html5QrCode.isScanning) {
+                await html5QrCode.stop().catch(() => {});
+                document.getElementById('stopScannerBtn').classList.add('hidden');
+                document.getElementById('startScannerBtn').classList.remove('hidden');
+            }
+
+            let parsed;
             const resultBox = document.getElementById('validationResultBox');
             const titleEl = document.getElementById('validationTitle');
             const msgEl = document.getElementById('validationMessage');
+            const actionContainer = document.getElementById('actionContainer');
+            actionContainer.innerHTML = '';
 
-            let parsed;
             try { parsed = JSON.parse(rawText); } catch {
-                resultBox.className = "p-4 rounded-2xl border-2 border-rose-300 bg-rose-50 text-center space-y-1";
+                resultBox.className = "p-5 rounded-2xl border-2 border-rose-300 bg-rose-50 text-center space-y-2";
                 titleEl.className = "font-bold text-lg text-rose-800";
                 titleEl.innerText = "QR INCORRECTO ❌";
                 msgEl.innerText = "El formato del código QR no es válido.";
@@ -350,7 +342,7 @@
             }
 
             if (parsed.event !== "ELIANA15" || !parsed.bracelet || !parsed.token) {
-                resultBox.className = "p-4 rounded-2xl border-2 border-rose-300 bg-rose-50 text-center space-y-1";
+                resultBox.className = "p-5 rounded-2xl border-2 border-rose-300 bg-rose-50 text-center space-y-2";
                 titleEl.className = "font-bold text-lg text-rose-800";
                 titleEl.innerText = "QR INCORRECTO ❌";
                 msgEl.innerText = "Los datos del evento o credencial no coinciden.";
@@ -362,59 +354,108 @@
             const docRef = doc(db, "accesos_15", braceletId);
 
             try {
-                let guestFullName = braceletId;
-                let scanTimeStr = "";
+                const docSnap = await runTransaction(db, async (transaction) => {
+                    const snap = await transaction.get(docRef);
+                    return snap.exists() ? snap.data() : null;
+                });
+
+                if (!docSnap) {
+                    resultBox.className = "p-5 rounded-2xl border-2 border-rose-300 bg-rose-50 text-center space-y-2";
+                    titleEl.className = "font-bold text-lg text-rose-800";
+                    titleEl.innerText = "CREDENCIAL INEXISTENTE ❌";
+                    msgEl.innerText = `No se encontró registro para la pulsera ${braceletId}.`;
+                    return;
+                }
+
+                if (docSnap.status === "cancelled") {
+                    resultBox.className = "p-5 rounded-2xl border-2 border-rose-300 bg-rose-50 text-center space-y-2";
+                    titleEl.className = "font-bold text-lg text-rose-800";
+                    titleEl.innerText = "CREDENCIAL CANCELADA ❌";
+                    msgEl.innerText = `La credencial ${braceletId} fue cancelada.`;
+                    return;
+                }
+
+                if (docSnap.status === "used") {
+                    resultBox.className = "p-5 rounded-2xl border-2 border-rose-300 bg-rose-50 text-center space-y-2";
+                    titleEl.className = "font-bold text-lg text-rose-800";
+                    titleEl.innerText = "QR YA UTILIZADO ⚠️";
+                    msgEl.innerText = `La credencial ${braceletId} (${docSnap.name || ''}) ya fue validada con anterioridad.`;
+                    return;
+                }
+
+                if (!TEST_MODE && docSnap.token !== scannedToken) {
+                    resultBox.className = "p-5 rounded-2xl border-2 border-rose-300 bg-rose-50 text-center space-y-2";
+                    titleEl.className = "font-bold text-lg text-rose-800";
+                    titleEl.innerText = "TOKEN INCORRECTO ❌";
+                    msgEl.innerText = `El token de seguridad no coincide para ${braceletId}.`;
+                    return;
+                }
+
+                pendingScanData = { braceletId };
+
+                resultBox.className = "p-5 rounded-2xl border-2 border-amber-400 bg-amber-50 text-center space-y-3";
+                titleEl.className = "font-bold text-xl text-amber-900";
+                titleEl.innerText = `Invitado detectado:`;
+                msgEl.innerHTML = `<span class="block text-lg font-bold text-lavender-900 mt-1">${escapeHtml(docSnap.name)} (${braceletId})</span><span class="block text-xs text-amber-700 mt-1">Presioná confirmar para registrar el ingreso definitivo.</span>`;
+                
+                actionContainer.innerHTML = `
+                    <button id="confirmEntryBtn" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-md transition-all active:scale-95 flex items-center justify-center gap-2">
+                        <i class="fas fa-check-circle"></i> Confirmar Ingreso
+                    </button>
+                `;
+
+                document.getElementById('confirmEntryBtn').addEventListener('click', async () => {
+                    await executeConfirmedEntry(pendingScanData.braceletId, docSnap.name);
+                });
+
+            } catch (err) {
+                resultBox.className = "p-5 rounded-2xl border-2 border-rose-300 bg-rose-50 text-center space-y-2";
+                titleEl.className = "font-bold text-lg text-rose-800";
+                titleEl.innerText = "ERROR DE VALIDACIÓN ❌";
+                msgEl.innerText = `Ocurrió un error al procesar el código.`;
+            }
+        }
+
+        async function executeConfirmedEntry(braceletId, guestName) {
+            const docRef = doc(db, "accesos_15", braceletId);
+            const resultBox = document.getElementById('validationResultBox');
+            const titleEl = document.getElementById('validationTitle');
+            const msgEl = document.getElementById('validationMessage');
+            const actionContainer = document.getElementById('actionContainer');
+
+            try {
+                const now = new Date();
+                const scanTimeStr = now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
                 await runTransaction(db, async (transaction) => {
                     const docSnap = await transaction.get(docRef);
                     if (!docSnap.exists()) throw new Error("INEXISTENTE");
                     const data = docSnap.data();
-                    guestFullName = data.name || braceletId;
-
-                    if (data.status === "cancelled") throw new Error("CANCELADA");
                     if (data.status === "used") throw new Error("YA_UTILIZADO");
-                    if (!TEST_MODE && data.token !== scannedToken) throw new Error("TOKEN_INCORRECTO");
-
-                    const now = new Date();
-                    scanTimeStr = now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
                     transaction.update(docRef, { status: "used", enteredAt: serverTimestamp() });
                 });
 
-                resultBox.className = "p-4 rounded-2xl border-2 border-emerald-400 bg-emerald-50 text-center space-y-2";
+                resultBox.className = "p-5 rounded-2xl border-2 border-emerald-400 bg-emerald-50 text-center space-y-2";
                 titleEl.className = "font-bold text-xl text-emerald-900";
-                titleEl.innerText = `¡INGRESO AUTORIZADO! 🎉`;
-                msgEl.innerHTML = `<span class="block text-base font-bold text-lavender-900 mt-1">${escapeHtml(guestFullName)} (${braceletId})</span><span class="block text-xs text-emerald-700 mt-1">Registrado a las ${scanTimeStr} hs. QR bloqueado permanentemente.</span>`;
+                titleEl.innerText = `¡INGRESO CONFIRMADO! 🎉`;
+                msgEl.innerHTML = `<span class="block text-base font-bold text-lavender-900 mt-1">${escapeHtml(guestName)} (${braceletId})</span><span class="block text-xs text-emerald-700 mt-1">Registrado a las ${scanTimeStr} hs. QR bloqueado.</span>`;
+                actionContainer.innerHTML = '';
+                pendingScanData = null;
 
-                if (typeof window.confetti === 'function') {
-                    window.confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+                if (typeof confetti === 'function') {
+                    confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
                 }
+
             } catch (err) {
-                const errCode = err.message;
-                resultBox.className = "p-4 rounded-2xl border-2 border-rose-300 bg-rose-50 text-center space-y-1";
+                resultBox.className = "p-5 rounded-2xl border-2 border-rose-300 bg-rose-50 text-center space-y-2";
                 titleEl.className = "font-bold text-lg text-rose-800";
-
-                if (errCode === "YA_UTILIZADO") {
-                    titleEl.innerText = "QR YA UTILIZADO ⚠️";
-                    msgEl.innerText = `La credencial ${braceletId} ya fue validada con anterioridad y se rechazó el reingreso.`;
-                } else if (errCode === "CANCELADA") {
-                    titleEl.innerText = "CREDENCIAL CANCELADA ❌";
-                    msgEl.innerText = `La credencial ${braceletId} fue cancelada.`;
-                } else {
-                    titleEl.innerText = "CREDENCIAL INEXISTENTE ❌";
-                    msgEl.innerText = `No se encontró registro para la pulsera ${braceletId}.`;
-                }
+                titleEl.innerText = "ERROR ⚠️";
+                msgEl.innerText = "La credencial ya había sido utilizada o actualizada.";
+                actionContainer.innerHTML = '';
             }
         }
 
-        document.getElementById('validateManualBtn').addEventListener('click', () => {
-            const val = document.getElementById('manualInput').value.trim();
-            if (!val) { alert("Ingresá o pegá el contenido del QR."); return; }
-            validateQrPayload(val);
-            document.getElementById('manualInput').value = "";
-        });
-
-        let html5QrCode = null;
         const startBtn = document.getElementById('startScannerBtn');
         const stopBtn = document.getElementById('stopScannerBtn');
 
@@ -424,7 +465,7 @@
             if (!html5QrCode) html5QrCode = new Html5Qrcode("reader");
             try {
                 await html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 220, height: 220 } }, (decodedText) => {
-                    validateQrPayload(decodedText);
+                    handleQrScanned(decodedText);
                 }, () => {});
             } catch (err) {
                 alert("No se pudo acceder a la cámara. Verificá permisos HTTPS.");
@@ -434,7 +475,7 @@
         });
 
         stopBtn.addEventListener('click', async () => {
-            if (html5QrCode && html5QrCode.isScanning) await html5QrCode.stop();
+            if (html5QrCode && html5QrCode.isScanning) await html5QrCode.stop().catch(() => {});
             stopBtn.classList.add('hidden');
             startBtn.classList.remove('hidden');
         });
@@ -492,11 +533,6 @@
                 });
             });
         }
-
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            renderTable(allGuests.filter(g => (g.name || '').toLowerCase().includes(term) || (g.menu || '').toLowerCase().includes(term) || (g.song || '').toLowerCase().includes(term) || (g.message || '').toLowerCase().includes(term)));
-        });
 
         document.getElementById('exportExcelBtn').addEventListener('click', () => {
             if (allGuests.length === 0) { alert("No hay datos para descargar todavía."); return; }
