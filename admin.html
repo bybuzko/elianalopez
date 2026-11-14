@@ -535,7 +535,7 @@
                     <td class="p-4 max-w-xs">
                         ${g.song && g.song !== '-' ? `<span class="block text-xs text-lavender-700 font-medium">🎵 ${escapeHtml(g.song)}</span>` : ''}
                         ${g.message && g.message !== '-' ? `<span class="block text-xs italic text-slate-500 mt-0.5">💬 "${escapeHtml(g.message)}"</span>` : ''}
-                        {(!g.song || g.song === '-') && (!g.message || g.message === '-') ? '<span class="text-slate-300">-</span>' : ''}
+                        ${(!g.song || g.song === '-') && (!g.message || g.message === '-') ? '<span class="text-slate-300">-</span>' : ''}
                     </td>
                     <td class="p-4 text-slate-400 text-xs whitespace-nowrap">${escapeHtml(g.date || '')}</td>
                     <td class="p-4 text-center"><button data-id="${g.id}" data-name="${escapeHtml(g.name)}" class="delete-btn text-slate-400 hover:text-rose-600 p-2 transition-colors" title="Eliminar registro"><i class="fas fa-trash-alt"></i></button></td>
