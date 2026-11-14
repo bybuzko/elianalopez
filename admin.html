@@ -186,19 +186,31 @@
         const TEST_MODE = true;
 
         const SPECIAL_GUESTS_LIST = [
-            { bracelet: "E1", name: "MAITE A." }, { bracelet: "E2", name: "THIAN R." },
-            { bracelet: "E3", name: "LUCIANA S." }, { bracelet: "E4", name: "MAXIMO V." },
-            { bracelet: "E5", name: "AMAIA G." }, { bracelet: "E6", name: "ENZO Z." },
-            { bracelet: "E7", name: "PALOMA P." }, { bracelet: "E8", name: "LUDMILA V." },
-            { bracelet: "E9", name: "MACARENA M." }, { bracelet: "E10", name: "VICKI C." },
-            { bracelet: "E11", name: "MIA L." }, { bracelet: "E12", name: "CALEB C." },
-            { bracelet: "E13", name: "THIAGO A." }, { bracelet: "E14", name: "RODRIGO L." },
-            { bracelet: "E15", name: "ANTONELLA A." }, { bracelet: "E16", name: "MARIANO O." },
-            { bracelet: "E17", name: "NAOMI A." }, { bracelet: "E18", name: "BRIAN M." },
-            { bracelet: "E19", name: "IAN S." }, { bracelet: "E20", name: "TIZIANA G." },
-            { bracelet: "E21", name: "JOEL S." }, { bracelet: "E22", name: "VALENTINA AQUINO" },
-            { bracelet: "E23", name: "FLOR R." }, { bracelet: "E24", name: "DAHI" },
-            { bracelet: "E25", name: "PRISCILA F." }
+            { bracelet: "E1", name: "Maite Aspeleiter" },
+            { bracelet: "E2", name: "Thian Regis" },
+            { bracelet: "E3", name: "Luciana Sanabria" },
+            { bracelet: "E4", name: "Maximo Verdun" },
+            { bracelet: "E5", name: "Amaia Gauna" },
+            { bracelet: "E6", name: "Enzo Zappa" },
+            { bracelet: "E7", name: "Paloma Pucheta" },
+            { bracelet: "E8", name: "Ludmila Veron" },
+            { bracelet: "E9", name: "Macarena Martinez" },
+            { bracelet: "E10", name: "Victoria Cardozo" },
+            { bracelet: "E11", name: "Mia Lopez" },
+            { bracelet: "E12", name: "Caleb Chamorro" },
+            { bracelet: "E13", name: "Rodrigo Lopez" },
+            { bracelet: "E14", name: "Valentina Aquino" },
+            { bracelet: "E15", name: "Mariano Ortiz" },
+            { bracelet: "E16", name: "Naomi Amarilla" },
+            { bracelet: "E17", name: "Thiago Acosta" },
+            { bracelet: "E18", name: "Brian Miranda" },
+            { bracelet: "E19", name: "Ian Soto" },
+            { bracelet: "E20", name: "Antonella Arrua" },
+            { bracelet: "E21", name: "Florencia Rodriguez" },
+            { bracelet: "E22", name: "Joel Soto" },
+            { bracelet: "E23", name: "Tiziana Garcete" },
+            { bracelet: "E24", name: "Dahiana Verdum" },
+            { bracelet: "E25", name: "Priscila Figueredo" }
         ];
 
         const firebaseConfig = {
@@ -523,7 +535,7 @@
                     <td class="p-4 max-w-xs">
                         ${g.song && g.song !== '-' ? `<span class="block text-xs text-lavender-700 font-medium">🎵 ${escapeHtml(g.song)}</span>` : ''}
                         ${g.message && g.message !== '-' ? `<span class="block text-xs italic text-slate-500 mt-0.5">💬 "${escapeHtml(g.message)}"</span>` : ''}
-                        ${(!g.song || g.song === '-') && (!g.message || g.message === '-') ? '<span class="text-slate-300">-</span>' : ''}
+                        {(!g.song || g.song === '-') && (!g.message || g.message === '-') ? '<span class="text-slate-300">-</span>' : ''}
                     </td>
                     <td class="p-4 text-slate-400 text-xs whitespace-nowrap">${escapeHtml(g.date || '')}</td>
                     <td class="p-4 text-center"><button data-id="${g.id}" data-name="${escapeHtml(g.name)}" class="delete-btn text-slate-400 hover:text-rose-600 p-2 transition-colors" title="Eliminar registro"><i class="fas fa-trash-alt"></i></button></td>
