@@ -496,7 +496,7 @@
                     confirmedGroups++;
                     totalPeople += Number(g.count || 1);
                     if (g.menu && g.menu !== "Ninguno") specialMenus++;
-                } else {
+                } else if (g.attendance === "No asiste") {
                     declinedGroups++;
                 }
             });
