@@ -162,6 +162,7 @@
             max-width: 1100px;
             padding-top: 40px;
             padding-bottom: 70px;
+            overflow: visible;
         }
 
         .sun-background {
@@ -259,14 +260,16 @@
         }
 
         @media (max-width: 768px) {
-            .swiper-slide { width: 240px; height: 380px; }
+            .carousel-container { width: 100%; }
+            .swiper { width: 100%; overflow: visible; padding-left: 0; padding-right: 0; }
+            .swiper-slide { width: 78vw; max-width: 260px; height: 400px; }
             .sun-background { width: 210px; height: 210px; bottom: 35px; }
             .carousel-controls { gap: 20px; }
             .swiper-button-prev, .swiper-button-next { width: 42px; height: 42px; }
         }
 
         @media (max-width: 380px) {
-            .swiper-slide { width: 200px; height: 320px; }
+            .swiper-slide { width: 84vw; max-width: 220px; height: 340px; }
             .sun-background { width: 180px; height: 180px; }
         }
 
@@ -479,8 +482,8 @@
         </div>
     </section>
 
-    <!-- SECCIÓN 3: GALERÍA DE FOTOS (Transparente - Sin título de sección) -->
-    <section class="py-20 px-4 relative z-10 bg-transparent">
+    <!-- SECCIÓN 3: GALERÍA DE FOTOS (Pantalla extendida / Edge-to-Edge) -->
+    <section class="py-20 px-0 sm:px-4 relative z-10 bg-transparent overflow-hidden">
         <div class="carousel-container reveal">
             <!-- Sol SVG de fondo grande (color con contraste #FFE082) -->
             <div class="sun-background">
