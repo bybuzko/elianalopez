@@ -66,9 +66,6 @@
     <!-- QRCode.js para Credenciales Especiales -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-    <!-- html2canvas para descargar la tarjeta completa -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
     <style>
         body {
             background-color: #d6b6f2;
@@ -1529,36 +1526,175 @@
             }
         });
 
-        // DESCARGAR LA CREDENCIAL COMPLETA CON HTML2CANVAS
+        // DESCARGAR CREDENCIAL COMPLETA RENDERIZADA EN CANVAS 2D PURO (100% INFALIBLE)
         document.getElementById('downloadQrBtn').addEventListener('click', async () => {
-            const cardEl = document.getElementById('specialAccessCard');
-            if (!cardEl) {
-                showToast("No se encontró la credencial.");
+            const qrEl = document.getElementById('qrcode');
+            if (!qrEl) {
+                showToast("No se encontró el código QR.");
                 return;
             }
 
-            showToast("Generando imagen de la credencial...");
+            // QRCode.js siempre crea un <canvas> interno (aunque le ponga display:none después)
+            const qrCanvas = qrEl.querySelector('canvas');
+            const qrImg = qrEl.querySelector('img');
+            let qrSource = qrCanvas;
+
+            if (!qrSource && qrImg) {
+                if (qrImg.decode) await qrImg.decode().catch(() => {});
+                qrSource = qrImg;
+            }
+
+            if (!qrSource) {
+                showToast("El QR todavía se está generando, intentá de nuevo.");
+                return;
+            }
+
+            showToast("Generando credencial...");
 
             try {
-                const canvas = await html2canvas(cardEl, {
-                    scale: 2,
-                    useCORS: true,
-                    allowTaint: true,
-                    backgroundColor: null,
-                    logging: false
-                });
+                // Esperar a que las fuentes de Google Fonts estén listas para dibujar texto nítido
+                if (document.fonts && document.fonts.ready) {
+                    await document.fonts.ready;
+                }
 
-                const dataUrl = canvas.toDataURL("image/png");
+                // Lienzo de alta resolución (800 x 980 px)
+                const W = 800;
+                const H = 980;
+                const canvas = document.createElement('canvas');
+                canvas.width = W;
+                canvas.height = H;
+                const ctx = canvas.getContext('2d');
+
+                // Función auxiliar para rectángulos redondeados
+                function roundRectPath(x, y, w, h, r) {
+                    ctx.beginPath();
+                    ctx.moveTo(x + r, y);
+                    ctx.lineTo(x + w - r, y);
+                    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+                    ctx.lineTo(x + w, y + h - r);
+                    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+                    ctx.lineTo(x + r, y + h);
+                    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+                    ctx.lineTo(x, y + r);
+                    ctx.quadraticCurveTo(x, y, x + r, y);
+                    ctx.closePath();
+                }
+
+                // 1. Fondo degradado lavanda a blanco + borde violeta
+                const bgGrad = ctx.createLinearGradient(0, 0, W, H);
+                bgGrad.addColorStop(0, '#F3EBFF');
+                bgGrad.addColorStop(1, '#FFFFFF');
+                roundRectPath(12, 12, W - 24, H - 24, 36);
+                ctx.fillStyle = bgGrad;
+                ctx.fill();
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = '#B57EEB';
+                ctx.stroke();
+
+                // 2. Píldora superior "ACCESO ESPECIAL — 00:00 HS"
+                const pillW = 460;
+                const pillH = 54;
+                const pillX = (W - pillW) / 2;
+                const pillY = 65;
+                roundRectPath(pillX, pillY, pillW, pillH, 27);
+                ctx.fillStyle = '#271066';
+                ctx.fill();
+
+                ctx.fillStyle = '#FFE082';
+                ctx.font = 'bold 20px Montserrat, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('✦  ACCESO ESPECIAL — 00:00 HS  ✦', W / 2, pillY + pillH / 2 + 1);
+
+                // 3. Nombre del Invitado Especial
+                const guestName = document.getElementById('specialGuestNameDisplay').textContent.trim();
+                ctx.fillStyle = '#271066';
+                ctx.font = 'bold 46px "Playfair Display", Georgia, serif';
+                ctx.fillText(guestName, W / 2, 185);
+
+                // 4. Texto informativo con salto de línea automático
+                ctx.fillStyle = '#3D1E8E';
+                ctx.font = '500 22px Montserrat, sans-serif';
+                const infoText = '"Tu ingreso estará habilitado a partir de las 00:00 hs, una vez finalizada la cena." Credencial personal e intransferible. El QR se valida una sola vez en puerta.';
+                const maxTextWidth = 640;
+                const words = infoText.split(' ');
+                let line = '';
+                let textY = 250;
+                const lineHeight = 34;
+
+                for (let i = 0; i < words.length; i++) {
+                    const testLine = line + words[i] + ' ';
+                    if (ctx.measureText(testLine).width > maxTextWidth && i > 0) {
+                        ctx.fillText(line.trim(), W / 2, textY);
+                        line = words[i] + ' ';
+                        textY += lineHeight;
+                    } else {
+                        line = testLine;
+                    }
+                }
+                ctx.fillText(line.trim(), W / 2, textY);
+
+                // 5. Tarjeta blanca contenedora del QR
+                const boxW = 390;
+                const boxH = 455;
+                const boxX = (W - boxW) / 2;
+                const boxY = 400;
+
+                ctx.save();
+                ctx.shadowColor = 'rgba(39, 16, 102, 0.12)';
+                ctx.shadowBlur = 24;
+                ctx.shadowOffsetY = 8;
+                roundRectPath(boxX, boxY, boxW, boxH, 28);
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fill();
+                ctx.restore();
+
+                roundRectPath(boxX, boxY, boxW, boxH, 28);
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#E5D4FA';
+                ctx.stroke();
+
+                // 6. Dibujar el QR en máxima nitidez (310 x 310 px)
+                const qrSize = 310;
+                const qrX = (W - qrSize) / 2;
+                const qrY = boxY + 32;
+                ctx.save();
+                ctx.imageSmoothingEnabled = false;
+                ctx.drawImage(qrSource, qrX, qrY, qrSize, qrSize);
+                ctx.restore();
+
+                // 7. Etiqueta dorada de la pulsera ("Pulsera E10")
+                const braceletText = document.getElementById('braceletBadge').textContent.trim();
+                const badgeW = 200;
+                const badgeH = 48;
+                const badgeX = (W - badgeW) / 2;
+                const badgeY = qrY + qrSize + 28;
+                roundRectPath(badgeX, badgeY, badgeW, badgeH, 14);
+                ctx.fillStyle = '#FFD54F';
+                ctx.fill();
+
+                ctx.fillStyle = '#271066';
+                ctx.font = 'bold 22px Montserrat, sans-serif';
+                ctx.fillText(braceletText, W / 2, badgeY + badgeH / 2 + 1);
+
+                // 8. Pie de credencial
+                ctx.fillStyle = '#7B32C2';
+                ctx.font = 'italic 600 24px "Cormorant Garamond", Georgia, serif';
+                ctx.fillText('Mis 15 Años — Eliana • Sábado 28 de Noviembre', W / 2, 915);
+
+                // 9. Descargar archivo PNG final
+                const dataUrl = canvas.toDataURL('image/png');
                 const link = document.createElement('a');
                 link.href = dataUrl;
                 link.download = `Credencial_Eliana15_${confirmedSpecialGuest ? confirmedSpecialGuest.bracelet : 'QR'}.png`;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
+
                 showToast("¡Credencial descargada con éxito!");
-            } catch (error) {
-                console.error("Error al generar la imagen:", error);
-                showToast("No se pudo descargar la imagen.");
+            } catch (err) {
+                console.error("Error dibujando credencial:", err);
+                showToast("No se pudo generar la imagen.");
             }
         });
 
