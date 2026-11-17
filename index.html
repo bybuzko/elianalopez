@@ -654,7 +654,7 @@
                 </div>
 
                 <div class="relative z-10">
-                    <div class="mb-5 bg-white/90 p-4 rounded-2xl border border-lavender-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="bg-white/90 p-4 rounded-2xl border border-lavender-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
                             <span class="text-xs uppercase font-semibold tracking-wider text-lavender-600 block mb-1">ALIAS</span>
                             <span id="aliasText" class="font-mono text-xl font-bold text-lavender-900 select-all tracking-wide">elilopez15.mp</span>
@@ -663,10 +663,6 @@
                             <i class="far fa-copy"></i> <span>Copiar Alias</span>
                         </button>
                     </div>
-
-                    <a href="https://link.mercadopago.com.ar/amarillacomunicacion" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-semibold text-sm transition-all shadow-sm active:scale-95">
-                        Enviar regalo por <img src="https://github.com/bybuzko/elianalopez/blob/main/img/mp%20logo.png?raw=true" alt="Mercado Pago" class="h-6 w-auto inline-block align-middle object-contain">
-                    </a>
                 </div>
             </div>
         </div>
@@ -723,27 +719,6 @@
                     <!-- Mensaje motivador para los que no asisten pero colaboran con la música -->
                     <div id="absenceMusicNotice" class="hidden p-4 rounded-2xl bg-lavender-100 border border-lavender-300 text-xs text-lavender-900 leading-relaxed text-center animate-fadeIn">
                         ✨ ¡Qué pena que no nos acompañes en persona! De todos modos, podés dejarnos tu sugerencia musical más abajo para que suene en la fiesta y ser parte de este momento especial. 🎵
-                    </div>
-
-                    <div id="companionsGroup">
-                        <label for="guestCount" class="block text-xs uppercase font-semibold text-lavender-900 tracking-wider mb-2">Cantidad Total de Personas (Incluyéndote)</label>
-                        <select id="guestCount" class="w-full px-4 py-3.5 rounded-xl border border-lavender-300 bg-white focus:outline-none focus:ring-2 focus:ring-lavender-500 text-sm text-lavender-900 transition-all">
-                            <option value="1">1 Persona (Solo yo)</option>
-                            <option value="2">2 Personas</option>
-                            <option value="3">3 Personas</option>
-                            <option value="4">4 Personas</option>
-                            <option value="5">5 Personas o grupo familiar</option>
-                        </select>
-                    </div>
-
-                    <div id="menuGroup">
-                        <label for="menuPreference" class="block text-xs uppercase font-semibold text-lavender-900 tracking-wider mb-2">Restricción Alimentaria / Menú Especial</label>
-                        <select id="menuPreference" class="w-full px-4 py-3.5 rounded-xl border border-lavender-300 bg-white focus:outline-none focus:ring-2 focus:ring-lavender-500 text-sm text-lavender-900 transition-all">
-                            <option value="Ninguno">Ninguno</option>
-                            <option value="Vegetariano">Vegetariano</option>
-                            <option value="Vegano">Vegano</option>
-                            <option value="Celiaco (Sin TACC)">Celíaco (Sin TACC)</option>
-                        </select>
                     </div>
                 </div>
 
@@ -1233,8 +1208,6 @@
         const confirmMatchYes = document.getElementById('confirmMatchYes');
         const confirmMatchNo = document.getElementById('confirmMatchNo');
         const rsvpSubtitle = document.getElementById('rsvpSubtitle');
-        const companionsGroup = document.getElementById('companionsGroup');
-        const menuGroup = document.getElementById('menuGroup');
         const absenceMusicNotice = document.getElementById('absenceMusicNotice');
         const labelYes = document.getElementById('labelYes');
         const labelNo = document.getElementById('labelNo');
@@ -1256,13 +1229,9 @@
                 if (val === "Confirmado") {
                     labelYes.className = "attendance-label border-2 border-lavender-600 bg-lavender-100 p-3.5 rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-all shadow-sm ring-2 ring-lavender-300";
                     emojiYes.classList.remove('hidden');
-                    companionsGroup.classList.remove('hidden');
-                    menuGroup.classList.remove('hidden');
                 } else if (val === "No Asiste") {
                     labelNo.className = "attendance-label border-2 border-lavender-600 bg-lavender-100 p-3.5 rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-all shadow-sm ring-2 ring-lavender-300";
                     emojiNo.classList.remove('hidden');
-                    companionsGroup.classList.add('hidden');
-                    menuGroup.classList.add('hidden');
                     absenceMusicNotice.classList.remove('hidden');
                 }
             });
@@ -1392,8 +1361,6 @@
             specialAccessCard.classList.add('hidden');
             guestMatchPrompt.classList.add('hidden');
             traditionalFields.classList.remove('hidden');
-            companionsGroup.classList.remove('hidden');
-            menuGroup.classList.remove('hidden');
             absenceMusicNotice.classList.add('hidden');
             labelYes.className = "attendance-label border border-lavender-300 bg-white p-3.5 rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-all hover:border-lavender-500";
             labelNo.className = "attendance-label border border-lavender-300 bg-white p-3.5 rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-all hover:border-lavender-500";
@@ -1418,8 +1385,6 @@
                 newGuest = {
                     name: confirmedSpecialGuest.name,
                     attendance: "Confirmado (Especial 00hs)",
-                    count: 0,
-                    menu: "No aplica (Solo Madrugada)",
                     song,
                     message,
                     date: new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' }),
@@ -1434,12 +1399,9 @@
                     return;
                 }
                 const attendance = checkedRadio.value;
-                const isConfirmed = attendance === "Confirmado";
                 newGuest = {
                     name,
                     attendance,
-                    count: isConfirmed ? Number(document.getElementById('guestCount').value) : 0,
-                    menu: isConfirmed ? document.getElementById('menuPreference').value : "No aplica (Ausente)",
                     song,
                     message,
                     date: new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' }),
