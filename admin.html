@@ -132,7 +132,7 @@
         </div>
 
         <!-- Tarjetas de Resumen RSVP Tradicional (Actúan como filtros o controles) -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             <div id="filterConfirmed" class="filter-card bg-white p-4 rounded-2xl border border-lavender-200 shadow-sm cursor-pointer transition-all hover:shadow-md">
                 <span class="text-[11px] uppercase font-bold text-slate-500 block">Confirmaciones</span>
                 <span id="statConfirmed" class="text-3xl font-bold text-emerald-600 mt-1 block">0</span>
@@ -142,11 +142,6 @@
                 <span class="text-[11px] uppercase font-bold text-slate-500 block">No Asisten</span>
                 <span id="statDeclined" class="text-3xl font-bold text-rose-500 mt-1 block">0</span>
                 <span class="text-[10px] text-slate-400">Avisaron ausencia</span>
-            </div>
-            <div id="filterSpecialMenu" class="filter-card bg-white p-4 rounded-2xl border border-lavender-200 shadow-sm cursor-pointer transition-all hover:shadow-md">
-                <span class="text-[11px] uppercase font-bold text-slate-500 block">Menú Especial</span>
-                <span id="statSpecialMenu" class="text-3xl font-bold text-sky-600 mt-1 block">0</span>
-                <span class="text-[10px] text-slate-400">TACC / Vegano / Otros</span>
             </div>
             <div id="filterSpecialGuests" class="filter-card bg-white p-4 rounded-2xl border border-lavender-200 shadow-sm cursor-pointer transition-all hover:shadow-md">
                 <span class="text-[11px] uppercase font-bold text-slate-500 block">Especiales Ingresados</span>
@@ -174,15 +169,13 @@
                         <tr>
                             <th class="p-4">Invitado / Familia</th>
                             <th class="p-4">Estado</th>
-                            <th class="p-4 text-center">Personas</th>
-                            <th class="p-4">Menú</th>
                             <th class="p-4">Canción y Mensaje</th>
                             <th class="p-4">Fecha</th>
                             <th class="p-4 text-center">Acción</th>
                         </tr>
                     </thead>
                     <tbody id="guestTableBody" class="divide-y divide-slate-100">
-                        <tr><td colspan="7" class="p-8 text-center text-slate-400">Cargando lista desde la nube...</td></tr>
+                        <tr><td colspan="5" class="p-8 text-center text-slate-400">Cargando lista desde la nube...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -376,9 +369,8 @@
         // Configuración de eventos para los filtros de las tarjetas superiores
         document.getElementById('filterConfirmed').addEventListener('click', () => toggleFilter('confirmed'));
         document.getElementById('filterDeclined').addEventListener('click', () => toggleFilter('declined'));
-        document.getElementById('filterSpecialMenu').addEventListener('click', () => toggleFilter('specialMenu'));
         
-        // El cuarto botón despliega/contrae la lista de invitados especiales
+        // El tercer botón despliega/contrae la lista de invitados especiales
         document.getElementById('filterSpecialGuests').addEventListener('click', () => {
             const details = document.getElementById('specialGuestsDetails');
             if (details) {
@@ -418,11 +410,6 @@
             } else if (currentFilter === 'declined') {
                 document.getElementById('filterDeclined').classList.add('bg-lavender-600', 'text-white', 'ring-2', 'ring-lavender-400');
                 badge.innerText = "Filtro: No Asisten";
-                badge.classList.remove('hidden');
-                clearBtn.classList.remove('hidden');
-            } else if (currentFilter === 'specialMenu') {
-                document.getElementById('filterSpecialMenu').classList.add('bg-lavender-600', 'text-white', 'ring-2', 'ring-lavender-400');
-                badge.innerText = "Filtro: Menú Especial";
                 badge.classList.remove('hidden');
                 clearBtn.classList.remove('hidden');
             } else {
@@ -610,19 +597,12 @@
 
             const unifiedList = getUnifiedGuests();
 
-            let confirmedGroups = 0, declinedGroups = 0, specialMenus = 0;
+            let confirmedGroups = 0, declinedGroups = 0;
 
             unifiedList.forEach(g => {
                 const rawAttendance = (g.attendance || '').toLowerCase();
-                const menuText = (g.menu || '').toLowerCase();
                 if (rawAttendance.includes('confirmado')) {
                     confirmedGroups++;
-                    
-                    // Solo contar menús especiales dietéticos reales (excluyendo Especial Madrugada y lista de 25)
-                    const isDietary = menuText && menuText !== 'ninguno' && menuText !== '-' && 
-                                      !menuText.includes('madrugada') && !g.bracelet &&
-                                      (menuText.includes('tacc') || menuText.includes('vegano') || menuText.includes('vegetariano') || menuText.includes('celiaco') || menuText.includes('especial'));
-                    if (isDietary) specialMenus++;
                 } else if (rawAttendance.includes('no asiste')) {
                     declinedGroups++;
                 }
@@ -630,20 +610,12 @@
 
             document.getElementById('statConfirmed').innerText = confirmedGroups;
             document.getElementById('statDeclined').innerText = declinedGroups;
-            document.getElementById('statSpecialMenu').innerText = specialMenus;
 
             // Filtrar lista según el filtro activo
             let displayList = unifiedList.filter(g => {
                 const rawAttendance = (g.attendance || '').toLowerCase();
-                const menuText = (g.menu || '').toLowerCase();
                 if (currentFilter === 'confirmed') return rawAttendance.includes('confirmado');
                 if (currentFilter === 'declined') return rawAttendance.includes('no asiste');
-                if (currentFilter === 'specialMenu') {
-                    return rawAttendance.includes('confirmado') && 
-                           menuText && menuText !== 'ninguno' && menuText !== '-' && 
-                           !menuText.includes('madrugada') && !g.bracelet &&
-                           (menuText.includes('tacc') || menuText.includes('vegano') || menuText.includes('vegetariano') || menuText.includes('celiaco') || menuText.includes('especial'));
-                }
                 return true;
             });
 
@@ -655,7 +627,7 @@
             }
 
             if (displayList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-400">No hay registros para mostrar con este filtro.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-400">No hay registros para mostrar con este filtro.</td></tr>`;
                 return;
             }
 
@@ -674,25 +646,11 @@
                 let statusBadgeText = isConf ? 'Confirmado' : (isDeclined ? 'No asiste' : (g.attendance || 'Pendiente'));
                 let statusBadgeClass = isConf ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800';
 
-                // Personas: si es 0, mostrar '-'
-                const countNum = Number(g.count || 0);
-                const personsDisplay = (isConf && countNum > 0) ? countNum : '-';
-
-                // Menú: destacar en azul solo si es menú especial/dietético real (excluyendo Especial Madrugada y lista de 25)
-                const menuText = g.menu || 'Ninguno';
-                const menuLower = menuText.toLowerCase();
-                const isTrueSpecialMenu = menuLower && menuLower !== 'ninguno' && menuLower !== '-' && 
-                                          !menuLower.includes('madrugada') && !g.bracelet &&
-                                          (menuLower.includes('tacc') || menuLower.includes('vegano') || menuLower.includes('vegetariano') || menuLower.includes('celiaco') || menuLower.includes('especial'));
-                const menuClass = isTrueSpecialMenu ? 'text-sky-600 font-semibold' : 'text-slate-600';
-
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-lavender-50/50 transition-colors";
                 tr.innerHTML = `
                     <td class="p-4 font-bold text-lavender-900">${escapeHtml(g.name)} ${badgeHtml}</td>
                     <td class="p-4"><span class="px-2.5 py-1 rounded-full text-[11px] font-bold ${statusBadgeClass}">${escapeHtml(statusBadgeText)}</span></td>
-                    <td class="p-4 text-center font-bold text-base">${personsDisplay}</td>
-                    <td class="p-4 ${menuClass}">${escapeHtml(menuText)}</td>
                     <td class="p-4 max-w-xs">
                         ${g.song && g.song !== '-' ? `<span class="block text-xs text-lavender-700 font-medium">🎵 ${escapeHtml(g.song)}</span>` : ''}
                         ${g.message && g.message !== '-' ? `<span class="block text-xs italic text-slate-500 mt-0.5">💬 "${escapeHtml(g.message)}"</span>` : ''}
